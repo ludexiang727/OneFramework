@@ -1,0 +1,9 @@
+<resources>
+  <declare-styleable name="GiftView">
+    <attr name="width" format="dimension"/>
+    <attr name="height" format="dimension"/>
+    <attr name="text_size" format="dimension"/>
+  </declare-styleable>
+
+
+</resources>

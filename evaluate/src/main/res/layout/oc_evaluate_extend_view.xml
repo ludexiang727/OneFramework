@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <RelativeLayout
+    android:id="@+id/evaluate_extend_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+
+  <View
+    android:id="@+id/evaluate_extend_dividing_line"
+    android:layout_width="match_parent"
+    android:layout_height="1px"
+    android:layout_below="@id/evaluate_extend_container"
+    android:background="#1A000000"/>
+
+</RelativeLayout>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical">
+
+    <com.evaluate.loading.CircularProgressBar
+        android:id="@+id/evaluate_round_progress_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        app:cpb_bgcolor="@color/evaluate_color_FFF6F2"
+        app:cpb_colors="@array/gplus_colors"/>
+
+    <TextView
+        android:id="@+id/evaluate_tv_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="14dp"
+        android:gravity="center"
+        android:textColor="@color/evaluate_color_666666"
+        android:textSize="14sp"/>
+</LinearLayout>

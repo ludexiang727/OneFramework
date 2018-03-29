@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="160dp">
+
+  <RelativeLayout
+    android:id="@+id/to_evaluate_container"
+    android:layout_width="wrap_content"
+    android:layout_height="60dp"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true">
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="14dp"
+      android:layout_centerInParent="true"
+      android:gravity="center|center_vertical"
+      android:orientation="horizontal">
+
+      <com.evaluate.widgets.TextViewAccessibleForCheck
+        android:id="@+id/evaluate_question_go_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:layout_marginLeft="4dp"
+        android:includeFontPadding="false"
+        android:text="@string/oc_question_goto_evaluate"
+        android:textColor="#666666"
+        android:textSize="24sp"/>
+
+      <ImageView
+        android:id="@+id/evaluate_question_go_rating_icon"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:src="@drawable/right_icon_selector"/>
+    </LinearLayout>
+  </RelativeLayout>
+
+  <LinearLayout
+    android:id="@+id/evaluate_question_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@id/to_evaluate_container"
+    android:layout_centerHorizontal="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <FrameLayout
+      android:layout_width="wrap_content"
+      android:layout_height="68dp">
+
+      <com.evaluate.widgets.TextViewAccessibleForCheck
+        android:id="@+id/evaluate_question_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="37dp"
+        android:layout_marginRight="37dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textColor="#666666"
+        android:textSize="28sp"/>
+    </FrameLayout>
+
+    <LinearLayout
+      android:id="@+id/evaluate_question_options_container"
+      android:layout_width="wrap_content"
+      android:layout_height="32dp"
+      android:orientation="horizontal"></LinearLayout>
+  </LinearLayout>
+
+  <com.evaluate.widgets.LoadingStateView
+    android:id="@+id/evaluate_question_submit_loading"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@id/to_evaluate_container"
+    android:visibility="gone"/>
+
+  <LinearLayout
+    android:id="@+id/evaluate_question_submit_fail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@id/to_evaluate_container"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <com.evaluate.widgets.TextViewAccessibleForCheck
+      android:id="@+id/evaluate_question_submit_fail_message"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="37dp"
+      android:layout_marginRight="37dp"
+      android:layout_gravity="center_horizontal"
+      android:gravity="center"
+      android:maxLines="1"
+      android:text="@string/oc_question_submit_fail"
+      android:textColor="@color/evaluate_color_666666"
+      android:textSize="28sp"/>
+
+    <com.evaluate.widgets.TextViewAccessibleForCheck
+      android:id="@+id/evaluate_question_submit_fail_retry"
+      android:layout_width="88dp"
+      android:layout_height="30dp"
+      android:layout_marginTop="27dp"
+      android:background="@drawable/oc_retry_button_select"
+      android:gravity="center"
+      android:text="@string/oc_question_submit_retry"
+      android:textColor="@color/evaluate_color_FC9153"
+      android:textSize="24sp"/>
+  </LinearLayout>
+</merge>

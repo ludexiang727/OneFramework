@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="@dimen/evaluate_checkbox_container_width"
+  android:layout_height="44dp"
+  android:gravity="center">
+
+  <com.evaluate.widgets.TextViewAccessibleForCheck
+    android:id="@+id/evaluate_tag_text"
+    android:layout_width="@dimen/evaluate_checkbox_width"
+    android:layout_height="@dimen/evaluate_checkbox_height"
+    android:layout_margin="@dimen/evaluate_check_margin"
+    android:layout_gravity="center"
+    android:background="@drawable/oc_evaluate_checkbox_selector"
+    android:gravity="center"
+    android:textColor="@drawable/oc_evaluate_checkbox_text_color_selector"
+    android:textSize="12sp"/>
+</RelativeLayout>

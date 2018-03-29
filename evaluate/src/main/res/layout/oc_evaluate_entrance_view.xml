@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:paddingTop="17dp"
+  android:paddingBottom="17dp"
+  android:background="@drawable/evaluate_entrance_background_selector"
+  android:gravity="center|center_vertical"
+  android:orientation="horizontal">
+
+  <com.evaluate.widgets.TextViewAccessibleForCheck
+    android:id="@+id/evaluate_evaluate_entrance_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:includeFontPadding="false"
+    android:text="@string/oc_evaluate_entrance_text"
+    android:textColor="#666666"
+    android:textSize="24sp"/>
+
+  <ImageView
+    android:layout_width="12dp"
+    android:layout_height="12dp"
+    android:duplicateParentState="true"
+    android:src="@drawable/right_icon_selector"/>
+
+</LinearLayout>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context="com.test.demo.MainActivity">
+
+  <Button
+    android:id="@+id/change"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:onClick="onChange"
+    android:layout_alignParentBottom="true"
+    android:text="change"/>
+  
+  <Button
+    android:id="@+id/jump"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:onClick="onJump"
+    android:layout_above="@id/change"
+    android:text="jump"/>
+
+  <Button
+    android:id="@+id/evaluate"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:onClick="onEvaluate"
+    android:layout_above="@id/jump"
+    android:text="evaluate"/>
+</RelativeLayout>

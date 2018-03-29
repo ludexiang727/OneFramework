@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/evaluate_comment_content_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|top"
+        android:padding="10dp"
+        android:textColor="#999999"
+        android:textSize="24sp"
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/evaluate_comment_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/oc_evaluate_comment_input_background"
+        android:gravity="left|top"
+        android:hint="@string/oc_evaluate_comment_hint"
+        android:textColorHint="#CCCCCC"
+        android:imeOptions="actionDone"
+        android:maxLength="60"
+        android:maxLines="6"
+        android:padding="10dp"
+        android:textColor="#666666"
+        android:textSize="28sp"/>
+
+    <TextView
+        android:id="@+id/evaluate_comment_text_limit_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:textColor="#CCCCCC"
+        android:textSize="28sp"
+        android:visibility="gone"/>
+</merge>

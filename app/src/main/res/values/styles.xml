@@ -1,0 +1,63 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+  
+  <!-- Base application theme. -->
+  <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="windowActionBar">false</item>
+    <item name="android:windowNoTitle">true</item>
+
+    <item name="windowNoTitle">true</item>
+  </style>
+
+  <style name="AppTheme" parent="AppTheme.Base">
+    <item name="toolbarStyle">@style/ToolBar</item>
+  </style>
+
+  
+  <style name="Transparent" parent="@style/Theme.AppCompat">
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:colorBackgroundCacheHint">@null</item>
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowActionBar">false</item>
+  </style>
+
+  <style name="PopupWindow">
+    <item name="android:background">#a0000000</item>
+    <item name="android:windowEnterAnimation">@anim/pop_window_enter_anim</item>
+    <item name="android:windowExitAnimation">@anim/pop_window_exit_anim</item>
+  </style>
+
+  <style name="Theme.Mobike.LightBase" parent="@style/Theme.AppCompat.Light">
+    <item name="android:windowNoTitle">true</item>
+    <item name="windowNoTitle">true</item>
+    <item name="android:windowActionBar">false</item>
+    <item name="windowActionBar">false</item>
+    <item name="android:windowBackground">@color/white</item>
+    <item name="android:statusBarColor" tools:targetApi="lollipop">#191d21</item>
+  </style>
+
+  <style name="Theme.Mocha.Light" parent="@style/Theme.Mobike.LightBase">
+    <item name="android:windowNoTitle">true</item>
+    <item name="windowNoTitle">true</item>
+    <item name="android:windowActionBar">false</item>
+    <item name="windowActionBar">false</item>
+    <item name="android:windowBackground">@color/white</item>
+  </style>
+
+  <style name="Theme.Mocha.Splash" parent="Theme.Mocha.Light">
+    <item name="android:windowBackground">@color/white</item>
+    <item name="android:windowFullscreen">false</item>
+    <item name="android:windowContentOverlay">@null</item>
+  </style>
+
+
+  <declare-styleable name="BraceTextView">
+    <attr name="brace_color" format="string" />
+    <attr name="brace_bold" format="boolean" />
+  </declare-styleable>
+
+  <style name="ToolBar" parent="Widget.AppCompat.Toolbar">
+    <item name="contentInsetStart">0dp</item>
+  </style>
+
+</resources>

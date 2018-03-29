@@ -1,0 +1,6 @@
+<resources>
+  <item name="oc_tag_id" type="id"/>
+  <item name="evaluate_dialog" type="id"/>
+  <item name="tag_hint" type="id"/>
+  <item name="tag_value" type="id"/>
+</resources>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="colorPrimary">#3F51B5</color>
+  <color name="colorPrimaryDark">#303F9F</color>
+  <color name="colorAccent">#FF4081</color>
+  <color name="transparent">#00000000</color>
+  <color name="white">#ffffff</color>
+
+  <color name="evaluate_color_000000">#000000</color>
+  <!--4%透明度-->
+  <color name="evaluate_color_0A000000">#0A000000</color>
+  <!--8%透明度-->
+  <color name="evaluate_color_14000000">#14000000</color>
+  <!--10%透明度-->
+  <color name="evaluate_color_1A000000">#1A000000</color>
+  <!--40%透明度-->
+  <color name="evaluate_color_alpha_40">#66000000</color>
+  <!--60%透明度-->
+  <color name="evaluate_color_alpha_60">#B4000000</color>
+  <color name="evaluate_color_eb000000">#eb000000</color>
+  <color name="evaluate_color_31000000">#31000000</color>
+  <color name="evaluate_color_666666">#666666</color>
+  <color name="evaluate_color_333333">#333333</color>
+  <color name="evaluate_color_ff8903">#ff8903</color>
+  <color name="evaluate_color_999999">#999999</color>
+  <color name="evaluate_color_4A4C5B">#4A4C5B</color>
+  <color name="evaluate_color_CCCCCC">#CCCCCC</color>
+  <color name="evaluate_color_FFFFFF">#FFFFFF</color>
+  <color name="evaluate_color_FC9153">#FC9153</color>
+  <color name="evaluate_color_31FC9153">#31FC9153</color>
+  <color name="evaluate_color_08FC9153">#08FC9153</color>
+  <color name="evaluate_color_F5F5F5">#F5F5F5</color>
+  <color name="evaluate_color_878787">#878787</color>
+  <color name="evaluate_color_FCFCFC">#FCFCFC</color>
+  <color name="evaluate_color_FAFAFA">#FAFAFA</color>
+  <color name="evaluate_color_E5E5E5">#E5E5E5</color>
+  <color name="evaluate_color_D6D6D6">#D6D6D6</color>
+  <color name="evaluate_color_FA8919">#FA8919</color>
+  <color name="evaluate_color_ADADAD">#ADADAD</color>
+  <color name="evaluate_color_EBEBEB">#EBEBEB</color>
+  <color name="evaluate_color_EEEEEE">#EEEEEE</color>
+  <color name="evaluate_color_FFF6F2">#FFF6F2</color>
+  <color name="evaluate_color_F3F4F5">#F3F4F5</color>
+  <color name="evaluate_color_FCF4EF">#FCF4EF</color>
+  <color name="evaluate_color_80000000">#80000000</color>
+  <color name="evaluate_taxi_select_passenger_credit_bg">#f2ffffff</color>
+  <color name="evaluate_color_form_bg">#ebffffff</color>
+  <color name="evaluate_color_F8F8F8">#F8F8F8</color>
+  <color name="evaluate_color_F0F0F0">#F0F0F0</color>
+  <color name="evaluate_color_6625262D">#6625262D</color>
+  <color name="evaluate_color_25262D">#25262D</color>
+  <color name="evaluate_color_2EAB8C">#2EAB8C</color>
+  <color name="evaluate_color_EAFFFFFF">#EAFFFFFF</color>
+  <color name="evaluate_color_E2E2E2">#E2E2E2</color>
+
+  <color name="evaluate_iw_title">#333333</color>
+  <color name="evaluate_iw_subtitle">#999999</color>
+  <color name="evaluate_iw_orange">#FC9153</color>
+  <color name="evaluate_iw_fill_color">#FFF6F2</color>
+
+  <!-- 地图气泡字体颜色-->
+  <color name="evaluate_map_window_orange">#FFFC9153</color>
+  <color name="evaluate_map_window_black">#FF333333</color>
+
+  <color name="evaluate_color_EFEFEF">#EFEFEF</color>
+
+  <color name="cpb_default_color">#33b5e5</color>
+  <color name="cpb_default_bgcolor">#F1EBEB</color>
+  <integer-array name="gplus_colors">
+    <item>@color/evaluate_color_FC9153</item>
+    <!--<item>@color/gplus_color_2</item>-->
+    <!--<item>@color/gplus_color_3</item>-->
+    <!--<item>@color/gplus_color_4</item>-->
+  </integer-array>
+
+  <color name="evaluate_color_F2ffffff">#F2ffffff</color>
+
+  <color name="evaluate_color_FF915A">#FF915A</color>
+  <color name="evaluate_color_FEC4A8">#FEC4A8</color>
+
+  <color name="pacific_route">#ff7ab4f5</color>
+
+  <color name="car_color_orange_new">#fc9153</color>
+  <color name="evaluate_gurana_form_send_txt">#262b2e</color>
+  <color name="pager_bullet_active">#FC9153</color>
+  <color name="pager_bullet_inactive">#EEEEEE</color>
+  <color name="evaluate_color_2A2A2A">#2A2A2A</color>
+</resources>
