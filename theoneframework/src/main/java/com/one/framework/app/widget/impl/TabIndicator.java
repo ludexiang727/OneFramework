@@ -22,6 +22,7 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
   private LinearLayout mTabContainer;
   private ITabItemListener mTabItemListener;
   private LayoutInflater mInflater;
+  private IScaleListener mScaleListener;
 
   public TabIndicator(Context context) {
     this(context, null);
@@ -43,12 +44,13 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
       throw new IllegalArgumentException("ScrollView child must be have one");
     }
     mTabContainer = (LinearLayout) findViewById(R.id.one_tab_container);
-    mTabContainer.setGravity(Gravity.CENTER);
+//    mTabContainer.setGravity(Gravity.CENTER);
   }
 
   @Override
   public void setTabItems(List<TabItem> items) {
-    for (TabItem tab : items) {
+    for (int i = 0; i < items.size(); i++) {
+      TabItem tab = items.get(i);
       View view = mInflater.inflate(R.layout.one_tab_item_layout, null);
       final TextView tabItem = (TextView) view.findViewById(R.id.one_tab_item);
       final View redPoint = view.findViewById(R.id.one_tab_item_red);
@@ -58,8 +60,9 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
       redPoint.setVisibility(tab.isRedPoint ? View.VISIBLE : View.GONE);
       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
           LayoutParams.WRAP_CONTENT);
-      params.leftMargin = 30;
-      params.rightMargin = 30;
+      if (i != items.size() - 1) {
+        params.rightMargin = 30;
+      }
       mTabContainer.addView(view, tab.position, params);
       if (tab.isSelected && mTabItemListener != null) {
         mTabItemListener.onItemClick(tab);
@@ -78,6 +81,18 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
         }
       });
     }
+  }
+
+  @Override
+  protected void onScale(float scale) {
+    if (mScaleListener != null) {
+      mScaleListener.onScale(scale);
+    }
+  }
+
+  @Override
+  public void setScaleListener(IScaleListener listener) {
+    mScaleListener = listener;
   }
 
   @Override

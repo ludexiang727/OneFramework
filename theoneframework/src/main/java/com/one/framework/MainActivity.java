@@ -36,8 +36,10 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
 
     addNavigator();
 
-    mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.one_map_fragment);
-    mTopbarFragment = (TopBarFragment) getSupportFragmentManager().findFragmentById(R.id.one_top_bar_fragment);
+    mMapFragment = (MapFragment) getSupportFragmentManager()
+        .findFragmentById(R.id.one_map_fragment);
+    mTopbarFragment = (TopBarFragment) getSupportFragmentManager()
+        .findFragmentById(R.id.one_top_bar_fragment);
     mTopbarFragment.setTabItemListener(this);
 
     mDelegateManager = new ActivityDelegateManager(this);
@@ -56,7 +58,6 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
     super.onStart();
     mDelegateManager.notifyOnStart();
   }
-
 
 
   @Override
@@ -105,28 +106,15 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
   /////////////////////// test //////
   private List<TabItem> testTabItems() {
     List<TabItem> items = new ArrayList<>();
-    TabItem tab1 = new TabItem();
-    tab1.tab = "快车";
-    tab1.position = 0;
-    tab1.tabBiz = "flash";
-    tab1.isRedPoint = false;
-    tab1.isSelected = true;
-    TabItem tab2 = new TabItem();
-    tab2.tab = "专车";
-    tab2.position = 1;
-    tab2.tabBiz = "premium";
-    tab2.isRedPoint = true;
-    tab2.isSelected = false;
-
-    TabItem tab3 = new TabItem();
-    tab3.tab = "出租车";
-    tab3.position = 2;
-    tab3.tabBiz = "taxi";
-    tab3.isRedPoint = false;
-    tab3.isSelected = false;
-    items.add(tab1);
-    items.add(tab2);
-    items.add(tab3);
+    for (int i = 0; i < 10; i++) {
+      TabItem tab1 = new TabItem();
+      tab1.tab = "快车" + i;
+      tab1.position = i;
+      tab1.tabBiz = "flash";
+      tab1.isRedPoint = false;
+      tab1.isSelected = i == 0 ? true : false;
+      items.add(tab1);
+    }
     return items;
   }
 }

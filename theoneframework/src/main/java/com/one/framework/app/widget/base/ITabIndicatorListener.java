@@ -13,7 +13,13 @@ public interface ITabIndicatorListener {
 
   void setTabItemListener(ITabItemListener listener);
 
+  void setScaleListener(IScaleListener listener);
+
   interface ITabItemListener {
     void onItemClick(TabItem item);
+  }
+
+  interface IScaleListener {
+    void onScale(float scale);
   }
 }
