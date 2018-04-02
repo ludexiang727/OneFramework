@@ -106,13 +106,21 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
   /////////////////////// test //////
   private List<TabItem> testTabItems() {
     List<TabItem> items = new ArrayList<>();
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 5; i++) {
       TabItem tab1 = new TabItem();
-      tab1.tab = "快车" + i;
-      tab1.position = i;
-      tab1.tabBiz = "flash";
-      tab1.isRedPoint = false;
-      tab1.isSelected = i == 0 ? true : false;
+      if (i == 0) {
+        tab1.tab = "站点巴士";
+        tab1.position = i;
+        tab1.tabBiz = "calendar";
+        tab1.isRedPoint = false;
+        tab1.isSelected = i == 0 ? true : false;
+      } else {
+        tab1.tab = "快车" + i;
+        tab1.position = i;
+        tab1.tabBiz = "flash";
+        tab1.isRedPoint = false;
+        tab1.isSelected = i == 0 ? true : false;
+      }
       items.add(tab1);
     }
     return items;

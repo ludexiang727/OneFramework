@@ -62,7 +62,7 @@ public class GiftView extends android.support.v7.widget.AppCompatTextView implem
     TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.GiftView);
     mViewWidth = a.getDimensionPixelOffset(R.styleable.GiftView_width, 0);
     mViewHeight = a.getDimensionPixelOffset(R.styleable.GiftView_height, 0);
-    mTextSize = a.getDimensionPixelSize(R.styleable.GiftView_text_size, 0);
+    mTextSize = a.getDimensionPixelSize(R.styleable.GiftView_gift_text_size, 0);
     mTxtColor = Color.WHITE;
     a.recycle();
     mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);

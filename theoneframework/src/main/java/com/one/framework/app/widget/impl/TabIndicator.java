@@ -44,11 +44,12 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
       throw new IllegalArgumentException("ScrollView child must be have one");
     }
     mTabContainer = (LinearLayout) findViewById(R.id.one_tab_container);
-//    mTabContainer.setGravity(Gravity.CENTER);
   }
 
   @Override
   public void setTabItems(List<TabItem> items) {
+    mTabContainer.setGravity(Gravity.NO_GRAVITY);
+    setChildViewGravity(items.size());
     for (int i = 0; i < items.size(); i++) {
       TabItem tab = items.get(i);
       View view = mInflater.inflate(R.layout.one_tab_item_layout, null);
@@ -88,6 +89,11 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
     if (mScaleListener != null) {
       mScaleListener.onScale(scale);
     }
+  }
+
+  private void setChildViewGravity(int size) {
+    int width = getWidth();
+
   }
 
   @Override
