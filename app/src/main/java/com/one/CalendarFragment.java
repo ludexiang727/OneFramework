@@ -3,11 +3,9 @@ package com.one;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import com.one.adapter.AbsBaseAdapter;
 import com.one.adapter.impl.CalendarAdapter;
 import com.one.base.BaseFragment;
@@ -15,6 +13,7 @@ import com.one.framework.api.annotation.ServiceProvider;
 import com.one.listener.ICalendar;
 import com.one.model.CalendarModel;
 import com.one.widget.CalendarTitleLayout;
+import com.one.widget.CustomerSwipeRefreshLayout;
 import com.one.widget.SwipeListView;
 import com.test.demo.R;
 import com.test.demo.utils.TimeUtils;
@@ -28,7 +27,7 @@ import java.util.List;
 public class CalendarFragment extends BaseFragment {
 
   private AbsBaseAdapter mAdapter;
-  private SwipeRefreshLayout mRefreshLayout;
+  private CustomerSwipeRefreshLayout mRefreshLayout;
   private SwipeListView mSwipeListView;
   private ICalendar mCalendar;
 
@@ -44,10 +43,12 @@ public class CalendarFragment extends BaseFragment {
 
 
   private void initView(View view) {
+    mRefreshLayout = (CustomerSwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
     mCalendar = (CalendarTitleLayout) view.findViewById(R.id.calendar_title_layout);
     mSwipeListView = (SwipeListView) view.findViewById(android.R.id.list);
 
 
+    mRefreshLayout.setScrollView(mSwipeListView);
     mAdapter = new CalendarAdapter(getActivity());
     mSwipeListView.setAdapter(mAdapter);
 

@@ -34,4 +34,12 @@
       <enum name="bottom" value="2"/>
     </attr>
   </declare-styleable>
+
+  <declare-styleable name="PullView">
+    <attr name="scroll_view">
+      <enum name="header" value="0"/>
+      <enum name="self" value="1"/>
+    </attr>
+    <attr name="scroll_max_height" format="dimension"/>
+  </declare-styleable>
 </resources>

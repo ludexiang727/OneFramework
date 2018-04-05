@@ -1,14 +1,19 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.one.widget.PullScrollRelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/move_parent_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@android:color/transparent">
+  android:background="@color/app_background">
 
-  <TextView
+  <com.one.widget.PullListView
+    android:id="@android:id/list"
     android:layout_width="match_parent"
-    android:layout_height="90dp"
-    android:layout_alignParentBottom="true"
-    android:gravity="center"
+    android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:text="Two Fragment"/>
+    android:cacheColorHint="@android:color/transparent"
+    android:listSelector="@android:color/transparent"
+    app:scroll_view="header"
+    app:scroll_max_height="50dp"/>
 
-</RelativeLayout>
+</com.one.widget.PullScrollRelativeLayout>
