@@ -5,7 +5,6 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -20,7 +19,7 @@ import com.one.listener.IPullView;
 
 public class PullScrollRelativeLayout extends RelativeLayout {
 
-  private static final int RATIO = 5;
+  private static final int RATIO = 3;
 
   private IMovePublishListener mMoveListener;
   private VelocityTracker mTracker;
@@ -65,6 +64,8 @@ public class PullScrollRelativeLayout extends RelativeLayout {
     switch (ev.getAction() & MotionEvent.ACTION_MASK) {
       // 处理两个手交替 begin
       case MotionEvent.ACTION_POINTER_DOWN: {
+//        mActionDownX = (int) ev.getX();
+//        mActionDownY = (int) ev.getY();
         final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
         mActionDownX = (int) MotionEventCompat.getX(ev, pointerIndex);
         mActionDownY = (int) MotionEventCompat.getY(ev, pointerIndex);
@@ -86,6 +87,8 @@ public class PullScrollRelativeLayout extends RelativeLayout {
       }
       // 处理两个手交替 end
       case MotionEvent.ACTION_DOWN: {
+//        float x = ev.getX();
+//        float y = ev.getY();
         final int pointerIndex = MotionEventCompat.getActionIndex(ev);
         final float x = MotionEventCompat.getX(ev, pointerIndex);
         final float y = MotionEventCompat.getY(ev, pointerIndex);
