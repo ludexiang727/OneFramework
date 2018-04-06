@@ -6,10 +6,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.FrameLayout;
 import com.one.listener.IHeaderView;
@@ -59,6 +57,7 @@ public class HeaderView extends FrameLayout implements IHeaderView {
 
   @Override
   public void onMove(int offsetX, int offsetY) {
+
     FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mParentLayout.getLayoutParams();
     params.height += offsetY;
     mParentLayout.setLayoutParams(params);
@@ -68,7 +67,6 @@ public class HeaderView extends FrameLayout implements IHeaderView {
   public void onUp(boolean bottom2Up, boolean isFling) {
     FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mParentLayout.getLayoutParams();
     mScrollHeight = params.height - mViewHeight;
-    Log.w("ldx", "height >>> " + mScrollHeight);
     goonMove(200);
 
   }
@@ -90,10 +88,10 @@ public class HeaderView extends FrameLayout implements IHeaderView {
       @Override
       public void onAnimationUpdate(ValueAnimator animation) {
         float animValue = animation.getAnimatedFraction();
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mParentLayout.getLayoutParams();
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mParentLayout
+            .getLayoutParams();
         float fraction = 1f - animValue;
         params.height = (int) (mScrollHeight * fraction) + mViewHeight;
-        Log.e("ldx", "Anim mViewHeight " + params.height);
         mParentLayout.setLayoutParams(params);
       }
     });

@@ -113,7 +113,6 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
   public void onMove(int offsetX, int offsetY) {
 //    Log.e("ldx", "offsetX " + offsetX + " offsetY " + offsetY);
     if (mScroller == 0) {
-      headerScrollerMove(offsetY);
       mHeaderView.onMove(offsetX, offsetY);
     } else {
       selfScrollerMove(offsetY);
@@ -127,12 +126,6 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
     } else {
       selfScrollerUp(bottom2Up, isFling);
     }
-  }
-
-  private void headerScrollerMove(int offsetY) {
-//    ViewGroup.LayoutParams params = mHeaderView.getView().getLayoutParams();
-//    params.height += offsetY;
-//    mHeaderView.getView().setLayoutParams(params);
   }
 
   private void selfScrollerMove(int offsetY) {

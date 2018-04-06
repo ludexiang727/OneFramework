@@ -2,6 +2,7 @@ package com.one.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -16,7 +17,7 @@ import com.one.listener.IPullView;
 
 public class PullScrollRelativeLayout extends RelativeLayout {
 
-  private static final int RATIO = 3;
+  private static final int RATIO = 5;
 
   private IMovePublishListener mMoveListener;
   private VelocityTracker mTracker;
@@ -57,8 +58,21 @@ public class PullScrollRelativeLayout extends RelativeLayout {
   @Override
   public boolean dispatchTouchEvent(MotionEvent ev) {
     addVelocityTracker(ev);
-    switch (ev.getAction()) {
+    switch (ev.getAction() & MotionEvent.ACTION_MASK) {
+      // 处理两个手交替 begin
+      case MotionEvent.ACTION_POINTER_DOWN: {
+        Log.e("ldx", "action pointer down .......");
+        mActionDownX = (int) ev.getX();
+        mActionDownY = (int) ev.getY();
+        break;
+      }
+      case MotionEvent.ACTION_POINTER_UP: {
+        Log.e("ldx", "action pointer up .......");
+        break;
+      }
+      // 处理两个手交替 end
       case MotionEvent.ACTION_DOWN: {
+        Log.e("ldx", "action down .......");
         if (checkScrollView()) {
           mLastDownX = mActionDownX = (int) ev.getX();
           mLastDownY = mActionDownY = (int) ev.getY();
@@ -69,7 +83,6 @@ public class PullScrollRelativeLayout extends RelativeLayout {
         int curX = (int) ev.getX();
         int curY = (int) ev.getY();
         isScrolling = curY - mLastDownY >= mMinScroll || mScrollView.getTranslationY() > 0;
-
         if (checkScrollView()) {
           if (canScroll()) {
             int offsetX = (curX - mActionDownX) / RATIO;
@@ -82,6 +95,7 @@ public class PullScrollRelativeLayout extends RelativeLayout {
         }
         break;
       }
+      case MotionEvent.ACTION_CANCEL:
       case MotionEvent.ACTION_UP: {
         int scrollY = (int) mScrollView.getTranslationY();
         mTracker.computeCurrentVelocity(1000, mMaxVelocity);
