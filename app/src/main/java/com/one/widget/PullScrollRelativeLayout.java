@@ -1,6 +1,9 @@
 package com.one.widget;
 
+import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 import android.content.Context;
+import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -29,6 +32,7 @@ public class PullScrollRelativeLayout extends RelativeLayout {
   private View mScrollView;
   private IPullView mPullView;
   private boolean isScrolling = false;
+  private int mActivePointerId = INVALID_POINTER_ID;
 
   public PullScrollRelativeLayout(Context context) {
     this(context, null);
@@ -61,27 +65,44 @@ public class PullScrollRelativeLayout extends RelativeLayout {
     switch (ev.getAction() & MotionEvent.ACTION_MASK) {
       // 处理两个手交替 begin
       case MotionEvent.ACTION_POINTER_DOWN: {
-        Log.e("ldx", "action pointer down .......");
-        mActionDownX = (int) ev.getX();
-        mActionDownY = (int) ev.getY();
+        final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
+        mActionDownX = (int) MotionEventCompat.getX(ev, pointerIndex);
+        mActionDownY = (int) MotionEventCompat.getY(ev, pointerIndex);
         break;
       }
       case MotionEvent.ACTION_POINTER_UP: {
-        Log.e("ldx", "action pointer up .......");
+        final int pointerIndex = MotionEventCompat.getActionIndex(ev);
+        final int pointerId = MotionEventCompat.getPointerId(ev, pointerIndex);
+
+        if (pointerId == mActivePointerId) {
+          // This was our active pointer going up. Choose a new
+          // active pointer and adjust accordingly.
+          final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+          mActionDownX = (int) MotionEventCompat.getX(ev, newPointerIndex);
+          mActionDownY = (int) MotionEventCompat.getY(ev, newPointerIndex);
+          mActivePointerId = MotionEventCompat.getPointerId(ev, newPointerIndex);
+        }
         break;
       }
       // 处理两个手交替 end
       case MotionEvent.ACTION_DOWN: {
-        Log.e("ldx", "action down .......");
+        final int pointerIndex = MotionEventCompat.getActionIndex(ev);
+        final float x = MotionEventCompat.getX(ev, pointerIndex);
+        final float y = MotionEventCompat.getY(ev, pointerIndex);
         if (checkScrollView()) {
-          mLastDownX = mActionDownX = (int) ev.getX();
-          mLastDownY = mActionDownY = (int) ev.getY();
+          mLastDownX = mActionDownX = (int) x;
+          mLastDownY = mActionDownY = (int) y;
+          // Save the ID of this pointer (for dragging)
+          mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
         }
         break;
       }
       case MotionEvent.ACTION_MOVE: {
-        int curX = (int) ev.getX();
-        int curY = (int) ev.getY();
+//        int curX = (int) ev.getX();
+//        int curY = (int) ev.getY();
+        final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
+        final int curX = (int) MotionEventCompat.getX(ev, pointerIndex);
+        final int curY = (int) MotionEventCompat.getY(ev, pointerIndex);
         isScrolling = curY - mLastDownY >= mMinScroll || mScrollView.getTranslationY() > 0;
         if (checkScrollView()) {
           if (canScroll()) {
