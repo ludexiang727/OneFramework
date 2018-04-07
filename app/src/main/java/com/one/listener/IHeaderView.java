@@ -7,8 +7,9 @@ import android.view.View;
  */
 
 public interface IHeaderView {
-  void onMove(int offsetX, int offsetY);
+  void onMove(float offsetX, float offsetY);
   void onUp(boolean bottom2Up, boolean isFling);
   int getHeaderHeight();
+  int getScrollHeaderHeight();
   View getView();
 }

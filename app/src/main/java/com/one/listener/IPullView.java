@@ -13,5 +13,6 @@ public interface IPullView {
    * @return
    */
   int getScrollingY();
+  int getHeaderScrollHeight();
   View getView();
 }

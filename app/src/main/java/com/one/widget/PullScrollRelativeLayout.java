@@ -5,6 +5,7 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.view.ViewConfiguration;
 import android.widget.RelativeLayout;
 import com.one.listener.IMovePublishListener;
 import com.one.listener.IPullView;
+import com.one.utils.UIUtils;
 
 /**
  * Created by ludexiang on 2018/4/3.
@@ -19,8 +21,8 @@ import com.one.listener.IPullView;
 
 public class PullScrollRelativeLayout extends RelativeLayout {
 
-  private static final int RATIO = 3;
-
+  private static float RATIO = 3.0f;
+  private Context mContext;
   private IMovePublishListener mMoveListener;
   private VelocityTracker mTracker;
   private int mMinScroll;
@@ -43,6 +45,7 @@ public class PullScrollRelativeLayout extends RelativeLayout {
 
   public PullScrollRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    mContext = context;
     ViewConfiguration configuration = ViewConfiguration.get(context);
     mMinScroll = configuration.getScaledTouchSlop();
     mMinVelocity = configuration.getScaledMinimumFlingVelocity();
@@ -109,8 +112,12 @@ public class PullScrollRelativeLayout extends RelativeLayout {
         isScrolling = curY - mLastDownY >= mMinScroll || mScrollView.getTranslationY() > 0;
         if (checkScrollView()) {
           if (canScroll()) {
-            int offsetX = (curX - mActionDownX) / RATIO;
-            int offsetY = (curY - mActionDownY) / RATIO;
+            if (mScrollView.getTranslationY() >= UIUtils.getScreenHeight(mContext) / 2
+                || mPullView.getHeaderScrollHeight() >= UIUtils.getScreenHeight(mContext) / 2) {
+              RATIO += .05f;
+            }
+            float offsetX = (curX - mActionDownX) / RATIO;
+            float offsetY = (curY - mActionDownY) / RATIO;
             handleMove(offsetX, offsetY);
             mActionDownX = curX;
             mActionDownY = curY;
@@ -134,13 +141,14 @@ public class PullScrollRelativeLayout extends RelativeLayout {
     return super.dispatchTouchEvent(ev);
   }
 
-  private void handleMove(int offsetX, int offsetY) {
+  private void handleMove(float offsetX, float offsetY) {
     if (mMoveListener != null) {
       mMoveListener.onMove(offsetX, offsetY);
     }
   }
 
   private void handleUp(boolean bottom2Up, boolean isFling) {
+    RATIO = 3;
     if (mMoveListener != null) {
       mMoveListener.onUp(bottom2Up, isFling);
     }

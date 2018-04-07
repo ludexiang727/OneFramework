@@ -5,6 +5,6 @@ package com.one.listener;
  */
 
 public interface IMovePublishListener {
-  void onMove(int offsetX, int offsetY);
+  void onMove(float offsetX, float offsetY);
   void onUp(boolean bottom2Up, boolean isFling);
 }

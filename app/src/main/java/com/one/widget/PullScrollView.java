@@ -25,6 +25,11 @@ public class PullScrollView extends ScrollView implements IPullView {
   }
 
   @Override
+  public int getHeaderScrollHeight() {
+    return 0;
+  }
+
+  @Override
   public int getScrollingY() {
     return getScrollY();
   }

@@ -56,10 +56,9 @@ public class HeaderView extends FrameLayout implements IHeaderView {
   }
 
   @Override
-  public void onMove(int offsetX, int offsetY) {
-
+  public void onMove(float offsetX, float offsetY) {
     FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mParentLayout.getLayoutParams();
-    params.height += offsetY;
+    params.height += (int) (offsetY);
     mParentLayout.setLayoutParams(params);
   }
 
@@ -74,6 +73,12 @@ public class HeaderView extends FrameLayout implements IHeaderView {
   @Override
   public int getHeaderHeight() {
     return mViewHeight;
+  }
+
+  @Override
+  public int getScrollHeaderHeight() {
+    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mParentLayout.getLayoutParams();
+    return params.height;
   }
 
   @Override

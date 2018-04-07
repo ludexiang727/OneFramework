@@ -13,7 +13,7 @@
     android:background="@android:color/white"
     android:cacheColorHint="@android:color/transparent"
     android:listSelector="@android:color/transparent"
-    app:scroll_view="header"
+    app:scroll_view="self"
     app:scroll_max_height="50dp"/>
 
 </com.one.widget.PullScrollRelativeLayout>
