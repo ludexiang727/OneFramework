@@ -114,7 +114,7 @@ public class PullScrollRelativeLayout extends RelativeLayout {
           if (canScroll()) {
             if (mScrollView.getTranslationY() >= UIUtils.getScreenHeight(mContext) / 2
                 || mPullView.getHeaderScrollHeight() >= UIUtils.getScreenHeight(mContext) / 2) {
-              RATIO += .05f;
+              RATIO += .085f;
             }
             float offsetX = (curX - mActionDownX) / RATIO;
             float offsetY = (curY - mActionDownY) / RATIO;
