@@ -127,6 +127,7 @@ public class PullScrollRelativeLayout extends RelativeLayout {
         break;
       }
       case MotionEvent.ACTION_CANCEL:
+      case MotionEvent.ACTION_OUTSIDE:
       case MotionEvent.ACTION_UP: {
         int scrollY = (int) mScrollView.getTranslationY();
         mTracker.computeCurrentVelocity(1000, mMaxVelocity);
