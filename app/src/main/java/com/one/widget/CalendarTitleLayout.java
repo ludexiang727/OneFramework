@@ -3,17 +3,28 @@ package com.one.widget;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import com.one.listener.ICalendar;
 import com.test.demo.R;
+import com.test.demo.utils.TimeUtils;
 
 /**
  * Created by ludexiang on 2018/4/2.
  */
 
-public class CalendarTitleLayout extends RelativeLayout implements ICalendar {
+public class CalendarTitleLayout extends RelativeLayout implements ICalendar, OnClickListener {
   private LayoutInflater mInflater;
+  private static final long ONE_DAY = 24 * 60 * 60 * 1000;
+  private TextView mTime;
+  private TextView mBefore;
+  private TextView mNext;
+//  private IDayChoose mChoose;
+  private long mCurrentShowTime;
 
   public CalendarTitleLayout(Context context) {
     this(context, null);
@@ -27,5 +38,64 @@ public class CalendarTitleLayout extends RelativeLayout implements ICalendar {
     super(context, attrs, defStyleAttr);
     mInflater = LayoutInflater.from(context);
     mInflater.inflate(R.layout.calendar_title_bar_layout, this, true);
+  }
+
+  @Override
+  protected void onFinishInflate() {
+    super.onFinishInflate();
+    mTime = (TextView) findViewById(R.id.calendar_current_day);
+    mBefore = (TextView) findViewById(R.id.calendar_before_day);
+    mNext = (TextView) findViewById(R.id.calendar_after_day);
+//    mTime.setOnClickListener(this);
+    mBefore.setOnClickListener(this);
+    mNext.setOnClickListener(this);
+  }
+
+//  @Override
+  public void setTime(long time) {
+    mCurrentShowTime = time;
+    if (TimeUtils.getDayDiff(mCurrentShowTime) == 0) {
+      mBefore.setEnabled(false);
+    } else if (TimeUtils.getDayDiff(mCurrentShowTime) >= 4) {
+      mNext.setEnabled(false);
+    }
+    mTime.setText(TimeUtils.convertMonthMillis(getContext(), time, true, false, true));
+  }
+
+//  @Override
+//  public void setDayChoose(IDayChoose choose) {
+//    mChoose = choose;
+//  }
+
+  @Override
+  public void onClick(View v) {
+    switch (v.getId()) {
+      case R.id.calendar_current_day: {
+//        if (mChoose != null) {
+//          mChoose.currentChoose();
+//        }
+        break;
+      }
+      case R.id.calendar_before_day: {
+        mNext.setEnabled(true);
+        long time = mCurrentShowTime - ONE_DAY;
+        setTime(time);
+//        if (mChoose != null) {
+//          mChoose.before(time);
+//        }
+        break;
+      }
+      case R.id.calendar_after_day: {
+        mBefore.setEnabled(true);
+        long time = mCurrentShowTime + mCurrentShowTime % ONE_DAY;
+        String xxx = TimeUtils.convertMillisToString(getContext(), time, true);
+        Log.e("ldx", " next " + xxx);
+        setTime(time);
+//        if (mChoose != null) {
+//          mChoose.next(time);
+//        }
+        break;
+      }
+    }
   }
 }

@@ -1,6 +1,7 @@
 package com.test.demo.utils;
 
 import android.content.Context;
+import com.test.demo.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -29,8 +30,7 @@ public class TimeUtils {
   // formatType要转换的string类型的时间格式
   public static String longToString(long currentTime, String formatType) {
     Date date = longToDate(currentTime, formatType); // long类型转成Date类型
-    String strTime = dateToString(date, formatType); // date类型转成String
-    return strTime;
+    return dateToString(date, formatType); // date类型转成String
   }
 
   // string类型转换为date类型
@@ -55,8 +55,7 @@ public class TimeUtils {
   public static Date longToDate(long currentTime, String formatType) {
     Date dateOld = new Date(currentTime); // 根据long类型的毫秒数生命一个date类型的时间
     String sDateTime = dateToString(dateOld, formatType); // 把date类型的时间转换为string
-    Date date = stringToDate(sDateTime, formatType); // 把String类型转换为Date类型
-    return date;
+    return stringToDate(sDateTime, formatType); // 把String类型转换为Date类型
   }
 
   // string类型转换为long类型
@@ -69,8 +68,7 @@ public class TimeUtils {
     if (date == null) {
       return 0;
     } else {
-      long currentTime = dateToLong(date); // date类型转成long类型
-      return currentTime;
+      return dateToLong(date); // date类型转成long类型
     }
   }
 
@@ -104,13 +102,15 @@ public class TimeUtils {
     }
     switch (getDayDiff(System.currentTimeMillis(), time, forceBeijingZone)) {
       case 0:
-        dateString = /*context.getString(R.string.mocha_order_date_time_today) + */" " + sdf.format(date);
+        dateString = context.getString(R.string.day_today) + " " + sdf.format(date);
         break;
       case 1:
-//        dateString = context.getString(R.string.mocha_order_date_time_tomorrow) + " " + sdf.format(date);
+        dateString =
+            context.getString(R.string.day_tomorrow) + " " + sdf.format(date);
         break;
       case 2:
-//        dateString = context.getString(R.string.mocha_order_date_time_after_tomorrow) + " " + sdf.format(date);
+        dateString =
+            context.getString(R.string.day_today_after_tomorrow) + " " + sdf.format(date);
         break;
       default:
         Date date2 = new Date(time);
@@ -141,14 +141,13 @@ public class TimeUtils {
     }
     switch (getDayDiff(System.currentTimeMillis(), time, forceBeijingZone)) {
       case 0:
-        dateString =
-            /*context.getString(R.string.mocha_order_date_time_today) + */" " + sdf.format(date);
+        dateString = /*context.getString(R.string.day_today) + " " +*/ sdf.format(date);
         break;
       case 1:
-//        dateString = context.getString(R.string.mocha_order_date_time_tomorrow) + " " + sdf.format(date);
+        dateString = context.getString(R.string.day_tomorrow) + " " + sdf.format(date);
         break;
       case 2:
-//        dateString = context.getString(R.string.mocha_order_date_time_after_tomorrow) + " " + sdf.format(date);
+        dateString = context.getString(R.string.day_today_after_tomorrow) + " " + sdf.format(date);
         break;
       default:
         Date date2 = new Date(time);
@@ -158,6 +157,62 @@ public class TimeUtils {
         }
         dateString = sdf2.format(date2);
         break;
+    }
+    return dateString;
+  }
+
+  /**
+   * 将long型转化为 default “明天 18:00"格式
+   */
+  public static String convertMonthMillis(Context context, long time, boolean forceBeijingZone,
+      boolean format, boolean showToday) {
+    String dateString = "";
+    Date date = new Date(time);
+    SimpleDateFormat sdf = new SimpleDateFormat("M月d日");
+    if (forceBeijingZone) {
+      sdf.setTimeZone(getBeijingTimeZone());
+    }
+    switch (getDayDiff(System.currentTimeMillis(), time, forceBeijingZone)) {
+      case 0:
+        if (showToday) {
+          if (format) {
+            dateString = context.getString(R.string.day_today) + " " + sdf.format(date);
+          } else {
+            dateString = sdf.format(date)+ " " + context.getString(R.string.day_today);
+          }
+        } else {
+          dateString = " " + sdf.format(date);
+        }
+        break;
+      case 1:
+        if (format) {
+          dateString = context.getString(R.string.day_tomorrow) + " " + sdf.format(date);
+        } else {
+          dateString = sdf.format(date) /*+ " " + context.getString(R.string.mini_bus_date_time_tomorrow)*/;
+        }
+        break;
+      case 2:
+        if (format) {
+          dateString = context.getString(R.string.day_today_after_tomorrow) + " " + sdf.format(date);
+        } else {
+          dateString =
+              sdf.format(date) /*+ " " + context.getString(R.string.mini_bus_date_time_after_tomorrow)*/;
+        }
+        break;
+      default: {
+        SimpleDateFormat sdf2 ;
+        if (format) {
+          sdf2 = new SimpleDateFormat("MM月dd日 HH:mm");
+        }  else {
+          sdf2 = new SimpleDateFormat("M月d日");
+        }
+        Date date2 = new Date(time);
+        if (forceBeijingZone) {
+          sdf2.setTimeZone(getBeijingTimeZone());
+        }
+        dateString = sdf2.format(date2);
+        break;
+      }
     }
     return dateString;
   }
@@ -197,8 +252,7 @@ public class TimeUtils {
     int days1 = hr1 / DAY_HOURS;
     int days2 = hr2 / DAY_HOURS;
 
-    int dateDiff = days2 - days1;
-    return dateDiff;
+    return days2 - days1;
   }
 
   public static TimeZone getBeijingTimeZone() {

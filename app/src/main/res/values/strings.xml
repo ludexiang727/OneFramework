@@ -57,6 +57,10 @@
   <string name="cpb_default_sweep_speed">1</string>
   <string name="cpb_default_rotation_speed">1</string>
 
+  <string name="day_tomorrow">明天</string>
+  <string name="day_today">今天</string>
+  <string name="day_today_after_tomorrow">后天</string>
+
   <string name="list_footer_view_info">加载中...</string>
   <string name="mocha_empty_no_data">暂时没有订单</string>
   <string name="price_unit">元</string>
