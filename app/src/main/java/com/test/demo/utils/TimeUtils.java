@@ -96,7 +96,7 @@ public class TimeUtils {
       boolean translate) {
     String dateString = "";
     Date date = new Date(time);
-    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     if (forceBeijingZone) {
       sdf.setTimeZone(getBeijingTimeZone());
     }
@@ -116,9 +116,9 @@ public class TimeUtils {
         Date date2 = new Date(time);
         SimpleDateFormat sdf2 = null;
         if (translate) {
-          sdf2 = new SimpleDateFormat("MM.dd HH:mm");
+          sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         } else {
-          sdf2 = new SimpleDateFormat("MM月dd日 HH:mm");
+          sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         }
         if (forceBeijingZone) {
           sdf2.setTimeZone(getBeijingTimeZone());
