@@ -53,7 +53,10 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
 
   @Override
   public void onScale(float scale) {
-//    Log.e("ldx", "MenuView scale >>>> " + scale);
+    Log.e("ldx", "MenuView scale >>>> " + scale);
+//    mMenuView.setPivotX(0.5f);
+//    mMenuView.setPivotY(0.5f);
 //    mMenuView.setScaleX(scale);
+//    mMenuView.setScaleY(scale);
   }
 }

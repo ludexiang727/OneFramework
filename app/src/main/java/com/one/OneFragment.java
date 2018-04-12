@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.one.base.BaseFragment;
 import com.one.framework.api.annotation.ServiceProvider;
+import com.one.framework.app.model.BizInfo;
 import com.test.demo.R;
 
 /**
@@ -24,4 +25,5 @@ public class OneFragment extends BaseFragment {
     super.onCreateView(inflater, container, savedInstanceState);
     return inflater.inflate(R.layout.one_fragment_layout, null);
   }
+
 }

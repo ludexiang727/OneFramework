@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import com.one.framework.app.map.IMapFragment;
 import com.one.framework.app.map.MapFragment;
+import com.one.framework.app.model.BusinessContext;
+import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.app.model.TabItem;
 import com.one.framework.app.navigation.INavigator;
 import com.one.framework.app.navigation.impl.Navigator;
@@ -27,6 +29,7 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
   private IMapFragment mMapFragment;
   private ITopbarFragment mTopbarFragment;
   private INavigator mNavigator;
+  private IBusinessContext mBusinessContext;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +49,7 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
     mDelegateManager.notifyOnCreate();
 
     mTopbarFragment.setTabItems(testTabItems());
+    mBusinessContext = new BusinessContext();
   }
 
   @Override
@@ -73,7 +77,7 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
     Intent intent = new Intent();
     intent.setData(uri);
 
-    mNavigator.fillPage(mNavigator.getFragment(this, intent), R.id.content_view_container);
+    mNavigator.fillPage(mNavigator.getFragment(this, intent, mBusinessContext), R.id.content_view_container);
   }
 
   private String constructUriString(TabItem tab) {

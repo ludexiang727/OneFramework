@@ -10,6 +10,8 @@ import com.one.adapter.AbsBaseAdapter;
 import com.one.adapter.impl.CalendarAdapter;
 import com.one.base.BaseFragment;
 import com.one.framework.api.annotation.ServiceProvider;
+import com.one.framework.app.model.BizInfo;
+import com.one.framework.app.model.IBusinessContext;
 import com.one.listener.ICalendar;
 import com.one.model.CalendarModel;
 import com.one.widget.CalendarTitleLayout;
@@ -30,6 +32,7 @@ public class CalendarFragment extends BaseFragment {
   private CustomerSwipeRefreshLayout mRefreshLayout;
   private SwipeListView mSwipeListView;
   private ICalendar mCalendar;
+
 
   @Nullable
   @Override

@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.PatternMatcher;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import com.one.framework.app.model.IBusinessContext;
+import com.one.framework.app.page.IComponent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +39,7 @@ public class PageDelegateManager extends AbstractDelegateManager<Fragment> {
     }
   }
 
-  public Fragment getFragment(Context context, Intent intent) {
+  public Fragment getFragment(Context context, Intent intent, IBusinessContext businessContext) {
     ArrayList<Class<? extends Fragment>> matchedPages = new ArrayList<>();
 
     // 先进行ComponentName匹配 如果匹配OK 则直接返回
@@ -87,7 +89,7 @@ public class PageDelegateManager extends AbstractDelegateManager<Fragment> {
 
     // 根据class生成对应的Page
     Class<? extends Fragment> target = matchedPages.get(0);
-    return cls2Page(target, intent);
+    return cls2Page(target, intent, businessContext);
   }
 
   private void fullMatch(Context context, Intent intent, ArrayList<Class<? extends Fragment>> pageLists) {
@@ -115,7 +117,7 @@ public class PageDelegateManager extends AbstractDelegateManager<Fragment> {
    * @param intent
    * @return
    */
-  private Fragment cls2Page(Class<? extends Fragment> pageClass, Intent intent) {
+  private Fragment cls2Page(Class<? extends Fragment> pageClass, Intent intent, IBusinessContext businessContext) {
     Fragment page = null;
 
     if (page == null) {
@@ -134,6 +136,10 @@ public class PageDelegateManager extends AbstractDelegateManager<Fragment> {
     // 无论如何保证 page.getArguments() 不为 null
     bundle = bundle == null ? new Bundle() : bundle;
     if (page != null) {
+      if (page instanceof IComponent) {
+        IComponent component = (IComponent) page;
+        component.setBusinessContext(businessContext);
+      }
       Bundle arguments = page.getArguments();
       // 如果设置过arguments了 则append上intent的bundle
       if (arguments != null) {

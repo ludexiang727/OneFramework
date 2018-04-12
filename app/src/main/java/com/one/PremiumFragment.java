@@ -10,6 +10,7 @@ import com.one.adapter.AbsBaseAdapter;
 import com.one.adapter.impl.ListAdapter;
 import com.one.base.BaseFragment;
 import com.one.framework.api.annotation.ServiceProvider;
+import com.one.framework.app.model.BizInfo;
 import com.one.model.ListModel;
 import com.one.widget.PullListView;
 import com.one.widget.PullScrollRelativeLayout;
