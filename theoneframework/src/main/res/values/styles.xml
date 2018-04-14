@@ -1,5 +1,0 @@
-<resources>
-  <style name="OneFrameworkTheme">
-    <item name="android:background">@color/app_background</item>
-  </style>
-</resources>

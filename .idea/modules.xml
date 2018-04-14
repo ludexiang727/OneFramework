@@ -7,8 +7,6 @@
       <module fileurl="file://$PROJECT_DIR$/config/config.iml" filepath="$PROJECT_DIR$/config/config.iml" />
       <module fileurl="file://$PROJECT_DIR$/evaluate/evaluate.iml" filepath="$PROJECT_DIR$/evaluate/evaluate.iml" />
       <module fileurl="file://$PROJECT_DIR$/theoneframework/oneframework.iml" filepath="$PROJECT_DIR$/theoneframework/oneframework.iml" />
-      <module fileurl="file://$PROJECT_DIR$/onemap/onemap.iml" filepath="$PROJECT_DIR$/onemap/onemap.iml" />
-      <module fileurl="file://$PROJECT_DIR$/theoneframework/theoneframework.iml" filepath="$PROJECT_DIR$/theoneframework/theoneframework.iml" />
       <module fileurl="file://$PROJECT_DIR$/widget/widget.iml" filepath="$PROJECT_DIR$/widget/widget.iml" />
     </modules>
   </component>

@@ -1,4 +1,6 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.one.widget.PullScrollRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/pull_scroll_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
@@ -8,28 +10,26 @@
     android:layout_height="45dp"
     android:layout_alignParentTop="true"/>
 
-  <com.one.widget.CustomerSwipeRefreshLayout
-    android:id="@+id/refresh_layout"
+
+  <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@id/calendar_title_layout">
-    <LinearLayout
+    android:layout_below="@id/calendar_title_layout"
+    android:orientation="vertical">
+    <com.one.widget.PullListView
+      android:id="@android:id/list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:orientation="vertical">
-      <com.one.widget.SwipeListView
-        android:id="@android:id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:cacheColorHint="@android:color/transparent"
-        android:listSelector="@android:color/transparent"
-        android:background="@android:color/white"/>
+      android:background="@android:color/white"
+      android:cacheColorHint="@android:color/transparent"
+      android:listSelector="@android:color/transparent"
+      app:scroll_view="header"
+      app:scroll_max_height="50dp"/>
 
-      <com.one.widget.EmptyView
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"/>
-    </LinearLayout>
-  </com.one.widget.CustomerSwipeRefreshLayout>
-</RelativeLayout>
+    <com.one.widget.EmptyView
+      android:id="@+id/empty_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="center"/>
+  </LinearLayout>
+</com.one.widget.PullScrollRelativeLayout>

@@ -25,6 +25,15 @@ public class PullScrollView extends ScrollView implements IPullView {
   }
 
   @Override
+  public boolean isScrollBottom() {
+    View childView = getChildAt(0);
+    if (childView != null) {
+      return childView.getMeasuredHeight() <= getScrollingY() + getHeaderScrollHeight();
+    }
+    return false;
+  }
+
+  @Override
   public int getHeaderScrollHeight() {
     return 0;
   }

@@ -25,7 +25,8 @@ import com.test.demo.R;
  */
 
 @TargetApi(VERSION_CODES.M)
-public class PullListView extends ListView implements IMovePublishListener, IPullView, OnScrollListener {
+public class PullListView extends ListView implements IMovePublishListener, IPullView,
+    OnScrollListener {
 
   private SparseArray<ItemRecord> recordSp = new SparseArray(0);
   private int mCurrentFirstVisibleItem = 0;
@@ -83,6 +84,7 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
   }
 
   class ItemRecord {
+
     int height = 0;
     int top = 0;
   }
@@ -115,9 +117,18 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
   }
 
   @Override
+  public boolean isScrollBottom() {
+    if (getLastVisiblePosition() == (getCount() - 1)) {
+      final View bottomChildView = getChildAt(getLastVisiblePosition() - getFirstVisiblePosition());
+      return getHeight() >= bottomChildView.getBottom();
+    }
+    return false;
+  }
+
+  @Override
   public void onMove(float offsetX, float offsetY) {
 //    Log.e("ldx", "offsetX " + offsetX + " offsetY " + offsetY);
-    if (mScroller == 0) {
+    if (mScroller == 0 && !isScrollBottom()) {
       mHeaderView.onMove(offsetX, offsetY);
     } else {
       selfScrollerMove(offsetY);
@@ -126,7 +137,7 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
 
   @Override
   public void onUp(boolean bottom2Up, boolean isFling) {
-    if (mScroller == 0) {
+    if (mScroller == 0 && !isScrollBottom()) { // 如果是滚到到底部了则滚动listview
       mHeaderView.onUp(bottom2Up, isFling);
     } else {
       selfScrollerUp(bottom2Up, isFling);

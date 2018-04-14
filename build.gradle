@@ -29,6 +29,8 @@ buildscript {
         jcenter()
         mavenCentral()
         maven { url 'https://maven.google.com' }
+        maven { url "https://github.com/artifac/OneFramework/raw/master" }
+        maven { url "https://github.com/artifac/onemap/raw/master" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0'
@@ -42,6 +44,8 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url 'https://maven.google.com' }
+        maven { url "https://github.com/artifac/OneFramework/raw/master"}
+        maven { url "https://github.com/artifac/onemap/raw/master" }
     }
 }
 

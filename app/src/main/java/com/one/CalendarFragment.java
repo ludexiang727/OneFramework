@@ -16,6 +16,8 @@ import com.one.listener.ICalendar;
 import com.one.model.CalendarModel;
 import com.one.widget.CalendarTitleLayout;
 import com.one.widget.CustomerSwipeRefreshLayout;
+import com.one.widget.PullListView;
+import com.one.widget.PullScrollRelativeLayout;
 import com.one.widget.SwipeListView;
 import com.test.demo.R;
 import com.test.demo.utils.TimeUtils;
@@ -28,9 +30,9 @@ import java.util.List;
 @ServiceProvider(value = Fragment.class, alias = "calendar")
 public class CalendarFragment extends BaseFragment {
 
+  private PullScrollRelativeLayout mPullLayout;
   private AbsBaseAdapter mAdapter;
-  private CustomerSwipeRefreshLayout mRefreshLayout;
-  private SwipeListView mSwipeListView;
+  private PullListView mSwipeListView;
   private ICalendar mCalendar;
 
 
@@ -46,12 +48,12 @@ public class CalendarFragment extends BaseFragment {
 
 
   private void initView(View view) {
-    mRefreshLayout = (CustomerSwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
+    mPullLayout = (PullScrollRelativeLayout) view.findViewById(R.id.pull_scroll_layout);
     mCalendar = (CalendarTitleLayout) view.findViewById(R.id.calendar_title_layout);
-    mSwipeListView = (SwipeListView) view.findViewById(android.R.id.list);
+    mSwipeListView = (PullListView) view.findViewById(android.R.id.list);
 
-
-    mRefreshLayout.setScrollView(mSwipeListView);
+    mPullLayout.setScrollView(mSwipeListView);
+    mPullLayout.setMoveListener(mSwipeListView);
     mAdapter = new CalendarAdapter(getActivity());
     mSwipeListView.setAdapter(mAdapter);
 

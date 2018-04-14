@@ -109,7 +109,9 @@ public class PullScrollRelativeLayout extends RelativeLayout {
         final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
         final int curX = (int) MotionEventCompat.getX(ev, pointerIndex);
         final int curY = (int) MotionEventCompat.getY(ev, pointerIndex);
-        isScrolling = curY - mLastDownY >= mMinScroll || mScrollView.getTranslationY() > 0;
+        boolean isScrollTop = (curY - mLastDownY >= mMinScroll && mPullView.getScrollingY() == 0) || mScrollView.getTranslationY() > 0;
+        boolean isScrollBottom = (mLastDownY - curY >= mMinScroll && mPullView.isScrollBottom());
+        isScrolling = isScrollTop || isScrollBottom;
         if (checkScrollView()) {
           if (canScroll()) {
             if (mScrollView.getTranslationY() >= UIUtils.getScreenHeight(mContext) / 2
@@ -163,7 +165,7 @@ public class PullScrollRelativeLayout extends RelativeLayout {
    * 判断是否可滚动
    */
   private boolean canScroll() {
-    return isScrolling && mPullView.getScrollingY() == 0;
+    return isScrolling && (mPullView.getScrollingY() == 0 || mPullView.isScrollBottom());
   }
 
   private void addVelocityTracker(MotionEvent event) {
