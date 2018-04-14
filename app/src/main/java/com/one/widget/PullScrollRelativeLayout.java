@@ -114,7 +114,7 @@ public class PullScrollRelativeLayout extends RelativeLayout {
         isScrolling = isScrollTop || isScrollBottom;
         if (checkScrollView()) {
           if (canScroll()) {
-            if (mScrollView.getTranslationY() >= UIUtils.getScreenHeight(mContext) / 2
+            if (Math.abs(mScrollView.getTranslationY()) >= UIUtils.getScreenHeight(mContext) / 2
                 || mPullView.getHeaderScrollHeight() >= UIUtils.getScreenHeight(mContext) / 2) {
               RATIO += .085f;
             }
