@@ -15,5 +15,6 @@ public interface IPullView {
   int getScrollingY();
   int getHeaderScrollHeight();
   boolean isScrollBottom();
+  boolean isHeaderNeedScroll();
   View getView();
 }

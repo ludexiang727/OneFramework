@@ -167,4 +167,9 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
     });
     translate.start();
   }
+
+  @Override
+  public boolean isHeaderNeedScroll() {
+    return mHeaderView.isNeedScroll();
+  }
 }

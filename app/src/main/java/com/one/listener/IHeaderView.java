@@ -11,5 +11,6 @@ public interface IHeaderView {
   void onUp(boolean bottom2Up, boolean isFling);
   int getHeaderHeight();
   int getScrollHeaderHeight();
+  boolean isNeedScroll();
   View getView();
 }

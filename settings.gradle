@@ -1,1 +1,7 @@
-include ':app', ':evaluate', ':widget', ':config'
+include ':app', ':evaluate', ':widget', ':config', ':onemap', ':oneframework'
+
+def map = project(':onemap')
+map.projectDir = new File('../OneMap')
+
+def oneFramework = project(':oneframework')
+oneFramework.projectDir = new File('../TheOne')

@@ -24,10 +24,6 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import com.test.demo.R;
 
-/**
- * Created by mobike on 2018/1/3.
- */
-
 public class GiftView extends android.support.v7.widget.AppCompatTextView implements View.OnClickListener {
 
   private LinearGradient mLinearGradient;

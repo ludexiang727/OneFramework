@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 /**
- * Created by mobike on 2017/11/17.
+ * Created by ludexiang on 2017/11/17.
  */
 
 public class UIThreadHandler {

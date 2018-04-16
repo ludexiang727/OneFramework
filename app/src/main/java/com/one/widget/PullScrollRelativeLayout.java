@@ -109,8 +109,8 @@ public class PullScrollRelativeLayout extends RelativeLayout {
         final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
         final int curX = (int) MotionEventCompat.getX(ev, pointerIndex);
         final int curY = (int) MotionEventCompat.getY(ev, pointerIndex);
-        boolean isScrollTop = (curY - mLastDownY >= mMinScroll && mPullView.getScrollingY() == 0) || mScrollView.getTranslationY() > 0;
-        boolean isScrollBottom = (mLastDownY - curY >= mMinScroll && mPullView.isScrollBottom());
+        boolean isScrollTop = (curY - mLastDownY >= mMinScroll && mPullView.getScrollingY() == 0) || (mScrollView.getTranslationY() > 0 && !mPullView.isScrollBottom()) || mPullView.isHeaderNeedScroll();
+        boolean isScrollBottom = (mLastDownY - curY >= mMinScroll && mPullView.isScrollBottom() && mScrollView.getTranslationY() <= 0);
         isScrolling = isScrollTop || isScrollBottom;
         if (checkScrollView()) {
           if (canScroll()) {
@@ -124,6 +124,9 @@ public class PullScrollRelativeLayout extends RelativeLayout {
             mActionDownX = curX;
             mActionDownY = curY;
             return true;
+          } else {
+            // 不是顶部 | 底部的时候设置mScrollView的Y轴方向滚动为0
+            mScrollView.setTranslationY(0);
           }
         }
         break;

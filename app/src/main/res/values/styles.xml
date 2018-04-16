@@ -27,7 +27,7 @@
     <item name="android:windowExitAnimation">@anim/pop_window_exit_anim</item>
   </style>
 
-  <style name="Theme.Mobike.LightBase" parent="@style/Theme.AppCompat.Light">
+  <style name="Theme.Main.LightBase" parent="@style/Theme.AppCompat.Light">
     <item name="android:windowNoTitle">true</item>
     <item name="windowNoTitle">true</item>
     <item name="android:windowActionBar">false</item>
@@ -36,7 +36,7 @@
     <item name="android:statusBarColor" tools:targetApi="lollipop">#191d21</item>
   </style>
 
-  <style name="Theme.Mocha.Light" parent="@style/Theme.Mobike.LightBase">
+  <style name="Theme.Mocha.Light" parent="@style/Theme.Main.LightBase">
     <item name="android:windowNoTitle">true</item>
     <item name="windowNoTitle">true</item>
     <item name="android:windowActionBar">false</item>

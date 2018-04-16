@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Created by mobike on 2017/12/21.
+ * Created by ldx on 2017/12/21.
  */
 
 public class TimeUtils {

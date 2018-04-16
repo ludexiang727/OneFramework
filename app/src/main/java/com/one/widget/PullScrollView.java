@@ -47,4 +47,9 @@ public class PullScrollView extends ScrollView implements IPullView {
   public View getView() {
     return this;
   }
+
+  @Override
+  public boolean isHeaderNeedScroll() {
+    return false;
+  }
 }

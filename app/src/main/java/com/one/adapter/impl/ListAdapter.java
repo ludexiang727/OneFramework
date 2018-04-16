@@ -1,11 +1,14 @@
 package com.one.adapter.impl;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import com.one.adapter.AbsBaseAdapter;
 import com.one.adapter.impl.ListAdapter.ListHolder;
+import com.one.framework.log.Logger;
 import com.one.model.ListModel;
 import com.test.demo.R;
 
@@ -29,6 +32,12 @@ public class ListAdapter extends AbsBaseAdapter<ListModel, ListHolder> {
   protected void initView(View view, ListHolder holder) {
     holder.name = (TextView) view.findViewById(R.id.list_simple_name);
     holder.buy = (Button) view.findViewById(R.id.list_simple_buy);
+    holder.buy.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Logger.e("ldx", "This is test");
+      }
+    });
   }
 
   @Override

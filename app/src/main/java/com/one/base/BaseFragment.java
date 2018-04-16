@@ -8,7 +8,7 @@ import com.one.framework.app.model.IBusinessContext;
  */
 
 public abstract class BaseFragment extends BizEntranceFragment {
-  private IBusinessContext mBusContext;
+  protected IBusinessContext mBusContext;
 
   @Override
   public void setBusinessContext(IBusinessContext businessContext) {

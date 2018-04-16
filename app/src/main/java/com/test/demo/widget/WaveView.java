@@ -15,10 +15,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
-/**
- * Created by mobike on 2018/1/3.
- */
-
 public class WaveView extends View implements View.OnClickListener {
 
   private Paint mPaint;

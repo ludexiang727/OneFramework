@@ -14,18 +14,18 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import com.one.framework.MainActivity;
+import com.one.framework.log.Logger;
 import com.one.map.location.LocationProvider;
 import com.one.map.location.LocationProvider.OnLocationChangedListener;
 import com.one.map.model.Address;
+import com.one.map.view.IMapView;
+import com.one.map.view.IMapView.MapType;
 import com.test.demo.R;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
 
-/**
- * Created by mobike on 2017/11/28.
- */
 @RuntimePermissions
 public class SplashActivity extends AppCompatActivity {
 
@@ -67,8 +67,9 @@ public class SplashActivity extends AppCompatActivity {
       Manifest.permission.ACCESS_FINE_LOCATION})
   public void startLocation() {
     LocationProvider.getInstance().addLocationChangeListener(locationChangedListener);
-    int errNo = LocationProvider.getInstance().start();
-//    print("register LocationListener " + errNo);
+    LocationProvider provider = LocationProvider.getInstance();
+    provider.buildLocation(this, IMapView.TENCENT);
+    provider.start();
   }
 
   @Override
@@ -86,13 +87,6 @@ public class SplashActivity extends AppCompatActivity {
       isNeedResumePermission = false;
       SplashActivityPermissionsDispatcher.startLocationWithPermissionCheck(this);
     }
-
-    new Handler().postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        finishActivity();
-      }
-    }, 5000);
   }
 
   private void showHintDialog(int message) {

@@ -21,10 +21,6 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by mobike on 2017/12/26.
- */
-
 public class UIUtils {
 
   private static long sLastClickTime = 0;

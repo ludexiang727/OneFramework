@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by mobike on 2017/11/17.
+ * Created by ludexiang on 2017/11/17.
  */
 
 public abstract class AbsBaseAdapter<T extends IAdapterBean, H> extends BaseAdapter {

@@ -12,10 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.test.demo.R;
 
-/**
- * Created by mobike on 2017/12/5.
- */
-
 public class SwipeListView extends ListView implements AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener  {
   
   private View mFooterView;

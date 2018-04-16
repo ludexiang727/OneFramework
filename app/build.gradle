@@ -24,10 +24,6 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     compile("com.github.hotchemi:permissionsdispatcher:3.1.0") {
         // if you don't use android.app.Fragment you can exclude support for them
@@ -36,7 +32,11 @@ dependencies {
     kapt "com.github.hotchemi:permissionsdispatcher-processor:3.1.0"
     compile project(':evaluate')
 
-    compile "com.one.framework:the-one-framework:1.0.1"
-    // 地图
-    implementation 'com.one.map:the-one-map:1.0.5'
+//    compile "com.one.framework:the-one-framework:1.0.1"
+//    // 地图
+//    implementation 'com.one.map:the-one-map:1.0.5'
+
+    // 此处先源码依赖
+    compile project(':onemap')
+    compile project(':oneframework')
 }

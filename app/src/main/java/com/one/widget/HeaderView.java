@@ -82,6 +82,12 @@ public class HeaderView extends FrameLayout implements IHeaderView {
   }
 
   @Override
+  public boolean isNeedScroll() {
+    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mParentLayout.getLayoutParams();
+    return params.height > mViewHeight;
+  }
+
+  @Override
   public View getView() {
     return this;
   }

@@ -25,7 +25,7 @@ import com.test.demo.widget.GiftView;
 import com.test.demo.widget.WaveView;
 
 /**
- * Created by mobike on 2017/11/23.
+ * Created by ludexiang on 2017/11/23.
  */
 
 public class TranslateActivity extends AppCompatActivity {
