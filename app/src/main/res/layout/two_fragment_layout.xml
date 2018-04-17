@@ -1,4 +1,4 @@
-<com.one.widget.PullScrollRelativeLayout
+<com.one.framework.app.widget.PullScrollRelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:id="@+id/move_parent_layout"
@@ -6,7 +6,7 @@
   android:layout_height="match_parent"
   android:background="@color/app_background">
 
-  <com.one.widget.PullListView
+  <com.one.framework.app.widget.PullListView
     android:id="@android:id/list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,4 +16,4 @@
     app:scroll_view="header"
     app:scroll_max_height="50dp"/>
 
-</com.one.widget.PullScrollRelativeLayout>
+</com.one.framework.app.widget.PullScrollRelativeLayout>

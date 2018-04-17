@@ -10,15 +10,12 @@ import com.one.adapter.AbsBaseAdapter;
 import com.one.adapter.impl.CalendarAdapter;
 import com.one.base.BaseFragment;
 import com.one.framework.api.annotation.ServiceProvider;
-import com.one.framework.app.model.BizInfo;
-import com.one.framework.app.model.IBusinessContext;
+import com.one.framework.app.widget.PullListView;
 import com.one.listener.ICalendar;
+import com.one.map.model.BestViewModel;
 import com.one.model.CalendarModel;
 import com.one.widget.CalendarTitleLayout;
-import com.one.widget.CustomerSwipeRefreshLayout;
-import com.one.widget.PullListView;
-import com.one.widget.PullScrollRelativeLayout;
-import com.one.widget.SwipeListView;
+import com.one.framework.app.widget.PullScrollRelativeLayout;
 import com.test.demo.R;
 import com.test.demo.utils.TimeUtils;
 import java.util.ArrayList;
@@ -38,9 +35,8 @@ public class CalendarFragment extends BaseFragment {
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+  public View onCreateViewImpl(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    super.onCreateView(inflater, container, savedInstanceState);
     View view = inflater.inflate(R.layout.panther_calendar_layout, null);
     initView(view);
     return view;
@@ -58,6 +54,11 @@ public class CalendarFragment extends BaseFragment {
     mSwipeListView.setAdapter(mAdapter);
 
     mAdapter.setListData(testDemo());
+  }
+
+  @Override
+  protected void boundsLatlng(BestViewModel bestView) {
+
   }
 
   /// testDemo

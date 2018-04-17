@@ -5,8 +5,8 @@ import android.view.View;
 import android.widget.TextView;
 import com.one.adapter.AbsBaseAdapter;
 import com.one.adapter.impl.CalendarAdapter.CalendarHolder;
+import com.one.framework.app.widget.TripButton;
 import com.one.model.CalendarModel;
-import com.one.widget.TripButton;
 import com.test.demo.R;
 
 /**

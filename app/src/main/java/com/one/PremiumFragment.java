@@ -10,10 +10,10 @@ import com.one.adapter.AbsBaseAdapter;
 import com.one.adapter.impl.ListAdapter;
 import com.one.base.BaseFragment;
 import com.one.framework.api.annotation.ServiceProvider;
-import com.one.framework.app.model.BizInfo;
+import com.one.framework.app.widget.PullListView;
+import com.one.map.model.BestViewModel;
 import com.one.model.ListModel;
-import com.one.widget.PullListView;
-import com.one.widget.PullScrollRelativeLayout;
+import com.one.framework.app.widget.PullScrollRelativeLayout;
 import com.test.demo.R;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +30,8 @@ public class PremiumFragment extends BaseFragment {
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+  public View onCreateViewImpl(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    super.onCreateView(inflater, container, savedInstanceState);
     View view = inflater.inflate(R.layout.two_fragment_layout, null);
     initView(view);
     return view;
@@ -48,6 +47,11 @@ public class PremiumFragment extends BaseFragment {
     mListView.setAdapter(mAdapter);
 
     mAdapter.setListData(testDemo());
+  }
+
+  @Override
+  protected void boundsLatlng(BestViewModel bestView) {
+
   }
 
   //////////////// test demo
