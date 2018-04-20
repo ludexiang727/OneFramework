@@ -8,14 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.one.base.BaseFragment;
 import com.one.framework.api.annotation.ServiceProvider;
-import com.one.framework.app.model.BizInfo;
-import com.one.framework.log.Logger;
 import com.one.map.location.LocationProvider;
 import com.one.map.map.BitmapDescriptorFactory;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.BestViewModel;
 import com.one.map.model.LatLng;
-import com.one.map.model.MapStatusOperation;
 import com.one.provider.DataProvider;
 import com.test.demo.R;
 import java.util.ArrayList;
@@ -32,7 +29,7 @@ public class FlashFragment extends BaseFragment {
   @Override
   public View onCreateViewImpl(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.one_fragment_layout, null);
+    View view = inflater.inflate(R.layout.one_fragment_layout, container, true);
     mBusContext.getMap().displayMyLocation();
     return view;
   }

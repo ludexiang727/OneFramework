@@ -2,12 +2,15 @@ package com.one.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import com.one.framework.app.base.BizEntranceFragment;
 import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.log.Logger;
@@ -25,23 +28,17 @@ import com.test.demo.R;
 
 public abstract class BaseFragment extends BizEntranceFragment implements IMarkerClickCallback,
     IHeightChangeListener {
-
-  protected IBusinessContext mBusContext;
   /**
    * 之所以加入Base Parent 为了计算高度已实现地图最佳view
    */
   private ContainerRelativeLayout mTopContainer;
   private ContainerRelativeLayout mBottomContainer;
+  private boolean isAttached = true;
   /**
    * 缓存top bottom container width and height
    */
   protected int[] mTopRect = new int[2];
   protected int[] mBottomRect = new int[2];
-
-  @Override
-  public void setBusinessContext(IBusinessContext businessContext) {
-    mBusContext = businessContext;
-  }
 
   /**
    * 通过此方法创建的View会attach to bottom container
@@ -50,7 +47,7 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
    * @param savedInstanceState
    * @return
    */
-  protected abstract View onCreateViewImpl(LayoutInflater inflater, @Nullable ViewGroup container,
+  protected abstract View onCreateViewImpl(LayoutInflater inflater, ViewGroup container,
       @Nullable Bundle savedInstanceState);
 
   /**
@@ -67,12 +64,16 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
     View root = inflater.inflate(R.layout.base_fragment_layout, null);
     mTopContainer = root.findViewById(R.id.base_top_container);
     mBottomContainer = root.findViewById(R.id.base_bottom_container);
-
-    View view = onCreateViewImpl(inflater, null, savedInstanceState);
+    View view = onCreateViewImpl(inflater, mBottomContainer, savedInstanceState);
     if (mBusContext == null) {
       parseBundle();
     }
-    mBottomContainer.addView(view, 0);
+    if (mBottomContainer.getChildCount() <= 0) {
+      isAttached = false;
+      RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+      mBottomContainer.addView(view, 0, params);
+    }
+
     mTopContainer.setHeightListener(this);
     mBottomContainer.setHeightListener(this);
     mBusContext.getMap().setIMarkerClickCallback(this);
@@ -89,13 +90,12 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    Logger.e("ldx", "BaseMapFragment onViewCreated>>>>>>");
+
   }
 
   @Override
   public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
-    Logger.e("ldx", "BaseMapFragment onActivityCreated>>>>>>");
   }
 
   @Override
@@ -112,6 +112,7 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
    * 刷新最佳view
    */
   private void toggleMapView() {
+    Logger.e("ldx", "TopHeight " + mTopRect[1] + " BottomHeight " + mBottomRect[1]);
     BestViewModel bestView = new BestViewModel();
     bestView.padding.left += 0;
     bestView.padding.top += mTopRect[1];
@@ -125,28 +126,30 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
    * @param layout
    */
   protected void attachToTopContainer(View layout) {
-    mTopContainer.addView(layout, 0);
+    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+    mTopContainer.addView(layout, 0, params);
   }
 
   /**
    * 重新测量子view高度
    */
   private void reCalculateHeight() {
+    Logger.e("ldx", "BaseFragment reCalculateHeight>>>>>>>");
     mTopContainer.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
       @Override
       public void onGlobalLayout() {
         if (mTopContainer.getChildCount() > 0) {
-          View view = mTopContainer.getChildAt(0);
           int width = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
           int height = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-          view.measure(width, height);
-          mTopRect[0] = view.getMeasuredWidth();
-          mTopRect[1] += view.getMeasuredHeight();
-          toggleMapView();
+          mTopContainer.measure(width, height);
+          mTopRect[0] = mTopContainer.getMeasuredWidth();
+          mTopRect[1] = mBusContext.getTopbar().getTopbarHeight() + mTopContainer.getMeasuredHeight();
         } else {
           mTopRect[0] = UIUtils.getScreenWidth(getActivity());
           mTopRect[1] = mBusContext.getTopbar().getTopbarHeight();
         }
+
+        toggleMapView();
         mTopContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
       }
     });
@@ -154,15 +157,19 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
     mBottomContainer.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
       @Override
       public void onGlobalLayout() {
-        if (mBottomContainer.getChildCount() > 0) {
+        int width = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        int height = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        if (isAttached) {
+          mBottomContainer.measure(width, height);
+          mBottomRect[0] = mBottomContainer.getMeasuredWidth();
+          mBottomRect[1] = mBottomContainer.getMeasuredHeight();
+        } else {
           View view = mBottomContainer.getChildAt(0);
-          int width = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-          int height = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
           view.measure(width, height);
           mBottomRect[0] = view.getMeasuredWidth();
           mBottomRect[1] = view.getMeasuredHeight();
-          toggleMapView();
         }
+        toggleMapView();
         mBottomContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
       }
     });

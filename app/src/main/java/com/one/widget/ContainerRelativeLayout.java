@@ -22,6 +22,9 @@ public class ContainerRelativeLayout extends RelativeLayout {
 
   public ContainerRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+    setClipChildren(false);
+    setLayoutParams(params);
   }
 
   public void setHeightListener(IHeightChangeListener listener) {

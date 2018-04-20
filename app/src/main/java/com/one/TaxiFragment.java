@@ -21,7 +21,7 @@ public class TaxiFragment extends BaseFragment {
   @Override
   protected View onCreateViewImpl(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.taxi_main_layout, null);
+    View view = inflater.inflate(R.layout.taxi_main_layout, container, true);
     return view;
   }
 
