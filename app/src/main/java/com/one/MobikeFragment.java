@@ -38,9 +38,10 @@ public class MobikeFragment extends BaseFragment {
     return view;
   }
 
+
   @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
+  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
     addMarkers();
   }
 
