@@ -19,6 +19,7 @@ import com.one.framework.utils.UIUtils;
 import com.one.map.IMap.IMarkerClickCallback;
 import com.one.map.map.element.IMarker;
 import com.one.map.model.BestViewModel;
+import com.one.widget.ContainerRelativeLayout;
 import com.test.demo.R;
 
 /**
@@ -30,8 +31,8 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
   /**
    * 之所以加入Base Parent 为了计算高度已实现地图最佳view
    */
-  private RelativeLayout mTopContainer;
-  private RelativeLayout mBottomContainer;
+  private ContainerRelativeLayout mTopContainer;
+  private ContainerRelativeLayout mBottomContainer;
   private boolean isAttached = true;
   private static final int REFRESH_MAP = 0X101;
   /**
@@ -71,10 +72,23 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
     }
     if (mBottomContainer.getChildCount() <= 0) {
       isAttached = false;
-      RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-          LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+      RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
       mBottomContainer.addView(view, 0, params);
     }
+    mBusContext.getMap().setIMarkerClickCallback(this);
+    return root;
+  }
+
+  private void parseBundle() {
+    Bundle bundle = getArguments();
+    if (bundle != null) {
+      mBusContext = (IBusinessContext) bundle.getSerializable("BusinessContext");
+    }
+  }
+
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
     // 开启子线程去测量高度
     final HandlerThread thread = new HandlerThread("MAP_REFRESH");
     thread.start();
@@ -92,15 +106,6 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
       }
     };
     handler.sendEmptyMessageDelayed(REFRESH_MAP, 100);
-    mBusContext.getMap().setIMarkerClickCallback(this);
-    return root;
-  }
-
-  private void parseBundle() {
-    Bundle bundle = getArguments();
-    if (bundle != null) {
-      mBusContext = (IBusinessContext) bundle.getSerializable("BusinessContext");
-    }
   }
 
   @Override
@@ -112,7 +117,6 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
    * 刷新最佳view
    */
   private void toggleMapView() {
-    Logger.e("ldx", "TopHeight " + mTopRect[1] + " BottomHeight " + mBottomRect[1]);
     BestViewModel bestView = new BestViewModel();
     bestView.padding.left += 0;
     bestView.padding.top += mTopRect[1];
@@ -138,6 +142,7 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
   private void reCalculateHeight() {
     int width = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
     int height = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+
     if (mTopContainer.getChildCount() > 0) {
       mTopContainer.measure(width, height);
       mTopRect[0] = mTopContainer.getMeasuredWidth();
@@ -149,15 +154,16 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
 
     if (isAttached) {
       mBottomContainer.measure(width, height);
-      mBottomRect[0] = mBottomContainer.getMeasuredWidth();
-      mBottomRect[1] = mBottomContainer.getMeasuredHeight();
+      mBottomRect[0] = mBottomContainer.getWidth(); // mBottomContainer 宽度 由于是match_parent 故获得的宽度为屏幕宽度
+      mBottomRect[1] = mBottomContainer.getMeasuredHeight(); // 包含View margin
     } else {
       View view = mBottomContainer.getChildAt(0);
       view.measure(width, height);
-      mBottomRect[0] = view.getMeasuredWidth();
-      mBottomRect[1] = view.getMeasuredHeight();
+      mBottomRect[0] = view.getWidth();
+      mBottomRect[1] = view.getHeight();
     }
     toggleMapView();
+    Logger.e("ldx", "width " + mBottomRect[0] + " height " + mBottomRect[1]);
   }
 
 

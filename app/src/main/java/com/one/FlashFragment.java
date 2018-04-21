@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import com.one.base.BaseFragment;
 import com.one.framework.api.annotation.ServiceProvider;
@@ -31,6 +32,12 @@ public class FlashFragment extends BaseFragment {
       @Nullable Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.one_fragment_layout, container, true);
     mBusContext.getMap().displayMyLocation();
+    view.findViewById(R.id.test1).setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+      }
+    });
     return view;
   }
 

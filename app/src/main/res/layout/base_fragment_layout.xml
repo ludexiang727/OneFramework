@@ -2,15 +2,15 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <RelativeLayout
+  <com.one.widget.ContainerRelativeLayout
     android:id="@id/base_top_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
     android:visibility="gone"/>
 
-  <RelativeLayout
-    android:id="@+id/base_bottom_container"
+  <com.one.widget.ContainerRelativeLayout
+    android:id="@id/base_bottom_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerInParent="true"
