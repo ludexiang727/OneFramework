@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.one.adapter.impl.CalendarAdapter;
+import com.one.adapter.CalendarAdapter;
 import com.one.base.BaseFragment;
 import com.one.framework.adapter.AbsBaseAdapter;
 import com.one.framework.api.annotation.ServiceProvider;

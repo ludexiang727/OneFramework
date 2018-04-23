@@ -1,11 +1,11 @@
-package com.one.adapter.impl;
+package com.one.adapter;
 
 import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-import com.one.adapter.impl.ListAdapter.ListHolder;
+import com.one.adapter.ListAdapter.ListHolder;
 import com.one.framework.adapter.AbsBaseAdapter;
 import com.one.framework.log.Logger;
 import com.one.model.ListModel;

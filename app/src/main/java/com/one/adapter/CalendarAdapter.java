@@ -1,11 +1,10 @@
-package com.one.adapter.impl;
+package com.one.adapter;
 
 import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
-import com.one.adapter.impl.CalendarAdapter.CalendarHolder;
+import com.one.adapter.CalendarAdapter.CalendarHolder;
 import com.one.framework.adapter.AbsBaseAdapter;
-import com.one.framework.app.widget.TripButton;
 import com.one.model.CalendarModel;
 import com.test.demo.R;
 
@@ -52,6 +51,6 @@ public class CalendarAdapter extends AbsBaseAdapter<CalendarModel, CalendarHolde
     TextView endTime;
     TextView endAdr;
     TextView walkNav;
-    TripButton buy;
+//    TripButton buy;
   }
 }

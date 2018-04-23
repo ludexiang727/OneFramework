@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.one.adapter.impl.ListAdapter;
+import com.one.adapter.ListAdapter;
 import com.one.base.BaseFragment;
 import com.one.framework.adapter.AbsBaseAdapter;
 import com.one.framework.api.annotation.ServiceProvider;
@@ -57,7 +57,7 @@ public class PremiumFragment extends BaseFragment {
   //////////////// test demo
   private List<ListModel> testDemo() {
     List<ListModel> datas = new ArrayList<ListModel>();
-    for (int i = 0; i< 5;i++) {
+    for (int i = 0; i< 15;i++) {
       ListModel model = new ListModel();
       model.title = "This is test " + i;
       datas.add(model);

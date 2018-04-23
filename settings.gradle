@@ -1,4 +1,4 @@
-include ':app', ':evaluate', ':widget', ':config', ':onemap', ':oneframework'
+include ':app', /*':evaluate',*/ ':widget', ':config', ':onemap', ':oneframework'
 
 def map = project(':onemap')
 map.projectDir = new File('../OneMap')
