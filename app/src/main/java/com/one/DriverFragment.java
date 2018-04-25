@@ -22,14 +22,14 @@ import java.util.List;
  * Created by ludexiang on 2018/4/16.
  */
 
-@ServiceProvider(value = Fragment.class, alias = "mobike")
-public class MobikeFragment extends BaseFragment {
+@ServiceProvider(value = Fragment.class, alias = "driver")
+public class DriverFragment extends BaseFragment {
 
   @Override
   protected View onCreateViewImpl(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.mobike_main_layout, container, true);
-    view.findViewById(R.id.mobike_start_scan_code).setOnClickListener(new OnClickListener() {
+    View view = inflater.inflate(R.layout.driver_main_layout, container, true);
+    view.findViewById(R.id.driver_start_scan_code).setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         forward(FirstTestFragment.class);
@@ -58,7 +58,7 @@ public class MobikeFragment extends BaseFragment {
       option.position = new LatLng(39.9481495509, 116.4676630497);
       option.isClickable = true;
       option.descriptor = BitmapDescriptorFactory
-          .fromResources(getResources(), R.drawable.mobike_home_marker_classic);
+          .fromResources(getResources(), R.drawable.bike_home_marker_classic);
       options.add(option);
     }
     mBusContext.getMap().addMarkers(options);

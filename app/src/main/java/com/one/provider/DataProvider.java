@@ -33,7 +33,7 @@ public final class DataProvider {
   /**
    * 获取数据
    *
-   * @param businessKey 业务名称如 taxi、mobike 等
+   * @param businessKey 业务名称如 taxi、flash、premium 等
    */
   public static Object getData(String businessKey) {
     if (mDataProvider.containsKey(businessKey)) {
