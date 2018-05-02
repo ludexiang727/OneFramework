@@ -28,6 +28,5 @@ public class TaxiFragment extends BaseFragment {
 
   @Override
   protected void boundsLatlng(BestViewModel model) {
-
   }
 }
