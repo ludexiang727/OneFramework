@@ -1,12 +1,27 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <TextView
+  <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:layout_centerHorizontal="true"
+    android:layout_height="150dp"
     android:layout_alignParentBottom="true"
-    android:background="@android:color/holo_red_light"
-    android:gravity="center"
-    android:text="TaxiFragment"/>
+    android:layout_gravity="bottom"
+    android:clipChildren="false"
+    android:background="@android:color/white">
+    <com.one.widget.ProgressView
+      android:id="@+id/taxi_progress_view"
+      android:layout_width="180dp"
+      android:layout_height="140dp"
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:layout_marginTop="10dp"
+      app:progress_bg="#e3e3e3"
+      app:progress_from="175"
+      app:progress_to="195"
+      app:progress_width="5dp"
+      app:progress_radius="10dp"
+      app:progress_max_tick="100"/>
+  </FrameLayout>
+
 
 </merge>

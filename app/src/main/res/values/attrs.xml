@@ -20,4 +20,13 @@
     </attr>
   </declare-styleable>
 
+  <declare-styleable name="ProgressView">
+    <attr name="progress_from" format="integer"/>
+    <attr name="progress_to" format="integer"/>
+    <attr name="progress_width" format="dimension"/>
+    <attr name="progress_bg" format="color"/>
+    <attr name="progress_radius" format="dimension"/>
+    <attr name="progress_foreground" format="reference"/>
+    <attr name="progress_max_tick" format="integer"/>
+  </declare-styleable>
 </resources>
