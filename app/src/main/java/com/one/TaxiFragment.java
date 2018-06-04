@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.one.base.BaseFragment;
 import com.one.framework.api.annotation.ServiceProvider;
+import com.one.map.location.LocationProvider;
 import com.one.map.model.BestViewModel;
+import com.one.map.model.LatLng;
 import com.test.demo.R;
 
 /**
@@ -28,5 +30,8 @@ public class TaxiFragment extends BaseFragment {
 
   @Override
   protected void boundsLatlng(BestViewModel model) {
+    LatLng location = LocationProvider.getInstance().getLocation().mAdrLatLng;
+    model.zoomCenter = location;
+    model.bounds.add(location);
   }
 }

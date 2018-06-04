@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
@@ -10,9 +11,26 @@
     android:visibility="gone"/>
 
   <com.one.widget.ContainerRelativeLayout
-    android:id="@id/base_bottom_container"
+    android:id="@+id/base_bottom_container_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_centerInParent="true"
-    android:layout_below="@id/base_top_container"/>
+    android:layout_below="@id/base_top_container">
+
+    <com.one.widget.BottomViewLayout
+      android:id="@id/base_bottom_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"/>
+
+    <ImageView
+      android:id="@+id/base_refresh_map"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_above="@id/base_bottom_container"
+      android:layout_alignParentRight="true"
+      android:clickable="true"
+      android:src="@drawable/oc_map_best_view_selector"/>
+  </com.one.widget.ContainerRelativeLayout>
 </RelativeLayout>

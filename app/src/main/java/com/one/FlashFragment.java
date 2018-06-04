@@ -31,7 +31,6 @@ public class FlashFragment extends BaseFragment {
   public View onCreateViewImpl(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.one_fragment_layout, container, true);
-    mBusContext.getMap().displayMyLocation();
     view.findViewById(R.id.test1).setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -44,13 +43,13 @@ public class FlashFragment extends BaseFragment {
   @Override
   public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
-    if (DataProvider.getData("flash") != null) {
-      Object obj = DataProvider.getData("flash");
-      List<MarkerOption> options = (List<MarkerOption>) obj;
-      addMarkers(options);
-    } else {
-      addMarkers();
-    }
+//    if (DataProvider.getData("flash") != null) {
+//      Object obj = DataProvider.getData("flash");
+//      List<MarkerOption> options = (List<MarkerOption>) obj;
+//      addMarkers(options);
+//    } else {
+//      addMarkers();
+//    }
   }
 
   @Override
@@ -58,7 +57,6 @@ public class FlashFragment extends BaseFragment {
     LatLng location = LocationProvider.getInstance().getLocation().mAdrLatLng;
     bestView.zoomCenter = location;
     bestView.bounds.add(location);
-    bestView.bounds.add(new LatLng(39.9491159819, 116.4686983824));
   }
 
   private void addMarkers() {

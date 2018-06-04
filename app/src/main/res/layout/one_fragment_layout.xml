@@ -1,15 +1,16 @@
 <!-- ContainerRelativeLayout-->
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
   <LinearLayout
+    android:id="@+id/flash_bottom_container"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:orientation="horizontal"
     android:layout_margin="10dp"
+    android:gravity="bottom"
+    android:layout_gravity="bottom"
+    android:layout_alignParentBottom="true"
     android:background="@android:color/white"
-    android:layout_alignParentBottom="true">
+    android:orientation="horizontal">
     <TextView
       android:id="@+id/test1"
       android:layout_width="0dp"

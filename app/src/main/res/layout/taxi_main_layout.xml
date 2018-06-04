@@ -19,7 +19,7 @@
       app:progress_from="175"
       app:progress_to="195"
       app:progress_width="5dp"
-      app:progress_radius="10dp"
+      app:progress_radius="15dp"
       app:progress_max_tick="100"/>
   </FrameLayout>
 

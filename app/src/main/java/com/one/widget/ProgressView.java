@@ -9,11 +9,13 @@ import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
+import android.graphics.PathMeasure;
 import android.graphics.RectF;
 import android.graphics.SweepGradient;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import com.one.framework.log.Logger;
 import com.test.demo.R;
 
 /**
@@ -30,6 +32,7 @@ public class ProgressView extends View {
   private Paint mPaint;
   private RectF mRectF = new RectF();
   private int mProgressDefaultColor = Color.parseColor("#f05b48");
+
   /**
    * 填充颜色
    */
@@ -44,6 +47,9 @@ public class ProgressView extends View {
 
   private int mMaxTickCount;
   private int mCurrentProgress = 70;
+
+  private float[] mPathPos = new float[2];
+  private float[] mPathTan = new float[2];
 
   public ProgressView(Context context) {
     this(context, null);
@@ -150,6 +156,27 @@ public class ProgressView extends View {
       canvas.drawArc(mTickRectF, mProgressFrom + i * (degree + space), degree, false, paint);
     }
     canvas.restoreToCount(restoreCount);
+
+    // draw 当前进度
+    Paint p = new Paint();
+    p.setStrokeWidth(mProgressWidth);
+    p.setColor(Color.WHITE);
+    p.setStyle(Style.FILL);
+    p.setAntiAlias(true);
+    Path circlePath = new Path();
+    circlePath.addArc(mRectF, mProgressFrom, mProgressTo);
+    PathMeasure circleMeasure = new PathMeasure(circlePath, false);
+    circleMeasure.getPosTan(circleMeasure.getLength() * (mSweepAngle / mProgressTo), mPathPos, mPathTan);
+//    canvas.drawPath(circlePath, p);
+//    canvas.drawPoint();
+//    canvas.drawCircle();
+
+    canvas.drawCircle(mPathPos[0], mPathPos[1], 30f, p);
+
+    p.setStrokeWidth(8f);
+    p.setColor(Color.RED);
+    p.setStyle(Style.STROKE);
+    canvas.drawCircle(mPathPos[0], mPathPos[1], 25f, p);
 
     synchronized (lock) {
       lock.notifyAll();

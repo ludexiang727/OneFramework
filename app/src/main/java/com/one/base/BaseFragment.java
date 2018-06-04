@@ -8,17 +8,21 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import com.one.framework.app.base.BizEntranceFragment;
 import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.log.Logger;
 import com.one.framework.utils.UIUtils;
 import com.one.map.IMap.IMarkerClickCallback;
+import com.one.map.location.LocationProvider;
 import com.one.map.map.element.IMarker;
 import com.one.map.model.BestViewModel;
+import com.one.widget.BottomViewLayout;
 import com.one.widget.ContainerRelativeLayout;
 import com.test.demo.R;
 
@@ -32,7 +36,7 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
    * 之所以加入Base Parent 为了计算高度已实现地图最佳view
    */
   private ContainerRelativeLayout mTopContainer;
-  private ContainerRelativeLayout mBottomContainer;
+  private BottomViewLayout mBottomContainer;
   private boolean isAttached = true;
   private static final int REFRESH_MAP = 0X101;
   /**
@@ -40,6 +44,10 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
    */
   protected int[] mTopRect = new int[2];
   protected int[] mBottomRect = new int[2];
+
+  private static boolean isFirstLayoutDone = false;
+
+  private ImageView mRefreshMapView;
 
   /**
    * 通过此方法创建的View会attach to bottom container
@@ -65,6 +73,7 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
     View root = inflater.inflate(R.layout.base_fragment_layout, null);
     mTopContainer = root.findViewById(R.id.base_top_container);
     mBottomContainer = root.findViewById(R.id.base_bottom_container);
+    mRefreshMapView = root.findViewById(R.id.base_refresh_map);
 
     View view = onCreateViewImpl(inflater, mBottomContainer, savedInstanceState);
     if (mBusContext == null) {
@@ -75,7 +84,14 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
       RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
       mBottomContainer.addView(view, 0, params);
     }
+    mBusContext.getMap().displayMyLocation();
     mBusContext.getMap().setIMarkerClickCallback(this);
+    mRefreshMapView.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        toggleMapView();
+      }
+    });
     return root;
   }
 
@@ -98,6 +114,10 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
         super.handleMessage(msg);
         switch (msg.what) {
           case REFRESH_MAP: {
+            if (!isFirstLayoutDone) {
+              isFirstLayoutDone = true;
+              toggleMapView();
+            }
             reCalculateHeight();
             thread.quit();
             break;
