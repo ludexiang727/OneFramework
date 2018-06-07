@@ -1,4 +1,4 @@
-package com.one.widget;
+package com.trip.base.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -20,7 +20,7 @@ public class ContainerRelativeLayout extends RelativeLayout {
 
   public ContainerRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
-    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+    LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     setLayoutParams(params);
   }
 }

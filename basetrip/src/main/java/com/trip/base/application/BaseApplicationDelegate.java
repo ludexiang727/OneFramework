@@ -1,4 +1,4 @@
-package com.one.base;
+package com.trip.base.application;
 
 import android.app.Application;
 import com.one.framework.app.base.ApplicationDelegate;

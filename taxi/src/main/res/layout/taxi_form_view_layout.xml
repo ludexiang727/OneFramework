@@ -1,0 +1,45 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@android:color/transparent"
+  android:clipChildren="false"
+  android:orientation="vertical"
+  app:backgroundMargin="-4dp"
+  app:cutTop="false"
+  app:dividerBackgroundColor="@android:color/transparent"
+  app:dividerColor="@android:color/transparent"
+  app:dividerHeight="0px"
+  app:movable="true">
+  <com.trip.taxi.widget.impl.OptionsView
+    android:id="@+id/taxi_options_view"
+    android:layout_width="138dp"
+    android:layout_height="36dp"
+    android:layout_marginBottom="10dp"
+    android:layout_above="@id/taxi_common_address_layout"
+    android:layout_alignParentLeft="true"
+    app:options_background_color="#ffffff"
+    app:options_bg_inner_radius="50dp"
+    app:options_bg_outer_radius="50dp"
+    app:options_foreground_color="#595d65"
+    app:options_op="@array/options_op_array"
+    app:options_text_default_color="#999ba1"
+    app:options_text_selected_color="#ffffff"
+    app:options_text_size="14sp"
+    app:options_type="rect"/>
+
+  <!-- 起终点 -->
+  <include
+    android:id="@+id/taxi_common_address_layout"
+    layout="@layout/taxi_address_input_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"/>
+
+  <com.trip.taxi.widget.TaxiFullFormView
+    android:id="@+id/taxi_form_full_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:visibility="gone"/>
+</merge>

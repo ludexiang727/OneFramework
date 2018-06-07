@@ -1,0 +1,103 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:clipChildren="false"
+  app:backgroundMargin="-4dp"
+  app:cutTop="false"
+  app:dividerBackgroundColor="@android:color/transparent"
+  app:dividerColor="@android:color/transparent"
+  app:dividerHeight="0px"
+  app:movable="true">
+
+  <!-- 发单按钮 -->
+  <LinearLayout
+    android:id="@+id/ridehailing_create_order_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:layout_alignParentBottom="true"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <com.one.framework.app.widget.TripButton
+      android:id="@+id/ridehailing_carpool_index_bookingbtn"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:textColor="@android:color/white"
+      android:textSize="16sp"
+      app:disable_color="#d9d9d9"
+      app:enable_color="#343d4a"
+      app:radius="6dp"
+      app:text="@string/carpool_index_booking"/>
+
+    <TextView
+      android:id="@+id/ridehailing_carpool_index_server"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:gravity="center"
+      android:text="同意条款"
+      android:textColor="#999ba1"
+      android:textSize="12sp"/>
+
+  </LinearLayout>
+
+  <!-- 预估界面 -->
+  <com.trip.taxi.widget.BaseLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_above="@id/ridehailing_create_order_layout"
+    android:clipChildren="false"
+    android:orientation="vertical"
+    app:outsideBackground="@drawable/taxi_common_round_ract">
+
+    <!-- arrow -->
+    <ImageView
+      android:id="@+id/taxi_full_form_arrow"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:clickable="true"
+      android:scaleType="center"
+      android:src="@drawable/taxi_full_form_arrow"/>
+
+    <com.trip.taxi.widget.BaseLinearLayout
+      android:id="@+id/ridehailing_location_time_group"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+      <!-- 预约时间 -->
+      <TextView
+        android:id="@+id/ridehailing_location_time_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:drawableLeft="@drawable/taxi_booking_trip_time"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:text="@string/taxi_book_time"
+        android:textColor="#191d21"
+        android:textSize="14sp"/>
+    </com.trip.taxi.widget.BaseLinearLayout>
+    <View
+      android:id="@+id/taxi_full_form_separator"
+      android:layout_width="match_parent"
+      android:layout_height="0.5dp"
+      android:background="#f3f3f3"
+      android:visibility="gone"/>
+
+    <!-- 打表来接等操作 -->
+    <include layout="@layout/taxi_full_form_option_layout"/>
+
+    <!-- 预估 -->
+    <include
+      layout="@layout/taxi_estimate_price_layout"
+      android:layout_width="match_parent"
+      android:layout_height="100dp"
+      android:layout_marginBottom="10dp"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"/>
+  </com.trip.taxi.widget.BaseLinearLayout>
+
+</merge>

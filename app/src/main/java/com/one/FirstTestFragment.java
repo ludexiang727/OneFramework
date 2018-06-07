@@ -5,9 +5,9 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.one.base.BaseFragment;
 import com.one.map.model.BestViewModel;
 import com.test.demo.R;
+import com.trip.base.page.BaseFragment;
 
 /**
  * Created by ludexiang on 2018/4/20.

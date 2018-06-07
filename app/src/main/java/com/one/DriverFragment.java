@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import com.one.base.BaseFragment;
 import com.one.framework.api.annotation.ServiceProvider;
 import com.one.map.map.BitmapDescriptorFactory;
 import com.one.map.map.MarkerOption;
@@ -15,6 +14,7 @@ import com.one.map.map.element.IMarker;
 import com.one.map.model.BestViewModel;
 import com.one.map.model.LatLng;
 import com.test.demo.R;
+import com.trip.base.page.BaseFragment;
 import java.util.ArrayList;
 import java.util.List;
 

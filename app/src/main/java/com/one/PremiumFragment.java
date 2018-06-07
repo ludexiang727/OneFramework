@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.one.adapter.ListAdapter;
-import com.one.base.BaseFragment;
 import com.one.framework.adapter.AbsBaseAdapter;
 import com.one.framework.api.annotation.ServiceProvider;
 import com.one.framework.app.widget.PullListView;
@@ -15,6 +14,7 @@ import com.one.map.model.BestViewModel;
 import com.one.model.ListModel;
 import com.one.framework.app.widget.PullScrollRelativeLayout;
 import com.test.demo.R;
+import com.trip.base.page.BaseFragment;
 import java.util.ArrayList;
 import java.util.List;
 

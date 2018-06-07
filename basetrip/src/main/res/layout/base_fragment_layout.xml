@@ -3,20 +3,20 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <com.one.widget.ContainerRelativeLayout
+  <com.trip.base.widget.ContainerRelativeLayout
     android:id="@id/base_top_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
     android:visibility="gone"/>
 
-  <com.one.widget.ContainerRelativeLayout
+  <com.trip.base.widget.ContainerRelativeLayout
     android:id="@+id/base_bottom_container_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_below="@id/base_top_container">
 
-    <com.one.widget.BottomViewLayout
+    <com.trip.base.widget.BottomViewLayout
       android:id="@id/base_bottom_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -32,5 +32,5 @@
       android:layout_alignParentRight="true"
       android:clickable="true"
       android:src="@drawable/oc_map_best_view_selector"/>
-  </com.one.widget.ContainerRelativeLayout>
+  </com.trip.base.widget.ContainerRelativeLayout>
 </RelativeLayout>

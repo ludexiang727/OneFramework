@@ -4,11 +4,12 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TestDemo.iml" filepath="$PROJECT_DIR$/TestDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/basetrip/basetrip.iml" filepath="$PROJECT_DIR$/basetrip/basetrip.iml" />
       <module fileurl="file://$PROJECT_DIR$/config/config.iml" filepath="$PROJECT_DIR$/config/config.iml" />
       <module fileurl="file://$PROJECT_DIR$/../TheOne/oneframework.iml" filepath="$PROJECT_DIR$/../TheOne/oneframework.iml" />
       <module fileurl="file://$PROJECT_DIR$/theoneframework/oneframework.iml" filepath="$PROJECT_DIR$/theoneframework/oneframework.iml" />
       <module fileurl="file://$PROJECT_DIR$/../OneMap/onemap.iml" filepath="$PROJECT_DIR$/../OneMap/onemap.iml" />
-      <module fileurl="file://$PROJECT_DIR$/widget/widget.iml" filepath="$PROJECT_DIR$/widget/widget.iml" />
+      <module fileurl="file://$PROJECT_DIR$/taxi/taxi.iml" filepath="$PROJECT_DIR$/taxi/taxi.iml" />
     </modules>
   </component>
 </project>

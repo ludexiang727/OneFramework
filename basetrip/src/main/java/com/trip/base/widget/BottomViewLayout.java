@@ -1,4 +1,4 @@
-package com.one.widget;
+package com.trip.base.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

@@ -36,11 +36,6 @@ dependencies {
     kapt "com.github.hotchemi:permissionsdispatcher-processor:3.1.0"
 //    compile project(':evaluate')
 
-//    compile "com.one.framework:the-one-framework:1.0.1"
-//    // 地图
-//    implementation 'com.one.map:the-one-map:1.0.5'
-
-    // 此处先源码依赖
-    compile project(':onemap')
-    compile project(':oneframework')
+    compile project(':taxi')
+    compile project(':basetrip')
 }

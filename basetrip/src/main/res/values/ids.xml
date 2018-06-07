@@ -1,0 +1,4 @@
+<resources>
+  <item name="base_top_container" type="id"/>
+  <item name="base_bottom_container" type="id"/>
+</resources>

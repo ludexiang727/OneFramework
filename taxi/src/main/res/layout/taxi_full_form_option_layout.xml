@@ -1,0 +1,108 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/taxi_full_form_options_layout"
+  android:layout_width="match_parent"
+  android:layout_height="51dp"
+  android:orientation="vertical">
+
+  <LinearLayout
+    android:id="@+id/taxi_full_form_options"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal">
+
+    <FrameLayout
+      android:id="@+id/taxi_full_form_tip_layout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:clickable="true">
+      <TextView
+        android:id="@+id/taxi_full_form_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:drawableLeft="@drawable/taxi_booking_thank_tip"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:text="@string/taxi_thx_money"
+        android:textColor="#585c64"
+        android:textSize="12sp"/>
+
+    </FrameLayout>
+
+
+    <View
+      android:layout_width="0.5dp"
+      android:layout_height="match_parent"
+      android:layout_marginTop="10dp"
+      android:layout_marginBottom="10dp"
+
+      android:background="#e4e4e4"/>
+    <FrameLayout
+      android:id="@+id/taxi_full_form_checkbox_layout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_weight="1">
+      <CheckBox
+        android:id="@+id/taxi_full_form_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:paddingLeft="5dp"
+        android:button="@drawable/taxi_checkbox_selector"
+        android:text="@string/taxi_by_meter"
+        android:textColor="#585c64"
+        android:textSize="12sp"/>
+
+    </FrameLayout>
+
+
+    <View
+      android:layout_width="0.5dp"
+      android:layout_height="match_parent"
+      android:layout_marginTop="10dp"
+      android:layout_marginBottom="10dp"
+      android:background="#e4e4e4"/>
+
+    <LinearLayout
+      android:id="@+id/taxi_full_form_mark_layout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:clickable="true"
+      android:gravity="center"
+      android:orientation="vertical">
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawableLeft="@drawable/taxi_trip_booking_mask"
+        android:drawablePadding="5dp"
+        android:text="@string/taxi_msg"
+        android:textColor="#585c64"
+        android:textSize="12sp"/>
+
+      <TextView
+        android:id="@+id/taxi_full_form_mark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_gravity="center"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:textColor="#bbc2c5"
+        android:textSize="10sp"
+        android:visibility="gone"/>
+    </LinearLayout>
+
+
+  </LinearLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="0.5dp"
+    android:background="#e4e4e4"/>
+</LinearLayout>

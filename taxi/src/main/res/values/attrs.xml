@@ -1,0 +1,37 @@
+<resources>
+
+  <declare-styleable name="View">
+    <attr name="outsideBackground" format="reference" />
+    <attr format="reference|color" name="foreground"/>
+  </declare-styleable>
+
+  <declare-styleable name="DividerViewLayout">
+    <attr name="dividerHeight" format="dimension|reference" />
+    <attr name="dividerColor" format="color|reference" />
+    <attr name="dividerBackgroundColor" format="color|reference" />
+    <attr name="dividerLeftMargin" format="dimension|reference" />
+    <attr name="dividerRightMargin" format="dimension|reference" />
+    <attr name="movable" format="boolean|reference" />
+    <attr name="adjustableBackground" format="reference|color" />
+    <attr name="backgroundMargin" format="reference|dimension" />
+    <attr name="cutTop" format="reference|boolean" />
+  </declare-styleable>
+
+  <declare-styleable name="OptionsView">
+    <attr name="options_type">
+      <enum name="rect" value="0"/>
+      <enum name="oval" value="1"/>
+    </attr>
+    <attr name="options_op" format="reference"/>
+    <attr name="options_min_height" format="dimension"/>
+    <attr name="options_min_width" format="dimension"/>
+    <attr name="options_bg_outer_radius" format="dimension"/>
+    <attr name="options_bg_inner_radius" format="dimension"/>
+    <attr name="options_background_color" format="color"/>
+    <attr name="options_foreground_color" format="color"/>
+    <attr name="options_text_default_color" format="color"/>
+    <attr name="options_text_selected_color" format="color"/>
+    <attr name="options_text_size" format="dimension"/>
+    <attr name="options_op_key" format="string"/>
+  </declare-styleable>
+</resources>

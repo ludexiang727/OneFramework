@@ -1,4 +1,4 @@
-package com.one.base;
+package com.trip.base.page;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,12 +19,11 @@ import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.log.Logger;
 import com.one.framework.utils.UIUtils;
 import com.one.map.IMap.IMarkerClickCallback;
-import com.one.map.location.LocationProvider;
 import com.one.map.map.element.IMarker;
 import com.one.map.model.BestViewModel;
-import com.one.widget.BottomViewLayout;
-import com.one.widget.ContainerRelativeLayout;
-import com.test.demo.R;
+import com.trip.base.R;
+import com.trip.base.widget.BottomViewLayout;
+import com.trip.base.widget.ContainerRelativeLayout;
 
 /**
  * Created by ludexiang on 2018/3/27.
@@ -186,6 +185,11 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
     Logger.e("ldx", "width " + mBottomRect[0] + " height " + mBottomRect[1]);
   }
 
+  protected void reLayoutLocationPosition(int viewHeight) {
+    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mRefreshMapView.getLayoutParams();
+    params.bottomMargin = viewHeight == 0 ? -mRefreshMapView.getHeight() : viewHeight;
+    mRefreshMapView.setLayoutParams(params);
+  }
 
   @Override
   public void onDestroy() {
