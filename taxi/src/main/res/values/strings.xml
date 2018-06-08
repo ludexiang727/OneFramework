@@ -232,7 +232,7 @@
   <string name="user_completed_save_success">保存成功</string>
   <string name="user_completed_save_fail">保存失败</string>
 
-  <string name="taxi_book_time">请选择预约时间</string>
+  <string name="taxi_book_time">预约时间</string>
   <string name="taxi_thx_money">调度费</string>
   <string name="taxi_by_meter">打表来接</string>
   <string name="taxi_msg">捎个话</string>

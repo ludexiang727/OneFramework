@@ -3,18 +3,18 @@ package com.trip.taxi.widget.impl;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.transition.ChangeBounds;
+import android.support.transition.TransitionManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.one.framework.log.Logger;
 import com.trip.taxi.R;
 import com.trip.taxi.divider.DividerViewLayout;
-import com.trip.taxi.widget.BaseLinearLayout;
 import com.trip.taxi.widget.IFormView;
 import com.trip.taxi.widget.IFullFormView;
 import com.trip.taxi.widget.IOptionView;
@@ -31,13 +31,10 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
   private Context mContext;
 
   private LinearLayout mEasyForm;
-  private BaseLinearLayout mTime;
-  private TextView mTimeLocation;
+  private TextView mBookingTime;
   private TextView mStart;
   private TextView mEnd;
   private IOptionView mOptionsView;
-  //  private BaseImageView mLocationView;
-  private int mRadius;
 
   private IFullFormView mFullView;
 
@@ -51,9 +48,7 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
 
   private final int mScaleSlop;
 
-  private IOnHeightChange mOnChangeListener;
-
-  int[] intAArray = new int[]{mRadius, mRadius, 0, 0};
+  private IOnHeightChange mHeightChangeListener;
 
   public FormView(@NonNull Context context) {
     this(context, null);
@@ -66,7 +61,6 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
   public FormView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     mContext = context;
-//    mRadius = getResources().getDimensionPixelOffset(R.dimen.taxi_form_rect_radius);
     ViewConfiguration configuration = ViewConfiguration.get(mContext);
     mScaleSlop = configuration.getScaledTouchSlop();
     loadFormView();
@@ -80,36 +74,29 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
 
   private void initView(View view) {
     mEasyForm = (LinearLayout) view.findViewById(R.id.taxi_common_address_layout);
-    mTime = (BaseLinearLayout) view.findViewById(R.id.ridehailing_location_time_group);
-    mTimeLocation = (TextView) view.findViewById(R.id.ridehailing_location_time_edit);
+    mBookingTime = (TextView) view.findViewById(R.id.taxi_booking_time);
     mStart = (TextView) view.findViewById(R.id.taxi_start_address);
     mEnd = (TextView) view.findViewById(R.id.taxi_end_address);
     mOptionsView = (OptionsView) view.findViewById(R.id.taxi_options_view);
-//    mLocationView = (BaseImageView) view.findViewById(R.id.map_location_button);
-//    mOptionViewLayout = (RelativeLayout) view.findViewById(R.id.taxi_options_layout);
     mFullView = (TaxiFullFormView) view.findViewById(R.id.taxi_form_full_view);
 
     mStart.setOnClickListener(this);
     mEnd.setOnClickListener(this);
     mOptionsView.setOptionChange(this);
-    mTime.setOnClickListener(this);
-//    mLocationView.setOnClickListener(this);
     mFullView.setFullFormListener(this);
-  }
 
-//  @Override
-//  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//    int childCount = getChildCount();
-//    int height = 0;
-//    for (int i = 0; i < childCount; i++) {
-//      View view = getChildAt(i);
-//      measureChild(view, widthMeasureSpec, heightMeasureSpec);
-//      height += view.getMeasuredHeight();
-//    }
-//    super.onMeasure(widthMeasureSpec, height);
-//    Logger.e("ldx", "final height >> " + height);
-//  }
+    mOptionsView.getView().getViewTreeObserver().addOnGlobalLayoutListener(
+        new OnGlobalLayoutListener() {
+          @Override
+          public void onGlobalLayout() {
+            View view = mOptionsView.getView();
+            view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            if (mHeightChangeListener != null) {
+              mHeightChangeListener.onHeightChange(view.getMeasuredHeight());
+            }
+          }
+        });
+  }
 
   @Override
   public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -157,16 +144,15 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
     // state == 1 now == 2 booking default now
     int state = mOptionsView.getState();
     mFullView.setFormType(state);
-    mTime.setVisibility(state == 1 ? View.GONE : View.VISIBLE);
+    mBookingTime.setVisibility(state == 1 ? View.GONE : View.VISIBLE);
     if (type == EASY_FORM) {
       showEasyForm();
     } else if (type == FULL_FORM) {
       showFullForm();
     }
-    setOptionParam(type);
     mFormType = type;
-    if (mOnChangeListener != null) {
-      mOnChangeListener.onHeightChange(getFormView().getMeasuredHeight());
+    if (mHeightChangeListener != null) {
+      mHeightChangeListener.onHeightChange(-1);
     }
   }
 
@@ -191,16 +177,6 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
     mFullView.showFullForm();
   }
 
-  private void setOptionParam(@FormType int type) {
-    LayoutParams params = (LayoutParams) mOptionsView.getView().getLayoutParams();
-//    if (type == EASY_FORM) {
-//      params.addRule(RelativeLayout.ABOVE, R.id.taxi_common_address_layout);
-//    } else if (type == FULL_FORM) {
-//      params.addRule(RelativeLayout.ABOVE, R.id.taxi_form_full_view);
-//    }
-    mOptionsView.getView().setLayoutParams(params);
-  }
-
   @Override
   public void setStartPoint(String startPoint) {
     mStart.setText(startPoint);
@@ -214,7 +190,7 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
   @Override
   public void setTime(long time) {
     if (time == 0) {
-      mTimeLocation.setText(R.string.taxi_book_time);
+      mBookingTime.setText(R.string.taxi_book_time);
     } else {
       Date date = new Date();
       date.setTime(time);
@@ -265,27 +241,16 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
 
   @Override
   public void onClick(View view) {
+    if (iFormView == null) {
+      return;
+    }
     final int id = view.getId();
     if (id == R.id.taxi_start_address) {
-      if (iFormView != null) {
-        iFormView.onStartClick();
-      }
+      iFormView.onStartClick();
     } else if (id == R.id.taxi_end_address) {
-      if (iFormView != null) {
-        iFormView.onEndClick();
-      }
-//      case R.id.ridehailing_location_time_group: {
-//        if (iFormView != null) {
-//          iFormView.onTimeClick();
-//        }
-//        break;
-//      }
-//      case R.id.map_location_button: {
-//        if (iFormView != null) {
-//          iFormView.onLocationClick();
-//        }
-//        break;
-//      }
+      iFormView.onEndClick();
+    } else if (id == R.id.taxi_booking_time) {
+      iFormView.onTimeClick();
     }
   }
 
@@ -332,7 +297,7 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
 
   @Override
   public void setOnHeightChange(IOnHeightChange onChangeListener) {
-    mOnChangeListener = onChangeListener;
+    mHeightChangeListener = onChangeListener;
   }
 
   @Override
@@ -341,5 +306,10 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
       return mFullView.getView();
     }
     return mEasyForm;
+  }
+
+  @Override
+  public int getFormType() {
+    return mFormType;
   }
 }

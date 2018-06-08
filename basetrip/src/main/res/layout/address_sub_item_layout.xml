@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <ImageView
+    android:id="@+id/address_item_icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_alignParentLeft="true"
+    android:layout_centerVertical="true"
+    android:src="@drawable/base_address_item_icon"/>
+
+  <TextView
+    android:id="@+id/address_item_display_name"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="5dp"
+    android:layout_toRightOf="@id/address_item_icon"
+    android:includeFontPadding="false"
+    android:textColor="#666666"
+    android:textSize="14sp"/>
+
+  <TextView
+    android:id="@+id/address_recommend_info"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/address_recommend"
+    android:layout_alignTop="@id/address_item_display_name"
+    android:layout_toRightOf="@id/address_item_display_name"
+    android:text="@string/address_recommend"
+    android:textColor="@android:color/white"
+    android:layout_marginTop="3dp"
+    android:visibility="gone"
+    android:gravity="center"
+    android:textSize="6sp"/>
+
+  <TextView
+    android:id="@+id/address_item_adr_detail"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:layout_alignLeft="@id/address_item_display_name"
+    android:layout_below="@id/address_item_display_name"
+    android:textColor="#999999"
+    android:textSize="12sp"/>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="0.5dp"
+    android:layout_alignParentBottom="true"
+    android:background="#f3f3f3"/>
+</RelativeLayout>

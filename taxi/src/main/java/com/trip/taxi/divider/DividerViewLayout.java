@@ -53,8 +53,8 @@ public class DividerViewLayout extends LinearLayout {
 
     public DividerViewLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        readConfigurationForAttributeSet(context, attrs);
         setOrientation(LinearLayout.VERTICAL);
+        readConfigurationForAttributeSet(context, attrs);
 
         if (DRAW_BORDER) {
             mLinePaint = new Paint();

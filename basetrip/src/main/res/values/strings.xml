@@ -1,3 +1,11 @@
 <resources>
   <string name="app_name">BaseTrip</string>
+  <string name="address_select_cancel">取消</string>
+  <string name="address_input_search_from">您在哪里儿</string>
+  <string name="address_input_search_to">您要去哪儿</string>
+  <string name="address_recommend">推荐</string>
+  <string name="address_normal_home_address">家</string>
+  <string name="address_normal_set_home_address">设置家地址</string>
+  <string name="address_normal_company_address">公司</string>
+  <string name="address_normal_set_company_address">设置公司地址</string>
 </resources>

@@ -62,6 +62,7 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
   }
 
   @Nullable
@@ -135,7 +136,7 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
   /**
    * 刷新最佳view
    */
-  private void toggleMapView() {
+  protected void toggleMapView() {
     BestViewModel bestView = new BestViewModel();
     bestView.padding.left += 0;
     bestView.padding.top += mTopRect[1];
@@ -158,7 +159,7 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
   /**
    * 重新测量子view高度
    */
-  private void reCalculateHeight() {
+  protected void reCalculateHeight() {
     int width = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
     int height = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
 
@@ -182,7 +183,6 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
       mBottomRect[1] = view.getHeight();
     }
     toggleMapView();
-    Logger.e("ldx", "width " + mBottomRect[0] + " height " + mBottomRect[1]);
   }
 
   protected void reLayoutLocationPosition(int viewHeight) {

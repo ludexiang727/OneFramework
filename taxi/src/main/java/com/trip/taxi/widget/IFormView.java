@@ -16,7 +16,7 @@ public interface IFormView {
   int EASY_FORM = 1;
   int FULL_FORM = 1 << 1;
 
-  @Target({ElementType.PARAMETER, ElementType.LOCAL_VARIABLE})
+  @Target({ElementType.PARAMETER, ElementType.LOCAL_VARIABLE, ElementType.METHOD})
   @Retention(RetentionPolicy.SOURCE)
   @IntDef({EASY_FORM, FULL_FORM})
   @interface FormType {
@@ -31,6 +31,8 @@ public interface IFormView {
 
   void setOptionType(int type);
 
+  @FormType int getFormType();
+
   int getOptionType();
 
   void setTime(long time);
@@ -40,6 +42,11 @@ public interface IFormView {
   void setFormListener(IFormListener listener);
 
   interface IOnHeightChange {
+
+    /**
+     * height == -1 刷新最佳View
+     * @param height
+     */
     void onHeightChange(int height);
   }
 
@@ -52,8 +59,6 @@ public interface IFormView {
     void onEndClick();
 
     void onTimeClick();
-
-    void onLocationClick();
   }
 
   interface IAskListener {

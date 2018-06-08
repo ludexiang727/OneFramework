@@ -1,14 +1,11 @@
-<com.trip.taxi.widget.BaseRelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<com.trip.taxi.widget.BaseRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:id="@+id/estimate_price_layout"
   android:layout_width="match_parent"
-  android:layout_height="100dp"
-  android:background="#FFFFFF"
-  android:visibility="visible">
+  android:layout_height="wrap_content">
 
   <LinearLayout
-    android:id="@+id/ridehailing_asking_retry"
+    android:id="@+id/taxi_estimate_retry_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerInParent="true"
@@ -38,10 +35,16 @@
   <com.one.framework.app.widget.LoadingView
     android:id="@+id/taxi_estimate_price_loading"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="50dp"
+    android:layout_centerInParent="true"
+    app:loading_point_color="#d3d3d3"
+    app:loading_point_count="3"
+    app:loading_point_normal_size="3dp"
+    app:loading_point_selector_size="4dp"
+    app:loading_type="point"/>
 
   <LinearLayout
-    android:id="@+id/ridehailing_asking_price_money_layout"
+    android:id="@+id/taxi_estimate_price_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerInParent="true"
@@ -50,16 +53,16 @@
     android:visibility="gone">
 
     <TextView
-      android:id="@+id/ridehailing_asking_price_txt"
+      android:id="@+id/taxi_estimate_price"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
       android:text="@string/ridehailing_ask_premier_price_about"
       android:textColor="#191d21"
       android:textSize="19sp"/>
-  
+
     <TextView
-      android:id="@+id/ridehailing_ask_premier_price_total"
+      android:id="@+id/taxi_estimate_price_charge"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
@@ -68,9 +71,9 @@
       android:textColor="#999ba1"
       android:textSize="12sp"
       android:visibility="gone"/>
-    
+
     <TextView
-      android:id="@+id/ridehailing_carpool_index_price_discount"
+      android:id="@+id/taxi_estimate_price_ticket"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginBottom="2dp"

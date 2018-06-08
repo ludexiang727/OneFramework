@@ -1,23 +1,21 @@
 package com.trip.taxi.widget;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.one.framework.app.widget.LoadingView;
+import com.one.framework.app.widget.TripButton;
 import com.trip.taxi.R;
 import java.util.Date;
 
@@ -25,21 +23,20 @@ import java.util.Date;
  * Created by mobike on 2017/12/12.
  */
 
-public class TaxiFullFormView extends RelativeLayout implements IFullFormView,
+public class TaxiFullFormView extends LinearLayout implements IFullFormView,
     View.OnClickListener {
 
-  private LinearLayout mSendOrderLayout;
+  private TripButton mSendOrder;
   private LinearLayout mRetryEstimateLayout;
   private LinearLayout mTimeLayout;
   private TextView mTimeView;
-//  private FrameLayout mLoadingLayout;
+  private LoadingView mLoadingView;
   private LinearLayout mPriceLayout;
   private TextView mEstimatePrice;
   private TextView mEstimateDiscount;
   private TextView mEstimateTicket;
   private int mFormType;
   private LinearLayout mOptionsLayout;
-  private LinearLayout mOptions;
   private static final int NOW = 1;
   private static final int BOOK = 2;
   private TextView mTip;
@@ -66,6 +63,7 @@ public class TaxiFullFormView extends RelativeLayout implements IFullFormView,
 
   public TaxiFullFormView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    setOrientation(LinearLayout.VERTICAL);
     mContext = context;
     setClipChildren(false);
     loadView();
@@ -74,55 +72,34 @@ public class TaxiFullFormView extends RelativeLayout implements IFullFormView,
   private void loadView() {
     final View view = LayoutInflater.from(mContext).inflate(R.layout.taxi_full_form_view_layout, this, true);
     initView(view);
-    view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-      @Override
-      public void onGlobalLayout() {
-        view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-        adjustPanelState();
-      }
-    });
-  }
-
-  private void adjustPanelState() {
-    mOptionsLayout.setPivotY(0.0f);
-    mOptionsLayout.setScaleY(0.0f);
-    int width = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-    int height = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-    mOptionsLayout.measure(width, height);
-    mOptionsLayout.setTranslationY(mOptionsLayout.getMeasuredHeight());
   }
 
   private void initView(View view) {
-    mSendOrderLayout = (LinearLayout) view.findViewById(R.id.ridehailing_create_order_layout);
-    mRetryEstimateLayout = (LinearLayout) view.findViewById(R.id.ridehailing_asking_retry);
-    mTimeLayout = (LinearLayout) view.findViewById(R.id.ridehailing_location_time_group);
-    mTimeView = (TextView) view.findViewById(R.id.ridehailing_location_time_edit);
-//    mLoadingLayout = (FrameLayout) view.findViewById(R.id.ridehailing_asking_loading_layout);
-    mPriceLayout = (LinearLayout) view.findViewById(R.id.ridehailing_asking_price_money_layout);
-    mEstimatePrice = (TextView) view.findViewById(R.id.ridehailing_asking_price_txt);
-    mEstimateDiscount = (TextView) view.findViewById(R.id.ridehailing_ask_premier_price_total);
-    mEstimateTicket = (TextView) view.findViewById(R.id.ridehailing_carpool_index_price_discount);
-    mOptionsLayout = (LinearLayout) view.findViewById(R.id.taxi_full_form_options_layout);
-    mOptions = (LinearLayout) view.findViewById(R.id.taxi_full_form_options);
-    mTip = (TextView) view.findViewById(R.id.taxi_full_form_tip);
-    mTipLayout =  view.findViewById(R.id.taxi_full_form_tip_layout);
-    mCheck = (CheckBox) view.findViewById(R.id.taxi_full_form_checkbox);
-    mCheckLayout = view.findViewById(R.id.taxi_full_form_checkbox_layout);
-    mMark = (TextView) view.findViewById(R.id.taxi_full_form_mark);
-    mMarkLayout = view.findViewById(R.id.taxi_full_form_mark_layout);
+    mTimeLayout = (LinearLayout) view.findViewById(R.id.taxi_full_form_booking_time_layout);
     mArrow = (ImageView) view.findViewById(R.id.taxi_full_form_arrow);
+    mTimeView = (TextView) view.findViewById(R.id.taxi_full_form_booking_time);
     mViewSeparator = view.findViewById(R.id.taxi_full_form_separator);
 
-//    mTipLayout.setBackgroundDrawable(
-//        DrawablesKt.rippleDrawableRounded(Color.TRANSPARENT, BasicTheme.rippleOnLight, 0));
-//    mMarkLayout.setBackgroundDrawable(
-//        DrawablesKt.rippleDrawableRounded(Color.TRANSPARENT, BasicTheme.rippleOnLight, 0));
-//    mTimeLayout.setBackgroundDrawable(
-//        DrawablesKt.rippleDrawableRounded(Color.TRANSPARENT, BasicTheme.rippleOnLight, 0));
+    mTipLayout =  view.findViewById(R.id.taxi_full_form_tip_layout);
+    mTip = (TextView) view.findViewById(R.id.taxi_full_form_tip);
+    mCheckLayout = view.findViewById(R.id.taxi_full_form_checkbox_layout);
+    mCheck = (CheckBox) view.findViewById(R.id.taxi_full_form_checkbox);
+    mMarkLayout = view.findViewById(R.id.taxi_full_form_mark_layout);
+    mMark = (TextView) view.findViewById(R.id.taxi_full_form_mark);
+
+    mRetryEstimateLayout = (LinearLayout) view.findViewById(R.id.taxi_estimate_retry_layout);
+    mLoadingView = (LoadingView) view.findViewById(R.id.taxi_estimate_price_loading);
+    mPriceLayout = (LinearLayout) view.findViewById(R.id.taxi_estimate_price_layout);
+    mEstimatePrice = (TextView) view.findViewById(R.id.taxi_estimate_price);
+    mEstimateDiscount = (TextView) view.findViewById(R.id.taxi_estimate_price_charge);
+    mEstimateTicket = (TextView) view.findViewById(R.id.taxi_estimate_price_ticket);
+    mOptionsLayout = (LinearLayout) view.findViewById(R.id.taxi_full_form_options_layout);
+
+    mSendOrder = (TripButton) view.findViewById(R.id.taxi_invoke_driver);
 
     mTipLayout.setOnClickListener(this);
     mMarkLayout.setOnClickListener(this);
-    mTimeLayout.setOnClickListener(this);
+//    mTimeLayout.setOnClickListener(this);
     mArrow.setOnClickListener(this);
 
     mCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -141,13 +118,13 @@ public class TaxiFullFormView extends RelativeLayout implements IFullFormView,
       mRetryEstimateLayout.setVisibility(GONE);
       mPriceLayout.setVisibility(GONE);
     }
-//    mLoadingLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+    mLoadingView.setVisibility(show ? View.VISIBLE : View.GONE);
   }
 
   @Override
   public void setFormType(int type) {
     mFormType = type;
-    mTimeLayout.setVisibility(mFormType == NOW ? View.GONE : View.VISIBLE);
+//    mTimeLayout.setVisibility(mFormType == NOW ? View.GONE : View.VISIBLE);
   }
 
   /**
@@ -158,7 +135,6 @@ public class TaxiFullFormView extends RelativeLayout implements IFullFormView,
     fullView();
   }
 
-
   private void fullView() {
     mArrow.setVisibility(View.VISIBLE);
     mOptionsLayout.setVisibility(isFullView ? View.VISIBLE: View.GONE);
@@ -166,11 +142,8 @@ public class TaxiFullFormView extends RelativeLayout implements IFullFormView,
       mCheckLayout.setVisibility(View.GONE);
       mTimeLayout.setVisibility(View.VISIBLE);
       mViewSeparator.setVisibility(View.VISIBLE);
-      mOptions.setWeightSum(2);
     } else {
       mTimeLayout.setVisibility(View.GONE);
-      mViewSeparator.setVisibility(View.GONE);
-      mOptions.setWeightSum(3);
       mCheckLayout.setVisibility(View.VISIBLE);
     }
   }
@@ -178,7 +151,7 @@ public class TaxiFullFormView extends RelativeLayout implements IFullFormView,
   @Override
   public void showError() {
     mRetryEstimateLayout.setVisibility(VISIBLE);
-//    mLoadingLayout.setVisibility(GONE);
+    mLoadingView.setVisibility(GONE);
     mPriceLayout.setVisibility(GONE);
   }
 

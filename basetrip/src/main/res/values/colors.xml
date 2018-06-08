@@ -1,0 +1,4 @@
+<resources>
+  <drawable name="address_selector_pressed">#f3f3f3</drawable>
+  <drawable name="address_selector_normal">@android:color/transparent</drawable>
+</resources>
