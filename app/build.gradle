@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'maven'
 
 android {
@@ -29,13 +30,18 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
+//    compile project(':evaluate')
+
     compile("com.github.hotchemi:permissionsdispatcher:3.1.0") {
         // if you don't use android.app.Fragment you can exclude support for them
         exclude module: "support-v13"
     }
     kapt "com.github.hotchemi:permissionsdispatcher-processor:3.1.0"
-//    compile project(':evaluate')
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     compile project(':taxi')
     compile project(':basetrip')
+}
+repositories {
+    mavenCentral()
 }

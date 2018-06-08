@@ -6,17 +6,15 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.TripButton;
 import com.trip.taxi.R;
+import com.trip.taxi.presenter.TaxiFullFormPresenter;
 import java.util.Date;
 
 /**
@@ -45,13 +43,14 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
   private View mCheckLayout;
   private TextView mMark;
   private View mMarkLayout;
-  private ImageView mArrow;
+//  private ImageView mArrow;
   private IFullFormListener mClickListener;
   private ValueAnimator mScaleAnim;
   private Context mContext;
   private boolean isFullView = false;
   private boolean mPlayAnimator = false;
   private View mViewSeparator;
+  private TaxiFullFormPresenter mTaxiFullPresenter;
 
   public TaxiFullFormView(Context context) {
     this(context, null);
@@ -63,6 +62,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
 
   public TaxiFullFormView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    mTaxiFullPresenter = new TaxiFullFormPresenter(this);
     setOrientation(LinearLayout.VERTICAL);
     mContext = context;
     setClipChildren(false);
@@ -76,10 +76,11 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
 
   private void initView(View view) {
     mTimeLayout = (LinearLayout) view.findViewById(R.id.taxi_full_form_booking_time_layout);
-    mArrow = (ImageView) view.findViewById(R.id.taxi_full_form_arrow);
+//    mArrow = (ImageView) view.findViewById(R.id.taxi_full_form_arrow);
     mTimeView = (TextView) view.findViewById(R.id.taxi_full_form_booking_time);
     mViewSeparator = view.findViewById(R.id.taxi_full_form_separator);
 
+    mOptionsLayout = (LinearLayout) view.findViewById(R.id.taxi_full_form_options_layout);
     mTipLayout =  view.findViewById(R.id.taxi_full_form_tip_layout);
     mTip = (TextView) view.findViewById(R.id.taxi_full_form_tip);
     mCheckLayout = view.findViewById(R.id.taxi_full_form_checkbox_layout);
@@ -93,14 +94,13 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
     mEstimatePrice = (TextView) view.findViewById(R.id.taxi_estimate_price);
     mEstimateDiscount = (TextView) view.findViewById(R.id.taxi_estimate_price_charge);
     mEstimateTicket = (TextView) view.findViewById(R.id.taxi_estimate_price_ticket);
-    mOptionsLayout = (LinearLayout) view.findViewById(R.id.taxi_full_form_options_layout);
 
     mSendOrder = (TripButton) view.findViewById(R.id.taxi_invoke_driver);
 
     mTipLayout.setOnClickListener(this);
     mMarkLayout.setOnClickListener(this);
 //    mTimeLayout.setOnClickListener(this);
-    mArrow.setOnClickListener(this);
+//    mArrow.setOnClickListener(this);
 
     mCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
       @Override
@@ -119,6 +119,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
       mPriceLayout.setVisibility(GONE);
     }
     mLoadingView.setVisibility(show ? View.VISIBLE : View.GONE);
+    mTaxiFullPresenter.taxiEstimatePrice("", 0, 0,false);
   }
 
   @Override
@@ -136,8 +137,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
   }
 
   private void fullView() {
-    mArrow.setVisibility(View.VISIBLE);
-    mOptionsLayout.setVisibility(isFullView ? View.VISIBLE: View.GONE);
+//    mArrow.setVisibility(View.VISIBLE);
     if (mFormType == BOOK) {
       mCheckLayout.setVisibility(View.GONE);
       mTimeLayout.setVisibility(View.VISIBLE);
@@ -214,7 +214,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
     if (!checkPlayAnim()) {
       return;
     }
-    mArrow.setVisibility(View.VISIBLE);
+//    mArrow.setVisibility(View.VISIBLE);
     if (mFormType == BOOK) {
       mViewSeparator.setVisibility(View.VISIBLE);
     } else {

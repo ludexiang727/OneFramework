@@ -10,7 +10,7 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="false">
     <activity
-      android:name=".splash.SplashActivity"
+      android:name="com.one.splash.SplashActivity"
       android:screenOrientation="portrait"
       android:theme="@style/Theme.Mocha.Splash">
       <intent-filter>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="#585c64"/>
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="环境切换："
+      android:textColor="#585c64"
+      android:textSize="20sp"/>
+
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+      <EditText
+        android:id="@+id/debug_env_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="input env url"
+        android:text=""/>
+      <Button
+        android:id="@+id/debug_env_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="保存并重启"/>
+
+    </LinearLayout>
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="#585c64"/>
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Web容器测试入口："
+      android:textColor="#585c64"
+      android:textSize="20sp"/>
+
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+      <EditText
+        android:id="@+id/debug_webiew_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="input test url"
+        android:text="http://192.168.27.128:3004/act/invitation/d2d?accesstoken=0"/>
+      <Button
+        android:id="@+id/debug_webiew_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="加载 "/>
+
+    </LinearLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="#585c64"/>
+
+
+    <Button
+      android:id="@+id/debug_sign_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="加解密测试 "/>
+
+    <Button
+      android:id="@+id/test_nav_amap"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="高德地图测试 "/>
+
+    <Button
+      android:id="@+id/test_nav_qq"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="QQ导航 "/>
+    <Button
+      android:id="@+id/test_nav_baidu"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="百度地图 "/>
+
+
+  </LinearLayout>
+
+
+</LinearLayout>

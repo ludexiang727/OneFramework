@@ -124,6 +124,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     mFormView.setFormType(IFormView.FULL_FORM);
     mBusContext.getMap().drivingRoutePlan(FormDataProvider.getInstance().obtainStartAddress(), FormDataProvider.getInstance().obtainEndAddress());
     mBusContext.getMap().addMarkers(markers);
+    mFormView.showLoading(true);
 
     toggleMapView();
   }

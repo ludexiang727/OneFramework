@@ -5,15 +5,6 @@
   android:layout_height="wrap_content"
   android:visibility="gone"
   android:orientation="vertical">
-  <!-- arrow -->
-  <ImageView
-    android:id="@+id/taxi_full_form_arrow"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:clickable="true"
-    android:scaleType="center"
-    android:src="@drawable/taxi_full_form_arrow"/>
 
   <!-- 预约时间 -->
   <TextView

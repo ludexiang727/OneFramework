@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  package="com.test.demo">
+
+  <uses-permission android:name="android.permission.VIBRATE"/>
+
+  <application
+    android:name=".DebugApplication"
+    tools:replace="android:name">
+    <activity
+      android:label="Factory Model"
+      android:launchMode="singleTask"
+      android:name=".activity.DebugActivity"/>
+
+    <!--<activity-->
+      <!--android:label="Api Test"-->
+      <!--android:launchMode="singleTask"-->
+      <!--android:name=".activity.NetWorkDebugActivity"/>-->
+
+    <!--<activity-->
+      <!--android:label="LongLink Test"-->
+      <!--android:launchMode="singleTask"-->
+      <!--android:name=".activity.LongLinkDebugActivity"/>-->
+
+
+    <!--<activity-->
+      <!--android:label="Sign Test"-->
+      <!--android:launchMode="singleTask"-->
+      <!--android:name=".activity.SignDebugActivity"/>-->
+
+    <!--<activity-->
+      <!--android:label="TTS Test"-->
+      <!--android:launchMode="singleTask"-->
+      <!--android:name=".activity.SpeekDebugActivity"/>-->
+  </application>
+
+</manifest>

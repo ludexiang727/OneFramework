@@ -1,4 +1,4 @@
-package com.test.demo.splash;
+package com.one.splash;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -13,11 +13,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import com.one.framework.MainActivity;
+import com.one.framework.R;
 import com.one.map.location.LocationProvider;
 import com.one.map.location.LocationProvider.OnLocationChangedListener;
 import com.one.map.model.Address;
 import com.one.map.view.IMapView;
-import com.test.demo.R;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -44,7 +44,7 @@ public class SplashActivity extends AppCompatActivity {
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 //    print("SplashActivity onCreate()");
-    setContentView(R.layout.splash_activity);
+    setContentView(R.layout.one_splash_activity);
     SplashActivityPermissionsDispatcher.startLocationWithPermissionCheck(this);
   }
 
@@ -149,7 +149,7 @@ public class SplashActivity extends AppCompatActivity {
                 }
               }
 
-          ).setPositiveButton(R.string.action_settings,
+          ).setPositiveButton(R.string.one_action_settings,
               new OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
