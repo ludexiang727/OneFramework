@@ -20,6 +20,7 @@ public class TaxiFullFormPresenter {
     mFullFormView = fullFormView;
   }
 
+
   public void taxiEstimatePrice(String marks, long bookingTime, int tip,
       boolean isTick) {
     Address start = FormDataProvider.getInstance().obtainStartAddress();
@@ -29,17 +30,17 @@ public class TaxiFullFormPresenter {
         new IResponseListener<TaxiEstimatePrice>() {
           @Override
           public void onSuccess(TaxiEstimatePrice taxiEstimatePrice) {
-            Logger.e("ldx", "aaaaaaaaaaa onSuccess ..");
+            mFullFormView.showLoading(false);
+            mFullFormView.updatePriceInfo(taxiEstimatePrice.getEstimatePrice(), taxiEstimatePrice.getEstimateCoupin(), taxiEstimatePrice.getEstimateDiscount());
           }
 
           @Override
           public void onFail(TaxiEstimatePrice taxiEstimatePrice) {
-            Logger.e("ldx", "aaaaaaaaaaa onFail ..");
           }
 
           @Override
           public void onFinish(TaxiEstimatePrice taxiEstimatePrice) {
-            Logger.e("ldx", "aaaaaaaaaaa onFinish ..");
+
           }
         });
   }

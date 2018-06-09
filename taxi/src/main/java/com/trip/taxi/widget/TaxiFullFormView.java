@@ -119,7 +119,6 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
       mPriceLayout.setVisibility(GONE);
     }
     mLoadingView.setVisibility(show ? View.VISIBLE : View.GONE);
-    mTaxiFullPresenter.taxiEstimatePrice("", 0, 0,false);
   }
 
   @Override
@@ -134,6 +133,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
   @Override
   public void showFullForm() {
     fullView();
+    mTaxiFullPresenter.taxiEstimatePrice("", 0, 0, false);
   }
 
   private void fullView() {

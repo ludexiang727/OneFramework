@@ -2,13 +2,18 @@ package com.trip.base.page;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import com.one.framework.app.widget.PopWindow;
 import com.one.framework.provider.HomeDataProvider;
 import com.one.framework.utils.UIUtils;
 import com.one.map.IMap.IPoiSearchListener;
+import com.one.map.IMap.IRoutePlanMsgCallback;
 import com.one.map.model.Address;
+import com.one.map.model.LatLng;
 import com.trip.base.R;
 import com.trip.base.widget.AddressViewLayout;
 import com.trip.base.widget.IAddressView;
@@ -17,12 +22,13 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.List;
 
 /**
  * Created by ludexiang on 2018/6/7.
  */
 
-public abstract class AbsBaseFragment extends BaseFragment {
+public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlanMsgCallback {
 
   protected static final int TYPE_START_ADR = 0;
   protected static final int TYPE_END_ADR = 1;
@@ -36,6 +42,22 @@ public abstract class AbsBaseFragment extends BaseFragment {
   private PopWindow mPopWindow;
 
   private IAddressView mAddressView;
+
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    mMap.setRoutePlanCallback(this);
+  }
+
+  @Override
+  public void routePlanPoints(List<LatLng> points) {
+    toggleMapView();
+  }
+
+  @Override
+  public void routePlanMsg(String msg, List<LatLng> points) {
+
+  }
 
   protected void addressSelector(@AddressType final int type, final IChooseResultListener listener) {
     mAddressView = new AddressViewLayout(getContext());
@@ -78,8 +100,6 @@ public abstract class AbsBaseFragment extends BaseFragment {
         .create();
     mPopWindow.showAtLocation(getView(), Gravity.TOP, 0, UIUtils.getStatusbarHeight(getContext()));
   }
-
-
 
   public interface IChooseResultListener {
     void onResult(@AddressType int type, Address address);

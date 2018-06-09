@@ -3,7 +3,7 @@
   <string name="taxi_start_address">你在哪里</string>
   <string name="ridehailing_init_loction_premier_a2">在哪上车</string>
   <string name="taxi_end_address">你要去哪</string>
-  <string name="ridehailing_init_loction_premier_a_loctioning">正在获取上车地址…</string>
+  <string name="taxi_start_address_location">正在获取上车地点</string>
   <string name="ridehailing_init_trip_unfinish_text">你有一个正在进行的行程</string>
   <string name="ridehailing_init_trip_unfinish_text_more">你有多个正在进行的行程</string>
   <string name="ridehailing_init_trip_unfinish_action">查看详情</string>
@@ -235,9 +235,9 @@
   <string name="taxi_book_time">预约时间</string>
   <string name="taxi_thx_money">调度费</string>
   <string name="taxi_by_meter">打表来接</string>
-  <string name="taxi_msg">捎个话</string>
+  <string name="taxi_msg">捎话</string>
   <string name="taxi_money_title">选择调度费</string>
-  <string name="taxi_msg_title">捎个话</string>
+  <string name="taxi_msg_title">捎话</string>
 
   <string name="taxi_by_meter_msg">3公里内打表来接</string>
 

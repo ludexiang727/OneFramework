@@ -23,6 +23,7 @@ public class TaxiRequest {
 //  private val TAXI_FEEDBACK = "/api/chariot/config/taxi/feedback"
 //  private val TAXI_SUBMIT_FEED = "/api/chariot/trip/taxi/feedback"
 
+  private static int requestCode;
 
   /**
    *
@@ -60,6 +61,6 @@ public class TaxiRequest {
 
     params.put("isTick", isTick);
 
-    Api.request(TAXI_ESTIMATE_PRICE_URL, params, listener, TaxiEstimatePrice.class);
+    requestCode = Api.request(TAXI_ESTIMATE_PRICE_URL, params, listener, TaxiEstimatePrice.class);
   }
 }

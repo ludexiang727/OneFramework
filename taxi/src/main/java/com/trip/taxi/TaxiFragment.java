@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.one.framework.api.annotation.ServiceProvider;
 import com.one.map.location.LocationProvider;
-import com.one.map.log.Logger;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
 import com.one.map.model.BestViewModel;
@@ -33,8 +32,9 @@ import java.util.List;
  */
 
 @ServiceProvider(value = Fragment.class, alias = "taxi")
-public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeightChange, IFormListener,
-    IChooseResultListener {
+public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeightChange,
+    IFormListener, IChooseResultListener {
+
   private static final String ADDRESS_INTENT_ACTION = "INTENT_CURRENT_LOCATION_ADDRESS";
   private IFormView mFormView;
   private LocalBroadcastManager mBroadcast;
@@ -83,7 +83,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   public void moveMapToStartAddress(Address address) {
     BestViewModel model = new BestViewModel();
     model.zoomCenter = address.mAdrLatLng;
-    mBusContext.getMap().doBestView(model);
+    mMap.doBestView(model);
   }
 
   @Override
@@ -102,6 +102,19 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   }
 
   @Override
+  public boolean onBackPressed() {
+    if (mFormView.getFormType() == IFormView.FULL_FORM) {
+      mMap.clearElements();
+      mMap.displayMyLocation();
+      mPresenter.showEasyForm();
+      mFormView.setEndPoint("");
+      mFormView.setFormType(IFormView.EASY_FORM);
+      return true;
+    }
+    return super.onBackPressed();
+  }
+
+  @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
   }
@@ -112,6 +125,9 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
       model.bounds.add(LocationProvider.getInstance().getLocation().mAdrLatLng);
       model.bounds.add(FormDataProvider.getInstance().obtainStartAddress().mAdrLatLng);
       model.bounds.add(FormDataProvider.getInstance().obtainEndAddress().mAdrLatLng);
+      if (mMap.getLinePoints() != null) {
+        model.bounds.addAll(mMap.getLinePoints());
+      }
     } else {
       LatLng location = LocationProvider.getInstance().getLocation().mAdrLatLng;
       model.zoomCenter = location;
@@ -122,8 +138,9 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   @Override
   public void showFullForm(List<MarkerOption> markers) {
     mFormView.setFormType(IFormView.FULL_FORM);
-    mBusContext.getMap().drivingRoutePlan(FormDataProvider.getInstance().obtainStartAddress(), FormDataProvider.getInstance().obtainEndAddress());
-    mBusContext.getMap().addMarkers(markers);
+    mMap.drivingRoutePlan(FormDataProvider.getInstance().obtainStartAddress(),
+        FormDataProvider.getInstance().obtainEndAddress());
+    mMap.addMarkers(markers);
     mFormView.showLoading(true);
 
     toggleMapView();

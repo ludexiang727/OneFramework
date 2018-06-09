@@ -33,6 +33,10 @@ public class TaxiFormPresenter {
     }
   }
 
+  public void showEasyForm() {
+    FormDataProvider.getInstance().saveEndAddress(null);
+  }
+
   public void checkAddress() {
     FormDataProvider provider = FormDataProvider.getInstance();
     if (provider.obtainStartAddress() != null && provider.obtainEndAddress() == null) {
