@@ -10,23 +10,7 @@
   android:transitionName="searchView"
   app:outsideBackground="@drawable/taxi_common_round_ract">
 
-  <TextView
-    android:id="@+id/taxi_booking_time"
-    android:layout_width="wrap_content"
-    android:layout_height="50dp"
-    android:layout_gravity="center"
-    android:drawableLeft="@drawable/taxi_booking_trip_time"
-    android:drawablePadding="5dp"
-    android:gravity="center"
-    android:text="@string/taxi_book_time"
-    android:textColor="#191d21"
-    android:textSize="14sp"
-    android:visibility="gone"/>
-
-  <View
-    android:layout_width="match_parent"
-    android:layout_height="0.5dp"
-    android:background="#e4e6e7"/>
+  <include layout="@layout/taxi_extra_info_layout"/>
 
   <TextView
     android:id="@+id/taxi_start_address"

@@ -17,7 +17,7 @@ public interface IAddressView {
 
   void setInputSearchHint(int inputSearchHint);
 
-  void setNormalAddress(List<Address> addresses);
+  void setNormalAddress(int type, List<Address> addresses);
 
   void setAddressItemClick(IAddressItemClick clickListener);
 

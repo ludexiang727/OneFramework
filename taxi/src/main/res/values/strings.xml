@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="taxi_start_address">你在哪里</string>
-  <string name="ridehailing_init_loction_premier_a2">在哪上车</string>
   <string name="taxi_end_address">你要去哪</string>
   <string name="taxi_start_address_location">正在获取上车地点</string>
+  <string name="taxi_confirm_page_title">确认呼叫</string>
   <string name="ridehailing_init_trip_unfinish_text">你有一个正在进行的行程</string>
   <string name="ridehailing_init_trip_unfinish_text_more">你有多个正在进行的行程</string>
   <string name="ridehailing_init_trip_unfinish_action">查看详情</string>
@@ -11,10 +11,6 @@
   <string name="ridehailing_init_trip_unpay_text">你有一笔待支付订单，支付后可再次用车</string>
 
 
-  <string name="ridehailing_search_home">家</string>
-  <string name="ridehailing_search_job">公司</string>
-  <string name="ridehailing_search_start_title_hind">你在哪里</string>
-  <string name="ridehailing_search_end_title_hind">你要去哪</string>
   <string name="ridehailing_search_set">点击去设置</string>
   <string name="rieehailing_search_normal_adr_info">常用地址</string>
   <string name="rieehailing_search_result_info">搜索结果</string>
@@ -29,7 +25,7 @@
 
   <string name="ridehailing_ask_premier_button">呼叫专车</string>
   <string name="ridehailing_ask_taxi_button">呼叫出租车</string>
-  <string name="ridehailing_ask_premier_title">确认呼叫</string>
+
   <string name="ridehailing_ask_premier_price_about">约%s</string>
   <string name="ridehailing_ask_premier_price_total_msg">折扣已减 %s</string>
   <string name="ridehailing_ask_premier_price_error">价格预估失败，点击重试</string>

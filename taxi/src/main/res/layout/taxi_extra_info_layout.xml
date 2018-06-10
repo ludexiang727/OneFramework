@@ -1,23 +1,37 @@
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/taxi_full_form_booking_time_layout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/taxi_form_booking_time_layout"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:visibility="gone"
-  android:orientation="vertical">
+  android:layout_gravity="center"
+  android:background="@drawable/taxi_adr_selector"
+  android:orientation="vertical"
+  android:visibility="gone">
 
-  <!-- 预约时间 -->
-  <TextView
-    android:id="@+id/taxi_full_form_booking_time"
-    android:layout_width="wrap_content"
-    android:layout_height="50dp"
-    android:layout_gravity="center"
-    android:drawableLeft="@drawable/taxi_booking_trip_time"
-    android:drawablePadding="5dp"
-    android:gravity="center"
-    android:text="@string/taxi_book_time"
-    android:textColor="#191d21"
-    android:textSize="14sp"/>
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+    <ImageView
+      android:id="@+id/taxi_form_booking_time_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical"
+      android:layout_marginRight="5dp"
+      android:layout_centerVertical="true"
+      android:src="@drawable/taxi_booking_trip_time"/>
+
+    <!-- 预约时间 -->
+    <TextView
+      android:id="@+id/taxi_form_booking_time"
+      android:layout_width="wrap_content"
+      android:layout_height="50dp"
+      android:layout_gravity="center"
+      android:layout_toRightOf="@id/taxi_form_booking_time_icon"
+      android:gravity="center"
+      android:text="@string/taxi_book_time"
+      android:textColor="#191d21"
+      android:textSize="14sp"/>
+  </LinearLayout>
 
   <View
     android:id="@+id/taxi_full_form_separator"

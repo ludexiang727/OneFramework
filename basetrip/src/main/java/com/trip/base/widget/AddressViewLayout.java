@@ -90,7 +90,8 @@ public class AddressViewLayout extends LinearLayout implements IAddressView, OnC
   }
 
   @Override
-  public void setNormalAddress(List<Address> addresses) {
+  public void setNormalAddress(int type, List<Address> addresses) {
+    mAddressAdapter.setType(type);
     mAddressAdapter.setListData(addresses);
   }
 

@@ -13,11 +13,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import com.one.framework.MainActivity;
-import com.one.framework.R;
 import com.one.map.location.LocationProvider;
 import com.one.map.location.LocationProvider.OnLocationChangedListener;
 import com.one.map.model.Address;
 import com.one.map.view.IMapView;
+import com.test.demo.R;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -43,8 +43,7 @@ public class SplashActivity extends AppCompatActivity {
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-//    print("SplashActivity onCreate()");
-    setContentView(R.layout.one_splash_activity);
+    setContentView(R.layout.splash_activity);
     SplashActivityPermissionsDispatcher.startLocationWithPermissionCheck(this);
   }
 
@@ -116,7 +115,6 @@ public class SplashActivity extends AppCompatActivity {
   };
 
   private void doNext() {
-//    print("SplashActivity doNext " + haveDoNext);
     if (haveDoNext) {
       return;
     }
@@ -194,14 +192,12 @@ public class SplashActivity extends AppCompatActivity {
   }
 
   private void finishActivity() {
-//    print("SplashActivity finishActivity ");
     startMainActivity();
-//    overridePendingTransition(0, R.anim.zoom_in_fade_out);
     finish();
+    overridePendingTransition(0, R.anim.splash_exit_anim);
   }
 
   private void startMainActivity() {
-//    print("SplashActivity startMainActivity");
     Intent intent = new Intent(this, MainActivity.class);
     startActivity(intent);
   }

@@ -89,9 +89,9 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
     });
     if (type == TYPE_START_ADR) {
       // 根据当前位置获取POI
-      mAddressView.setNormalAddress(HomeDataProvider.getInstance().obtainPoiAddress(0));
+      mAddressView.setNormalAddress(0, HomeDataProvider.getInstance().obtainPoiAddress(0));
     } else {
-      mAddressView.setNormalAddress(HomeDataProvider.getInstance().obtainPoiAddress(1));
+      mAddressView.setNormalAddress(1, HomeDataProvider.getInstance().obtainPoiAddress(1));
     }
     mPopWindow = new PopWindow.PopupWindowBuilder(getContext())
         .setView(mAddressView.getView())

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.trip.taxi.R;
 import com.trip.taxi.divider.DividerViewLayout;
@@ -31,6 +32,7 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
   private Context mContext;
 
   private LinearLayout mEasyForm;
+  private LinearLayout mBookingTimeLayout;
   private TextView mBookingTime;
   private TextView mStart;
   private TextView mEnd;
@@ -74,7 +76,8 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
 
   private void initView(View view) {
     mEasyForm = (LinearLayout) view.findViewById(R.id.taxi_common_address_layout);
-    mBookingTime = (TextView) view.findViewById(R.id.taxi_booking_time);
+    mBookingTimeLayout = (LinearLayout) view.findViewById(R.id.taxi_form_booking_time_layout);
+    mBookingTime = (TextView) view.findViewById(R.id.taxi_form_booking_time);
     mStart = (TextView) view.findViewById(R.id.taxi_start_address);
     mEnd = (TextView) view.findViewById(R.id.taxi_end_address);
     mOptionsView = (OptionsView) view.findViewById(R.id.taxi_options_view);
@@ -82,6 +85,7 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
 
     mStart.setOnClickListener(this);
     mEnd.setOnClickListener(this);
+    mBookingTimeLayout.setOnClickListener(this);
     mOptionsView.setOptionChange(this);
     mFullView.setFullFormListener(this);
 
@@ -144,7 +148,7 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
     // state == 1 now == 2 booking default now
     int state = mOptionsView.getState();
     mFullView.setFormType(state);
-    mBookingTime.setVisibility(state == 1 ? View.GONE : View.VISIBLE);
+    mBookingTimeLayout.setVisibility(state == 1 ? View.GONE : View.VISIBLE);
     if (type == EASY_FORM) {
       showEasyForm();
     } else if (type == FULL_FORM) {
@@ -249,7 +253,7 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
       iFormView.onStartClick();
     } else if (id == R.id.taxi_end_address) {
       iFormView.onEndClick();
-    } else if (id == R.id.taxi_booking_time) {
+    } else if (id == R.id.taxi_form_booking_time_layout) {
       iFormView.onTimeClick();
     }
   }

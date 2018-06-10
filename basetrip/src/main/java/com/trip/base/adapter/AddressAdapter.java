@@ -15,6 +15,8 @@ import com.trip.base.adapter.AddressAdapter.AddressHolder;
 
 public class AddressAdapter extends AbsBaseAdapter<Address, AddressHolder> {
 
+  private int iconType;
+
   public AddressAdapter(Context context) {
     super(context);
   }
@@ -22,6 +24,10 @@ public class AddressAdapter extends AbsBaseAdapter<Address, AddressHolder> {
   @Override
   protected AddressHolder createHolder() {
     return new AddressHolder();
+  }
+
+  public void setType(int type) {
+    iconType = type;
   }
 
   @Override
@@ -34,6 +40,11 @@ public class AddressAdapter extends AbsBaseAdapter<Address, AddressHolder> {
 
   @Override
   protected void bindData(Address model, AddressHolder holder, int position) {
+    if (iconType == 0) {
+      holder.addressIcon.setImageResource(R.drawable.base_address_item_origin);
+    } else if (iconType == 1) {
+      holder.addressIcon.setImageResource(R.drawable.base_address_item_terminal);
+    }
     if (model.distance != -1 && model.distance < 30) { // tencent 返回distance应该是米
       holder.recommend.setVisibility(View.VISIBLE);
     } else {

@@ -9,7 +9,7 @@
     android:layout_marginLeft="10dp"
     android:layout_alignParentLeft="true"
     android:layout_centerVertical="true"
-    android:src="@drawable/base_address_item_icon"/>
+    android:src="@drawable/base_address_item_origin"/>
 
   <TextView
     android:id="@+id/address_item_display_name"

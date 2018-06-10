@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.one.framework.api.annotation.ServiceProvider;
+import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
+import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
 import com.one.map.location.LocationProvider;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
@@ -106,6 +108,8 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     if (mFormView.getFormType() == IFormView.FULL_FORM) {
       mMap.clearElements();
       mMap.displayMyLocation();
+      mTopbarView.titleBarReset();
+      mNavigator.lockDrawerLayout(false);
       mPresenter.showEasyForm();
       mFormView.setEndPoint("");
       mFormView.setFormType(IFormView.EASY_FORM);
@@ -141,6 +145,17 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     mMap.drivingRoutePlan(FormDataProvider.getInstance().obtainStartAddress(),
         FormDataProvider.getInstance().obtainEndAddress());
     mMap.addMarkers(markers);
+    mTopbarView.setTitleClickListener(new ITopTitleListener() {
+      @Override
+      public void onTitleItemClick(ClickPosition position) {
+        if (position == ClickPosition.LEFT) {
+          onBackPressed();
+        }
+      }
+    });
+    mTopbarView.setTitle(R.string.taxi_confirm_page_title);
+    mTopbarView.setLeft(R.drawable.base_top_bar_back_selector);
+    mNavigator.lockDrawerLayout(true);
     mFormView.showLoading(true);
 
     toggleMapView();
