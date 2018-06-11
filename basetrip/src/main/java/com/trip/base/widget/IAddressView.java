@@ -35,7 +35,7 @@ public interface IAddressView {
     void onDismiss();
   }
 
-  void setNormalAddressVisible(boolean visible);
+  void releaseView();
 
   View getView();
 }

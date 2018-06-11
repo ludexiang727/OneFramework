@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
+import android.widget.PopupWindow.OnDismissListener;
 import com.one.framework.app.widget.PopWindow;
 import com.one.framework.db.DBTables.AddressTable;
 import com.one.framework.db.DBTables.AddressTable.AddressType;
@@ -17,6 +18,7 @@ import com.one.framework.utils.DBUtil;
 import com.one.framework.utils.UIUtils;
 import com.one.map.IMap.IPoiSearchListener;
 import com.one.map.IMap.IRoutePlanMsgCallback;
+import com.one.map.log.Logger;
 import com.one.map.model.Address;
 import com.one.map.model.LatLng;
 import com.trip.base.R;
@@ -69,7 +71,6 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
               getString(R.string.address_normal_company_address));
       mAddressView.setInputSearchHint(hint);
     }
-    mAddressView.setNormalAddressVisible(type == END ? true : false);
     mAddressView.setAddressType(type);
     if (HomeDataProvider.getInstance().obtainCurAddress() != null) {
       mAddressView.setCurrentLocationCity(HomeDataProvider.getInstance().obtainCurAddress().mCity);
@@ -85,6 +86,14 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
         .setView(mAddressView.getView())
         .size(UIUtils.getScreenWidth(getContext()), UIUtils.getScreenHeight(getContext()))
         .setBackgroundDrawable(new ColorDrawable(Color.parseColor("#10000000")))
+        .setOnDissmissListener(new OnDismissListener() {
+          @Override
+          public void onDismiss() {
+            if (type == END) {
+              mAddressView.releaseView();
+            }
+          }
+        })
         .create();
     popWindow.showAtLocation(getView(), Gravity.TOP, 0, UIUtils.getStatusbarHeight(getContext()));
     mPopStack.push(popWindow);
@@ -99,6 +108,14 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
     if (type == START || type == END) {
       if (mChooseResultListener != null) {
         mChooseResultListener.onResult(type, address);
+      }
+    }
+    if (type == HOME || type == AddressTable.COMPANY) {
+      List<Address> homeOrCompanyLists = DBUtil.queryDataFromAddress(getContext(), type);
+      if (homeOrCompanyLists != null && !homeOrCompanyLists.isEmpty()) {
+        int updateRow = DBUtil.updateDataToAddress(getContext(), address, type);
+        Logger.e("ldx", "update row " + updateRow);
+        return;
       }
     }
     DBUtil.insertDataToAddress(getContext(), address, type);

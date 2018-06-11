@@ -4,6 +4,7 @@ import static com.one.framework.db.DBTables.AddressTable.COMPANY;
 import static com.one.framework.db.DBTables.AddressTable.HOME;
 
 import android.content.Context;
+import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewStub;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -46,12 +48,13 @@ public class AddressViewLayout extends LinearLayout implements IAddressView, OnC
   private IAddressListener mAdrItemClick;
   private AddressAdapter mAddressAdapter;
   private PullScrollRelativeLayout mPullLayout;
-  private RelativeLayout mHomeAddressLayout;
-  private TextView mHome;
-  private TextView mHomeDetail;
-  private RelativeLayout mCompanyAddressLayout;
-  private TextView mCompany;
-  private TextView mCompanyDetail;
+  private ViewStub mViewStub;
+  private static RelativeLayout mHomeAddressLayout;
+  private static TextView mHome;
+  private static TextView mHomeDetail;
+  private static RelativeLayout mCompanyAddressLayout;
+  private static TextView mCompany;
+  private static TextView mCompanyDetail;
   private EditWatcher mWatcher;
   private LinearLayout mNormalAddressLayout;
 
@@ -69,27 +72,23 @@ public class AddressViewLayout extends LinearLayout implements IAddressView, OnC
   @Override
   public void setAddressType(int type) {
     mAdrType = type;
+
+    if (mAdrType == AddressTable.END) {
+      initViewStub();
+    }
   }
 
   public AddressViewLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     setOrientation(VERTICAL);
     View view = LayoutInflater.from(context).inflate(R.layout.address_selector_layout, this, true);
-    mHomeAddressLayout = (RelativeLayout) view.findViewById(R.id.address_home_normal_layout);
-    mHome = (TextView) view.findViewById(R.id.address_normal_home);
-    mHomeDetail = (TextView) view.findViewById(R.id.address_normal_home_detail);
-    mCompanyAddressLayout = (RelativeLayout) view.findViewById(R.id.address_company_normal_layout);
-    mCompany = (TextView) view.findViewById(R.id.address_normal_company);
-    mCompanyDetail = (TextView) view.findViewById(R.id.address_normal_company_detail);
+
+    mViewStub = (ViewStub) view.findViewById(R.id.base_address_normal_viewstub);
     mPullLayout = (PullScrollRelativeLayout) view.findViewById(R.id.pull_scroll_layout);
     mAddressListView = (PullListView) view.findViewById(android.R.id.list);
     mCurLocCity = (TextView) view.findViewById(R.id.address_cur_city);
     mCancel = (TextView) view.findViewById(R.id.address_choose_cancel);
     mInputAdrSearch = (EditText) view.findViewById(R.id.address_input_search);
-    mNormalAddressLayout = (LinearLayout) view.findViewById(R.id.address_normal_address_set_layout);
-
-    ImageView homeArrow = (ImageView) view.findViewById(R.id.address_normal_home_change);
-    ImageView companyArrow = (ImageView) view.findViewById(R.id.address_normal_company_change);
 
     mPullLayout.setScrollView(mAddressListView);
     mPullLayout.setMoveListener(mAddressListView);
@@ -99,18 +98,49 @@ public class AddressViewLayout extends LinearLayout implements IAddressView, OnC
     mWatcher = new EditWatcher();
 
     mCancel.setOnClickListener(this);
+
+    mAddressListView.setItemClickListener(this);
+    mInputAdrSearch.addTextChangedListener(mWatcher);
+  }
+
+  private void initViewStub() {
+    View view = mViewStub.inflate();
+    mNormalAddressLayout = (LinearLayout) view.findViewById(R.id.address_normal_address_set_layout);
+//    mNormalAddressLayout.setVisibility();
+
+    mHomeAddressLayout = (RelativeLayout) view.findViewById(R.id.address_home_normal_layout);
+    mHome = (TextView) view.findViewById(R.id.address_normal_home);
+    mHomeDetail = (TextView) view.findViewById(R.id.address_normal_home_detail);
+    mCompanyAddressLayout = (RelativeLayout) view.findViewById(R.id.address_company_normal_layout);
+    mCompany = (TextView) view.findViewById(R.id.address_normal_company);
+    mCompanyDetail = (TextView) view.findViewById(R.id.address_normal_company_detail);
+
+    final ImageView homeArrow = (ImageView) view.findViewById(R.id.address_normal_home_change);
+    final ImageView companyArrow = (ImageView) view.findViewById(R.id.address_normal_company_change);
+
     mHomeAddressLayout.setTag(null);
     mHomeAddressLayout.setOnClickListener(this);
     mCompanyAddressLayout.setTag(null);
     mCompanyAddressLayout.setOnClickListener(this);
-    mAddressListView.setItemClickListener(this);
-    mInputAdrSearch.addTextChangedListener(mWatcher);
+
+    StateListDrawable stateList = new StateListDrawable();
+//    stateList.
+
     homeArrow.setOnTouchListener(new OnTouchListener() {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         // 会走down 和 up 事件，则做一次判断
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-          mAdrItemClick.onNormalAdrSetting(HOME);
+        switch (event.getAction()) {
+          case MotionEvent.ACTION_DOWN: {
+            homeArrow.setFocusable(true);
+            homeArrow.setFocusableInTouchMode(true);
+            break;
+          }
+          case MotionEvent.ACTION_UP: {
+            homeArrow.setFocusable(false);
+            mAdrItemClick.onNormalAdrSetting(HOME);
+            break;
+          }
         }
         return true;
       }
@@ -119,8 +149,17 @@ public class AddressViewLayout extends LinearLayout implements IAddressView, OnC
     companyArrow.setOnTouchListener(new OnTouchListener() {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-          mAdrItemClick.onNormalAdrSetting(COMPANY);
+        switch (event.getAction()) {
+          case MotionEvent.ACTION_DOWN: {
+            companyArrow.setFocusable(true);
+            companyArrow.setFocusableInTouchMode(true);
+            break;
+          }
+          case MotionEvent.ACTION_UP: {
+            companyArrow.setFocusable(false);
+            mAdrItemClick.onNormalAdrSetting(COMPANY);
+            break;
+          }
         }
         return true;
       }
@@ -159,36 +198,51 @@ public class AddressViewLayout extends LinearLayout implements IAddressView, OnC
     if (addresses != null && !addresses.isEmpty()) {
       addressList.addAll(addresses);
     }
+    /**
+     * 插入多条 故取最后一条
+     */
     List<Address> homeList = DBUtil.queryDataFromAddress(getContext(), AddressTable.HOME);
     if (homeList != null && !homeList.isEmpty()) {
-      setNormalAddress(homeList.get(0));
+      setNormalAddress(homeList.get(homeList.size() - 1), HOME);
     }
     List<Address> companyList = DBUtil.queryDataFromAddress(getContext(), AddressTable.COMPANY);
     if (companyList != null && !companyList.isEmpty()) {
-      setNormalAddress(companyList.get(0));
+      setNormalAddress(companyList.get(companyList.size() - 1), COMPANY);
     }
     mAddressAdapter.setListData(addressList);
   }
 
 
-  private void setNormalAddress(Address address) {
+  private void setNormalAddress(Address address, int type) {
     /**
      * 判断或者原因：
      * 1 从地址选择进来的mAdrType = HOME
      * 2 若地址不为空进来的选择页面mAdrType = END, 从数据库中查取type = HOME
      */
-    if (address != null && (mAdrType == HOME || address.type == HOME)) {
-      mHome.setText(address.mAdrDisplayName);
-      mHomeDetail.setText(address.mAdrFullName);
-      mHomeAddressLayout.setTag(address);
-    }
-    /**
-     * 同 HOME
-     */
-    if (address != null && (mAdrType == COMPANY || address.type == COMPANY)) {
-      mCompany.setText(address.mAdrDisplayName);
-      mCompanyDetail.setText(address.mAdrFullName);
-      mCompanyAddressLayout.setTag(address);
+    switch (type) {
+      case HOME: {
+        if (mHome != null && mHomeDetail != null && mHomeAddressLayout != null) {
+          if (address != null && (mAdrType == HOME || address.type == HOME)) {
+            mHome.setText(address.mAdrDisplayName);
+            mHomeDetail.setText(address.mAdrFullName);
+            mHomeAddressLayout.setTag(address);
+          }
+        }
+        break;
+      }
+      case COMPANY: {
+        /**
+         * 同 HOME
+         */
+        if (mCompany != null && mCompanyDetail != null && mCompanyAddressLayout != null) {
+          if (address != null && (mAdrType == COMPANY || address.type == COMPANY)) {
+            mCompany.setText(address.mAdrDisplayName);
+            mCompanyDetail.setText(address.mAdrFullName);
+            mCompanyAddressLayout.setTag(address);
+          }
+        }
+        break;
+      }
     }
   }
 
@@ -217,15 +271,11 @@ public class AddressViewLayout extends LinearLayout implements IAddressView, OnC
   }
 
   @Override
-  public void setNormalAddressVisible(boolean visible) {
-    mNormalAddressLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
-  }
-
-  @Override
   public void onItemClick(AdapterView<?> adapterView, View view, int position) {
     Address chooseAddress = mAddressAdapter.getItem(position);
     onAddressChoose(chooseAddress);
-    setNormalAddress(chooseAddress);
+    // 重新创建了地址选择View导致对象不一致
+    setNormalAddress(chooseAddress, mAdrType);
   }
 
   private void onAddressChoose(Address chooseAddress) {
@@ -266,5 +316,15 @@ public class AddressViewLayout extends LinearLayout implements IAddressView, OnC
     public void afterTextChanged(Editable s) {
 
     }
+  }
+
+  @Override
+  public void releaseView() {
+    mHomeAddressLayout = null;
+    mHome = null;
+    mHomeDetail = null;
+    mCompanyAddressLayout = null;
+    mCompany = null;
+    mCompanyDetail = null;
   }
 }
