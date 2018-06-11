@@ -1,14 +1,19 @@
 package com.trip.base.page;
 
+import static com.one.framework.db.DBTables.AddressTable.END;
+import static com.one.framework.db.DBTables.AddressTable.HOME;
+import static com.one.framework.db.DBTables.AddressTable.START;
+
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import com.one.framework.app.widget.PopWindow;
+import com.one.framework.db.DBTables.AddressTable;
+import com.one.framework.db.DBTables.AddressTable.AddressType;
 import com.one.framework.provider.HomeDataProvider;
+import com.one.framework.utils.DBUtil;
 import com.one.framework.utils.UIUtils;
 import com.one.map.IMap.IPoiSearchListener;
 import com.one.map.IMap.IRoutePlanMsgCallback;
@@ -17,36 +22,28 @@ import com.one.map.model.LatLng;
 import com.trip.base.R;
 import com.trip.base.widget.AddressViewLayout;
 import com.trip.base.widget.IAddressView;
-import com.trip.base.widget.IAddressView.IAddressItemClick;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.trip.base.widget.IAddressView.IAddressListener;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Created by ludexiang on 2018/6/7.
  */
 
-public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlanMsgCallback {
+public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlanMsgCallback, IAddressListener {
 
-  protected static final int TYPE_START_ADR = 0;
-  protected static final int TYPE_END_ADR = 1;
 
-  @Target({ElementType.PARAMETER, ElementType.LOCAL_VARIABLE})
-  @Retention(RetentionPolicy.RUNTIME)
-  @IntDef({TYPE_START_ADR, TYPE_END_ADR})
-  private @interface AddressType {
-  }
-
-  private PopWindow mPopWindow;
+  private Stack<PopWindow> mPopStack;
 
   private IAddressView mAddressView;
+
+  private IChooseResultListener mChooseResultListener;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mMap.setRoutePlanCallback(this);
+    mPopStack = new Stack<>();
   }
 
   @Override
@@ -60,45 +57,63 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
   }
 
   protected void addressSelector(@AddressType final int type, final IChooseResultListener listener) {
+    mChooseResultListener = listener;
     mAddressView = new AddressViewLayout(getContext());
-    mAddressView.setInputSearchHint(type == TYPE_START_ADR ? R.string.address_input_search_from : R.string.address_input_search_to);
-    mAddressView.setNormalAddressVisible(type == TYPE_START_ADR ? false : true);
+    if (type == START || type == END) {
+      int editHint = type == START ? R.string.address_input_search_from : R.string.address_input_search_to;
+      mAddressView.setInputSearchHint(editHint);
+    } else if (type == HOME || type == AddressTable.COMPANY) {
+      String hint = type == HOME ? String.format(getString(R.string.address_input_address_hint),
+          getString(R.string.address_normal_home_address)) : String
+          .format(getString(R.string.address_input_address_hint),
+              getString(R.string.address_normal_company_address));
+      mAddressView.setInputSearchHint(hint);
+    }
+    mAddressView.setNormalAddressVisible(type == END ? true : false);
+    mAddressView.setAddressType(type);
     if (HomeDataProvider.getInstance().obtainCurAddress() != null) {
       mAddressView.setCurrentLocationCity(HomeDataProvider.getInstance().obtainCurAddress().mCity);
     }
-    mAddressView.setAddressItemClick(new IAddressItemClick() {
-      @Override
-      public void onAddressItemClick(Address address) {
-        if (listener != null) {
-          listener.onResult(type, address);
-        }
-        mPopWindow.dissmiss();
-      }
-
-      @Override
-      public void searchByKeyWord(String curCity, CharSequence key, IPoiSearchListener poiSearchListener) {
-        mBusContext.getMap().poiSearchByKeyWord(curCity, key, poiSearchListener);
-      }
-
-      @Override
-      public void onDismiss() {
-        if (mPopWindow != null) {
-          mPopWindow.dissmiss();
-        }
-      }
-    });
-    if (type == TYPE_START_ADR) {
+    mAddressView.setAddressItemClick(this);
+    if (type == START) {
       // 根据当前位置获取POI
-      mAddressView.setNormalAddress(0, HomeDataProvider.getInstance().obtainPoiAddress(0));
+      mAddressView.setNormalAddress(HomeDataProvider.getInstance().obtainPoiAddress(0));
     } else {
-      mAddressView.setNormalAddress(1, HomeDataProvider.getInstance().obtainPoiAddress(1));
+      mAddressView.setNormalAddress(HomeDataProvider.getInstance().obtainPoiAddress(1));
     }
-    mPopWindow = new PopWindow.PopupWindowBuilder(getContext())
+    PopWindow popWindow = new PopWindow.PopupWindowBuilder(getContext())
         .setView(mAddressView.getView())
         .size(UIUtils.getScreenWidth(getContext()), UIUtils.getScreenHeight(getContext()))
         .setBackgroundDrawable(new ColorDrawable(Color.parseColor("#10000000")))
         .create();
-    mPopWindow.showAtLocation(getView(), Gravity.TOP, 0, UIUtils.getStatusbarHeight(getContext()));
+    popWindow.showAtLocation(getView(), Gravity.TOP, 0, UIUtils.getStatusbarHeight(getContext()));
+    mPopStack.push(popWindow);
+  }
+
+  @Override
+  public void onAddressItemClick(Address address, int type) {
+    if (mPopStack != null && !mPopStack.isEmpty()) {
+      mPopStack.pop().dissmiss();
+    }
+
+    if (type == START || type == END) {
+      if (mChooseResultListener != null) {
+        mChooseResultListener.onResult(type, address);
+      }
+    }
+    DBUtil.insertDataToAddress(getContext(), address, type);
+  }
+
+  @Override
+  public void searchByKeyWord(String curCity, CharSequence key, IPoiSearchListener listener) {
+    mMap.poiSearchByKeyWord(curCity, key, listener);
+  }
+
+  @Override
+  public void onDismiss() {
+    if (mPopStack != null && !mPopStack.isEmpty()) {
+      mPopStack.pop().dissmiss();
+    }
   }
 
   public interface IChooseResultListener {

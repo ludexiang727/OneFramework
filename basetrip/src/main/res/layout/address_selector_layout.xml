@@ -85,7 +85,9 @@
           android:layout_width="0dp"
           android:layout_height="match_parent"
           android:layout_weight="1"
-          android:padding="10dp"
+          android:paddingLeft="10dp"
+          android:paddingTop="10dp"
+          android:paddingBottom="10dp"
           android:clickable="true"
           android:background="@drawable/address_normal_set_selector">
           <ImageView
@@ -95,24 +97,43 @@
             android:layout_centerVertical="true"
             android:src="@drawable/address_normal_home_icon"/>
 
+          <ImageView
+            android:id="@+id/address_normal_home_change"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/base_address_change_arrow"/>
+
           <TextView
             android:id="@+id/address_normal_home"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:ellipsize="middle"
             android:layout_marginLeft="10dp"
+            android:layout_toLeftOf="@id/address_normal_home_change"
             android:layout_toRightOf="@id/address_normal_home_icon"
             android:text="@string/address_normal_home_address"
             android:textColor="#666666"
             android:textSize="14sp"/>
 
           <TextView
+            android:id="@+id/address_normal_home_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/address_normal_home"
             android:layout_below="@id/address_normal_home"
+            android:layout_toLeftOf="@id/address_normal_home_change"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:text="@string/address_normal_set_home_address"
             android:textColor="#999999"
             android:textSize="12sp"/>
+
+
         </RelativeLayout>
 
         <View
@@ -125,7 +146,9 @@
           android:layout_width="0dp"
           android:layout_height="match_parent"
           android:layout_weight="1"
-          android:padding="10dp"
+          android:paddingLeft="10dp"
+          android:paddingTop="10dp"
+          android:paddingBottom="10dp"
           android:clickable="true"
           android:background="@drawable/address_normal_set_selector">
           <ImageView
@@ -135,21 +158,37 @@
             android:layout_centerVertical="true"
             android:src="@drawable/address_normal_company_icon"/>
 
+          <ImageView
+            android:id="@+id/address_normal_company_change"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scaleType="center"
+            android:layout_centerVertical="true"
+            android:src="@drawable/base_address_change_arrow"/>
+
           <TextView
             android:id="@+id/address_normal_company"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:layout_toLeftOf="@id/address_normal_company_change"
             android:layout_toRightOf="@id/address_normal_company_icon"
             android:text="@string/address_normal_company_address"
             android:textColor="#666666"
             android:textSize="14sp"/>
 
           <TextView
+            android:id="@+id/address_normal_company_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/address_normal_company"
+            android:layout_toLeftOf="@id/address_normal_company_change"
             android:layout_below="@id/address_normal_company"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:text="@string/address_normal_set_company_address"
             android:textColor="#999999"
             android:textSize="12sp"/>

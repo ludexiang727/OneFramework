@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.one.framework.api.annotation.ServiceProvider;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
+import com.one.framework.db.DBTables.AddressTable;
 import com.one.map.location.LocationProvider;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
@@ -90,17 +91,26 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
 
   @Override
   public void onStartClick() {
-    addressSelector(TYPE_START_ADR, this);
+    addressSelector(AddressTable.START, this);
   }
 
   @Override
   public void onEndClick() {
-    addressSelector(TYPE_END_ADR, this);
+    addressSelector(AddressTable.END, this);
   }
 
   @Override
   public void onTimeClick() {
 
+  }
+
+  @Override
+  public void onNormalAdrSetting(int type) {
+    if (type == AddressTable.HOME) {
+      addressSelector(AddressTable.HOME, this);
+    } else {
+      addressSelector(AddressTable.COMPANY, this);
+    }
   }
 
   @Override
@@ -183,7 +193,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   @Override
   public void onResult(int type, Address address) {
     mPresenter.saveAddress(type, address);
-    if (type == TYPE_START_ADR) {
+    if (type == AddressTable.START) {
       mFormView.setStartPoint(address.mAdrDisplayName);
     } else {
       mFormView.setEndPoint(address.mAdrDisplayName);

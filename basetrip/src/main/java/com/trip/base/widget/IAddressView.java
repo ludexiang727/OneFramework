@@ -1,6 +1,7 @@
 package com.trip.base.widget;
 
 import android.view.View;
+import com.one.framework.db.DBTables.AddressTable.AddressType;
 import com.one.map.IMap.IPoiSearchListener;
 import com.one.map.model.Address;
 import java.util.List;
@@ -17,15 +18,19 @@ public interface IAddressView {
 
   void setInputSearchHint(int inputSearchHint);
 
-  void setNormalAddress(int type, List<Address> addresses);
+  void setAddressType(@AddressType int type);
 
-  void setAddressItemClick(IAddressItemClick clickListener);
+  void setNormalAddress(List<Address> addresses);
 
-  interface IAddressItemClick {
+  void setAddressItemClick(IAddressListener clickListener);
 
-    void onAddressItemClick(Address address);
+  interface IAddressListener {
+
+    void onAddressItemClick(Address address, @AddressType int type);
 
     void searchByKeyWord(String curCity, CharSequence key, IPoiSearchListener listener);
+
+    void onNormalAdrSetting(int type);
 
     void onDismiss();
   }

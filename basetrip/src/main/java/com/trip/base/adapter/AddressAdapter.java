@@ -1,5 +1,9 @@
 package com.trip.base.adapter;
 
+import static com.one.framework.db.DBTables.AddressTable.END;
+import static com.one.framework.db.DBTables.AddressTable.SEARCH_HISTORY;
+import static com.one.framework.db.DBTables.AddressTable.START;
+
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
@@ -40,16 +44,28 @@ public class AddressAdapter extends AbsBaseAdapter<Address, AddressHolder> {
 
   @Override
   protected void bindData(Address model, AddressHolder holder, int position) {
-    if (iconType == 0) {
-      holder.addressIcon.setImageResource(R.drawable.base_address_item_origin);
-    } else if (iconType == 1) {
-      holder.addressIcon.setImageResource(R.drawable.base_address_item_terminal);
-    }
-    if (model.distance != -1 && model.distance < 30) { // tencent 返回distance应该是米
-      holder.recommend.setVisibility(View.VISIBLE);
+    if (model.type != -1) {
+      holder.addressIcon.setImageResource(R.drawable.base_address_search_item_result);
+      if (model.type == SEARCH_HISTORY) {
+        holder.recommend.setVisibility(View.VISIBLE);
+        holder.recommend.setText(R.string.address_search_history);
+      } else {
+        holder.recommend.setVisibility(View.GONE);
+      }
     } else {
-      holder.recommend.setVisibility(View.GONE);
+      if (iconType == START) {
+        holder.addressIcon.setImageResource(R.drawable.base_address_item_origin);
+      } else if (iconType == END) {
+        holder.addressIcon.setImageResource(R.drawable.base_address_item_terminal);
+      }
+      if (model.distance != -1 && model.distance < 30) { // tencent 返回distance应该是米
+        holder.recommend.setVisibility(View.VISIBLE);
+      } else {
+        holder.recommend.setVisibility(View.GONE);
+      }
+      holder.recommend.setText(R.string.address_recommend);
     }
+
     holder.displayName.setText(model.mAdrDisplayName);
     holder.detailAddress.setText(model.mAdrFullName);
   }
