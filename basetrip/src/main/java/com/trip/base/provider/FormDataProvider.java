@@ -13,6 +13,8 @@ public class FormDataProvider {
 
   private long mBookingTime;
 
+  private int mTip = 0;
+
   private FormDataProvider() {
 
   }
@@ -43,6 +45,14 @@ public class FormDataProvider {
     mBookingTime = time;
   }
 
+  public int obtainTip() {
+    return mTip;
+  }
+
+  public void saveTip(int tip) {
+    mTip = tip;
+  }
+
   public Address obtainStartAddress() {
     return mStartAddress;
   }
@@ -53,5 +63,12 @@ public class FormDataProvider {
 
   public long obtainBookingTime() {
     return  mBookingTime;
+  }
+
+  public void clearData() {
+    mStartAddress = null;
+    mEndAddress = null;
+    mBookingTime = 0;
+    mTip = 0;
   }
 }

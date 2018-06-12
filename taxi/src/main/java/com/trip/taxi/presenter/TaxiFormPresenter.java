@@ -1,14 +1,15 @@
 package com.trip.taxi.presenter;
 
 import android.content.Context;
-import com.one.map.map.BitmapDescriptor;
 import com.one.map.map.BitmapDescriptorFactory;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
 import com.trip.base.provider.FormDataProvider;
 import com.trip.taxi.ITaxiView;
 import com.trip.taxi.R;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,9 +21,12 @@ public class TaxiFormPresenter {
   private ITaxiView mView;
   private Context mContext;
 
+  private String[] mTipArray;
+
   public TaxiFormPresenter(Context context, ITaxiView view) {
     mContext = context;
     mView = view;
+    mTipArray = context.getResources().getStringArray(R.array.TaxiTip);
   }
 
   public void saveAddress(int type, Address address) {
@@ -31,6 +35,31 @@ public class TaxiFormPresenter {
     } else {
       FormDataProvider.getInstance().saveEndAddress(address);
     }
+  }
+
+  public List<String> getTipItems() {
+    List<String> items = new ArrayList<>();
+    for (int i = 0; i < mTipArray.length; i++) {
+      if (i == 0) {
+        items.add(mTipArray[i]);
+      } else {
+        items.add(mTipArray[i] + "元");
+      }
+    }
+    return items;
+  }
+
+  public int getTip(int selectPosition) {
+    if (selectPosition == 0) {
+      return 0;
+    }
+    int tip = Integer.parseInt(mTipArray[selectPosition]);
+    FormDataProvider.getInstance().saveTip(tip);
+    return tip;
+  }
+
+  public void saveBookingTime(long time) {
+    FormDataProvider.getInstance().saveBookingTime(time);
   }
 
   public void showEasyForm() {

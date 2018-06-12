@@ -3,8 +3,6 @@ package com.trip.taxi.widget.impl;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.transition.ChangeBounds;
-import android.support.transition.TransitionManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -12,7 +10,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.trip.taxi.R;
 import com.trip.taxi.divider.DividerViewLayout;
@@ -20,7 +17,6 @@ import com.trip.taxi.widget.IFormView;
 import com.trip.taxi.widget.IFullFormView;
 import com.trip.taxi.widget.IOptionView;
 import com.trip.taxi.widget.TaxiFullFormView;
-import java.util.Date;
 
 /**
  * Created by mobike on 2017/12/12.
@@ -41,7 +37,6 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
   private IFullFormView mFullView;
 
   private IFormListener iFormView;
-  private IAskListener iAskListener;
 
   private int mFormType;
 
@@ -192,30 +187,18 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
   }
 
   @Override
-  public void setTime(long time) {
+  public void setTime(long time, String showTime) {
     if (time == 0) {
       mBookingTime.setText(R.string.taxi_book_time);
     } else {
-      Date date = new Date();
-      date.setTime(time);
-//      mTimeLocation.setText(TimeSelectDialogHelper.Companion.getTimeString(date));
+      mBookingTime.setText(showTime);
     }
-    mFullView.setTime(time);
-  }
-
-  @Override
-  public void setTime(String time) {
-
+    mFullView.setTime(time, showTime);
   }
 
   @Override
   public void setFormListener(IFormListener listener) {
     iFormView = listener;
-  }
-
-  @Override
-  public void setAskingListener(IAskListener listener) {
-    this.iAskListener = listener;
   }
 
   @Override
@@ -255,6 +238,10 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
       iFormView.onEndClick();
     } else if (id == R.id.taxi_form_booking_time_layout) {
       iFormView.onTimeClick();
+    } else if (id == R.id.taxi_full_form_tip_layout) {
+      iFormView.onTipClick();
+    } else if (id == R.id.taxi_full_form_mark_layout) {
+      iFormView.onMarkClick();
     }
   }
 
@@ -263,41 +250,6 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
     setFormType(mFormType);
   }
 
-  @Override
-  public void onClick(int tag) {
-//    switch (tag) {
-//      case R.id.ridehailing_location_time_group:
-//        if (iFormView != null) {
-//          iFormView.onTimeClick();
-//        }
-//        break;
-//      case R.id.taxi_full_form_tip_layout:
-//        if (iAskListener != null) {
-//          iAskListener.onPriceClick();
-//        }
-//        break;
-//      case R.id.taxi_full_form_mark_layout:
-//        if (iAskListener != null) {
-//          iAskListener.onMsgClick();
-//        }
-//        break;
-//      case R.id.taxi_full_form_arrow: {
-//        if (mFullView.fullFormType()) {
-//          mFullView.showCollapse();
-//        } else {
-//          mFullView.showExpand();
-//        }
-//        break;
-//      }
-//    }
-  }
-
-  @Override
-  public void onByMeterSelected(boolean isSelected) {
-    if (iAskListener != null) {
-      iAskListener.onByMeter(isSelected);
-    }
-  }
 
   @Override
   public void setOnHeightChange(IOnHeightChange onChangeListener) {

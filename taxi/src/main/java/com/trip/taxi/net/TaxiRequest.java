@@ -63,4 +63,8 @@ public class TaxiRequest {
 
     requestCode = Api.request(TAXI_ESTIMATE_PRICE_URL, params, listener, TaxiEstimatePrice.class);
   }
+
+  public static void taxiCreateOrder() {
+
+  }
 }

@@ -24,17 +24,14 @@ public interface IFullFormView {
 
   void updatePriceInfo(String price, String coupon, String discount);
 
-  void setTime(long time);
+  void setTime(long time, String showTime);
 
   void setMoney(int fee);
 
   void setMsg(String msg);
 
   interface IFullFormListener {
-
-    void onClick(int tag);
-
-    void onByMeterSelected(boolean isSelected);
+    void onClick(View view);
   }
 
   void setFullFormListener(IFullFormListener listener);

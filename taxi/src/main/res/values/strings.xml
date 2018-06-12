@@ -4,6 +4,16 @@
   <string name="taxi_end_address">你要去哪</string>
   <string name="taxi_start_address_location">正在获取上车地点</string>
   <string name="taxi_confirm_page_title">确认呼叫</string>
+
+  <string name="taxi_book_time">预约时间</string>
+  <string name="taxi_thx_money">调度费</string>
+  <string name="taxi_thx_money_format">调度费{%1d}元</string>
+  <string name="taxi_by_meter">打表来接</string>
+  <string name="taxi_msg">捎话</string>
+  <string name="taxi_money_title">选择调度费</string>
+  <string name="taxi_call_now_taxi">呼叫出租车</string>
+  <string name="taxi_call_booking_taxi">预约出租车</string>
+
   <string name="ridehailing_init_trip_unfinish_text">你有一个正在进行的行程</string>
   <string name="ridehailing_init_trip_unfinish_text_more">你有多个正在进行的行程</string>
   <string name="ridehailing_init_trip_unfinish_action">查看详情</string>
@@ -228,12 +238,7 @@
   <string name="user_completed_save_success">保存成功</string>
   <string name="user_completed_save_fail">保存失败</string>
 
-  <string name="taxi_book_time">预约时间</string>
-  <string name="taxi_thx_money">调度费</string>
-  <string name="taxi_by_meter">打表来接</string>
-  <string name="taxi_msg">捎话</string>
-  <string name="taxi_money_title">选择调度费</string>
-  <string name="taxi_msg_title">捎话</string>
+
 
   <string name="taxi_by_meter_msg">3公里内打表来接</string>
 

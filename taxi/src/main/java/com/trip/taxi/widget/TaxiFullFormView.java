@@ -2,6 +2,7 @@ package com.trip.taxi.widget;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.TripButton;
+import com.one.framework.utils.UIUtils;
+import com.trip.base.provider.FormDataProvider;
 import com.trip.taxi.R;
 import com.trip.taxi.presenter.TaxiFullFormPresenter;
 import java.util.Date;
@@ -44,13 +47,14 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
   private View mCheckLayout;
   private TextView mMark;
   private View mMarkLayout;
-//  private ImageView mArrow;
+  //  private ImageView mArrow;
   private IFullFormListener mClickListener;
   private ValueAnimator mScaleAnim;
   private Context mContext;
   private boolean isFullView = false;
   private boolean mPlayAnimator = false;
   private View mViewSeparator;
+  private boolean isChecked;
   private TaxiFullFormPresenter mTaxiFullPresenter;
 
   public TaxiFullFormView(Context context) {
@@ -71,18 +75,18 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
   }
 
   private void loadView() {
-    final View view = LayoutInflater.from(mContext).inflate(R.layout.taxi_full_form_view_layout, this, true);
+    final View view = LayoutInflater.from(mContext)
+        .inflate(R.layout.taxi_full_form_view_layout, this, true);
     initView(view);
   }
 
   private void initView(View view) {
     mTimeLayout = (LinearLayout) view.findViewById(R.id.taxi_form_booking_time_layout);
-//    mArrow = (ImageView) view.findViewById(R.id.taxi_full_form_arrow);
     mTimeView = (TextView) view.findViewById(R.id.taxi_form_booking_time);
     mViewSeparator = view.findViewById(R.id.taxi_full_form_separator);
 
     mOptionsLayout = (LinearLayout) view.findViewById(R.id.taxi_full_form_options_layout);
-    mTipLayout =  view.findViewById(R.id.taxi_full_form_tip_layout);
+    mTipLayout = view.findViewById(R.id.taxi_full_form_tip_layout);
     mTip = (TextView) view.findViewById(R.id.taxi_full_form_tip);
     mCheckLayout = view.findViewById(R.id.taxi_full_form_checkbox_layout);
     mCheck = (CheckBox) view.findViewById(R.id.taxi_full_form_checkbox);
@@ -101,14 +105,12 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
     mTipLayout.setOnClickListener(this);
     mMarkLayout.setOnClickListener(this);
     mTimeLayout.setOnClickListener(this);
-//    mArrow.setOnClickListener(this);
 
     mCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
       @Override
-      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (mClickListener != null) {
-          mClickListener.onByMeterSelected(isChecked);
-        }
+      public void onCheckedChanged(CompoundButton buttonView, boolean isCheck) {
+        isChecked = isCheck;
+        showLoading(true);
       }
     });
   }
@@ -120,12 +122,16 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
       mPriceLayout.setVisibility(GONE);
     }
     mLoadingView.setVisibility(show ? View.VISIBLE : View.GONE);
+    if (show) {
+      mTaxiFullPresenter.taxiEstimatePrice("", isChecked);
+    }
   }
 
   @Override
   public void setFormType(int type) {
     mFormType = type;
     mTimeLayout.setVisibility(mFormType == NOW ? View.GONE : View.VISIBLE);
+    mSendOrder.setTripButtonText(mFormType == NOW ? R.string.taxi_call_now_taxi : R.string.taxi_call_booking_taxi);
   }
 
   /**
@@ -134,11 +140,9 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
   @Override
   public void showFullForm() {
     fullView();
-    mTaxiFullPresenter.taxiEstimatePrice("", 0, 0, false);
   }
 
   private void fullView() {
-//    mArrow.setVisibility(View.VISIBLE);
     if (mFormType == BOOK) {
       mCheckLayout.setVisibility(View.GONE);
       mTimeLayout.setVisibility(View.VISIBLE);
@@ -170,13 +174,11 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
   }
 
   @Override
-  public void setTime(long time) {
+  public void setTime(long time, String showTime) {
     if (time == 0) {
       mTimeView.setText(R.string.taxi_book_time);
     } else {
-      Date date = new Date();
-      date.setTime(time);
-//      mTimeView.setText(TimeSelectDialogHelper.Companion.getTimeString(date));
+      mTimeView.setText(showTime);
     }
   }
 
@@ -185,8 +187,9 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
     if (fee == 0) {
       mTip.setText(getContext().getString(R.string.taxi_thx_money));
     } else {
-//      mTip.setText(getContext().getString(R.string.taxi_thx_money) + fee + PassportManager.getInstance()
-//          .getCurrency().getUnit());
+      mTip.setText(
+          UIUtils.highlight(String.format(mContext.getString(R.string.taxi_thx_money_format), fee),
+              Color.parseColor("#f05b48")));
     }
   }
 
@@ -236,7 +239,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
   @Override
   public void onClick(View view) {
     if (mClickListener != null) {
-      mClickListener.onClick(view.getId());
+      mClickListener.onClick(view);
     }
   }
 

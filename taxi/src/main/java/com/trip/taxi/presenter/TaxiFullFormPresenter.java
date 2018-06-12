@@ -7,6 +7,7 @@ import com.trip.base.provider.FormDataProvider;
 import com.trip.taxi.net.TaxiRequest;
 import com.trip.taxi.net.model.TaxiEstimatePrice;
 import com.trip.taxi.widget.IFullFormView;
+import java.text.Normalizer.Form;
 
 /**
  * Created by ludexiang on 2018/6/8.
@@ -21,10 +22,11 @@ public class TaxiFullFormPresenter {
   }
 
 
-  public void taxiEstimatePrice(String marks, long bookingTime, int tip,
-      boolean isTick) {
+  public void taxiEstimatePrice(String marks, boolean isTick) {
     Address start = FormDataProvider.getInstance().obtainStartAddress();
     Address end = FormDataProvider.getInstance().obtainEndAddress();
+    long bookingTime = FormDataProvider.getInstance().obtainBookingTime();
+    int tip = FormDataProvider.getInstance().obtainTip();
 
     TaxiRequest.taxiEstimatePrice(start, end, marks, bookingTime, tip, isTick,
         new IResponseListener<TaxiEstimatePrice>() {

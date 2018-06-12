@@ -10,11 +10,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import com.one.framework.api.annotation.ServiceProvider;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
+import com.one.framework.app.widget.wheelview.WheelView;
 import com.one.framework.db.DBTables.AddressTable;
+import com.one.framework.dialog.BottomSheetDialog;
+import com.one.framework.dialog.DataPickerDialog.ISelectResultListener;
 import com.one.map.location.LocationProvider;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
@@ -101,6 +105,33 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
 
   @Override
   public void onTimeClick() {
+    dataPickerSelector(2, new ISelectResultListener() {
+      @Override
+      public void onTimeSelect(long time, String showTime) {
+        mPresenter.saveBookingTime(time);
+        mFormView.setTime(time, showTime);
+      }
+    });
+  }
+
+  @Override
+  public void onTipClick() {
+    View view = LayoutInflater.from(getContext()).inflate(R.layout.taxi_tip_dialog_layout, null);
+    final WheelView tipWheel = (WheelView) view.findViewById(R.id.taxi_wheel_view_tip);
+    tipWheel.setItems(mPresenter.getTipItems(), 0);
+    showBottomDialog(view, new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        int position = tipWheel.getSelectedPosition();
+        int tip = mPresenter.getTip(position);
+        mFormView.setMoney(tip);
+        mFormView.showLoading(true);
+      }
+    });
+  }
+
+  @Override
+  public void onMarkClick() {
 
   }
 
@@ -119,6 +150,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
       mMap.clearElements();
       mMap.displayMyLocation();
       mTopbarView.titleBarReset();
+      pinViewHide(false);
       mNavigator.lockDrawerLayout(false);
       mPresenter.showEasyForm();
       mFormView.setEndPoint("");
@@ -167,7 +199,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     mTopbarView.setLeft(R.drawable.base_top_bar_back_selector);
     mNavigator.lockDrawerLayout(true);
     mFormView.showLoading(true);
-
+    pinViewHide(true);
     toggleMapView();
   }
 

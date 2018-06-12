@@ -9,10 +9,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.PopupWindow.OnDismissListener;
 import com.one.framework.app.widget.PopWindow;
 import com.one.framework.db.DBTables.AddressTable;
 import com.one.framework.db.DBTables.AddressTable.AddressType;
+import com.one.framework.dialog.BottomSheetDialog;
+import com.one.framework.dialog.BottomSheetDialog.Builder;
+import com.one.framework.dialog.DataPickerDialog;
+import com.one.framework.dialog.DataPickerDialog.ISelectResultListener;
 import com.one.framework.provider.HomeDataProvider;
 import com.one.framework.utils.DBUtil;
 import com.one.framework.utils.UIUtils;
@@ -56,6 +61,29 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
   @Override
   public void routePlanMsg(String msg, List<LatLng> points) {
 
+  }
+
+  /**
+   * @param view dialog 展示的view BottomSheetDialog 包含titlebar 取消 和 确认
+   * @param listener
+   * @return
+   */
+  protected BottomSheetDialog showBottomDialog(View view, View.OnClickListener listener) {
+    BottomSheetDialog bottomDialog = new Builder(getContext())
+        .setContentView(view)
+        .setPositiveButton(getString(R.string.one_confirm), listener)
+        .create();
+    bottomDialog.show();
+    return bottomDialog;
+  }
+
+  /**
+   * @param timeRange 显示几天
+   */
+  protected void dataPickerSelector(int timeRange, ISelectResultListener listener) {
+    DataPickerDialog dataPickerDialog = new DataPickerDialog(getContext(), timeRange)
+        .setSelectResultListener(listener);
+    dataPickerDialog.show();
   }
 
   protected void addressSelector(@AddressType final int type, final IChooseResultListener listener) {

@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name">TestDemo</string>
+  <string name="app_name">TAXI</string>
   <string name="wait_time">已经等待 %1$s</string>
 
   <string name="gps_deny_hint">关闭定位功能，应用将无法使用，建议您在设置中开启定位功能</string>

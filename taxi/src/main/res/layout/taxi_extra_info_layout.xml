@@ -29,8 +29,8 @@
       android:layout_toRightOf="@id/taxi_form_booking_time_icon"
       android:gravity="center"
       android:text="@string/taxi_book_time"
-      android:textColor="#191d21"
-      android:textSize="14sp"/>
+      android:textColor="#585c64"
+      android:textSize="12sp"/>
   </LinearLayout>
 
   <View

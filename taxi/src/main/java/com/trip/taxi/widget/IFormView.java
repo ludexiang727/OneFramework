@@ -35,9 +35,7 @@ public interface IFormView {
 
   int getOptionType();
 
-  void setTime(long time);
-
-  void setTime(String time);
+  void setTime(long time, String showTime);
 
   void setFormListener(IFormListener listener);
 
@@ -59,20 +57,11 @@ public interface IFormView {
     void onEndClick();
 
     void onTimeClick();
+
+    void onTipClick();
+
+    void onMarkClick();
   }
-
-  interface IAskListener {
-
-    void onPriceClick();
-
-    void onMsgClick();
-
-    void onRetryClick();
-
-    void onByMeter(boolean isSelected);
-  }
-
-  void setAskingListener(IAskListener listener);
 
   void showLoading(boolean isLoading);
 
