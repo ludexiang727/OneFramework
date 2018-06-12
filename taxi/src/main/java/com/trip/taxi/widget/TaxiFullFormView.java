@@ -45,9 +45,9 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
   private View mTipLayout;
   private CheckBox mCheck;
   private View mCheckLayout;
-  private TextView mMark;
   private View mMarkLayout;
-  //  private ImageView mArrow;
+  private TextView mMark;
+  private TextView mMarkSelect;
   private IFullFormListener mClickListener;
   private ValueAnimator mScaleAnim;
   private Context mContext;
@@ -75,8 +75,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
   }
 
   private void loadView() {
-    final View view = LayoutInflater.from(mContext)
-        .inflate(R.layout.taxi_full_form_view_layout, this, true);
+    final View view = LayoutInflater.from(mContext).inflate(R.layout.taxi_full_form_view_layout, this, true);
     initView(view);
   }
 
@@ -92,6 +91,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
     mCheck = (CheckBox) view.findViewById(R.id.taxi_full_form_checkbox);
     mMarkLayout = view.findViewById(R.id.taxi_full_form_mark_layout);
     mMark = (TextView) view.findViewById(R.id.taxi_full_form_mark);
+    mMarkSelect = (TextView) view.findViewById(R.id.taxi_full_form_mark_select);
 
     mRetryEstimateLayout = (LinearLayout) view.findViewById(R.id.taxi_estimate_retry_layout);
     mLoadingView = (LoadingView) view.findViewById(R.id.taxi_estimate_price_loading);
@@ -196,11 +196,14 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
   @Override
   public void setMsg(String msg) {
     if (TextUtils.isEmpty(msg)) {
-      mMark.setText("");
-      mMark.setVisibility(View.GONE);
+      mMark.setText(R.string.taxi_msg);
+      mMarkSelect.setText("");
+      mMarkSelect.setVisibility(View.GONE);
     } else {
-      mMark.setText(msg);
-      mMark.setVisibility(View.VISIBLE);
+      mMark.setText(R.string.taxi_already_add_msg);
+      mMarkSelect.setText(msg);
+      mMarkSelect.setVisibility(View.VISIBLE);
+      mMarkLayout.setTag(msg);
     }
   }
 
@@ -218,7 +221,6 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
     if (!checkPlayAnim()) {
       return;
     }
-//    mArrow.setVisibility(View.VISIBLE);
     if (mFormType == BOOK) {
       mViewSeparator.setVisibility(View.VISIBLE);
     } else {

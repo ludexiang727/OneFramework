@@ -241,7 +241,7 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
     } else if (id == R.id.taxi_full_form_tip_layout) {
       iFormView.onTipClick();
     } else if (id == R.id.taxi_full_form_mark_layout) {
-      iFormView.onMarkClick();
+      iFormView.onMarkClick(view);
     }
   }
 

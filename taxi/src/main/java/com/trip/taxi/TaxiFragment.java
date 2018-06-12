@@ -8,10 +8,15 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 import com.one.framework.api.annotation.ServiceProvider;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
@@ -32,6 +37,7 @@ import com.trip.taxi.widget.IFormView;
 import com.trip.taxi.widget.IFormView.IFormListener;
 import com.trip.taxi.widget.IFormView.IOnHeightChange;
 import com.trip.taxi.widget.impl.FormView;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,11 +53,13 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   private LocalBroadcastManager mBroadcast;
   private BroadReceiver mReceiver;
   private TaxiFormPresenter mPresenter;
+  private int mParamsMargin;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mPresenter = new TaxiFormPresenter(getContext(), this);
+    mParamsMargin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
   }
 
   @Override
@@ -131,8 +139,69 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   }
 
   @Override
-  public void onMarkClick() {
-
+  public void onMarkClick(View markView) {
+    View view = LayoutInflater.from(getContext()).inflate(R.layout.taxi_mark_dialog_layout, null);
+    final LinearLayout markViewParent = (LinearLayout) view.findViewById(R.id.taxi_mark_view_parent);
+    int rowIndex = -1;
+    List<String> marks = mPresenter.getMarkItems();
+    LinearLayout.LayoutParams params = new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
+    params.weight = 1;
+    params.rightMargin = params.leftMargin = mParamsMargin;
+    params.topMargin = params.bottomMargin = mParamsMargin;
+    params.gravity = Gravity.CENTER;
+    final List<TextView> selectedView = new ArrayList<>();
+    LinearLayout rowLayout = null;
+    for (String mark : marks) {
+      if (rowLayout == null || rowLayout.getChildCount() == 3) {
+        rowIndex++;
+        if (rowIndex >= 4) { //只展示4行
+          break;
+        }
+        rowLayout = new LinearLayout(getContext());
+        markViewParent.addView(rowLayout, rowIndex);
+      }
+      final TextView itemView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.taxi_mark_item_layout, null);
+      Object marksStr = markView.getTag();
+      if (marksStr != null && marksStr instanceof String) {
+        for (String text : ((String) marksStr).split(",")) {
+          if (mark.equals(text)) {
+            itemView.setSelected(true);
+            selectedView.add(itemView);
+          }
+        }
+      }
+      itemView.setText(mark);
+      itemView.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          if (selectedView.size() >= 3 && !itemView.isSelected()) {
+            return;
+          }
+          itemView.setSelected(!itemView.isSelected());
+          if (itemView.isSelected()) {
+            selectedView.add(itemView);
+          } else {
+            selectedView.remove(itemView);
+          }
+        }
+      });
+      rowLayout.addView(itemView, params);
+    }
+    showBottomDialog(view, new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (!selectedView.isEmpty()) {
+          StringBuffer buffer = new StringBuffer();
+          for (TextView textView : selectedView) {
+            buffer.append(textView.getText()).append(",");
+          }
+          mFormView.setMsg(buffer.substring(0, buffer.toString().length() - 1));
+        } else {
+          mFormView.setMsg("");
+        }
+//        mFormView.showLoading(true);
+      }
+    });
   }
 
   @Override

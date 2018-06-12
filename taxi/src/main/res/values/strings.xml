@@ -10,6 +10,7 @@
   <string name="taxi_thx_money_format">调度费{%1d}元</string>
   <string name="taxi_by_meter">打表来接</string>
   <string name="taxi_msg">捎话</string>
+  <string name="taxi_already_add_msg">已捎话</string>
   <string name="taxi_money_title">选择调度费</string>
   <string name="taxi_call_now_taxi">呼叫出租车</string>
   <string name="taxi_call_booking_taxi">预约出租车</string>
@@ -252,11 +253,11 @@
   <string name="taxi_manual_error">请输入金额</string>
 
   <string-array name="taxi_msg_array">
-    <item>愿等10分钟</item>
+    <item>愿等15分钟</item>
     <item>现金支付</item>
     <item>请勿吸烟</item>
-    <item>现在就走</item>
-    <item>打车往返程</item>
+    <item>带宠物</item>
+    <item>打车往返</item>
     <item>不爱聊天</item>
   </string-array>
 

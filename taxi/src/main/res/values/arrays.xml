@@ -12,4 +12,13 @@
     <item>18</item>
     <item>20</item>
   </string-array>
+
+  <string-array name="TaxiMarks">
+    <item>愿等15分钟</item>
+    <item>打车往返</item>
+    <item>在线支付</item>
+    <item>现金支付</item>
+    <item>开双闪等我</item>
+    <item>不爱聊天</item>
+  </string-array>
 </resources>

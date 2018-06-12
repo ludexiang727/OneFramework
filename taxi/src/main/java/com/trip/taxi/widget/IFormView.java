@@ -60,7 +60,7 @@ public interface IFormView {
 
     void onTipClick();
 
-    void onMarkClick();
+    void onMarkClick(View view);
   }
 
   void showLoading(boolean isLoading);

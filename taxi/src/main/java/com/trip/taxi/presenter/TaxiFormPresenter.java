@@ -22,11 +22,13 @@ public class TaxiFormPresenter {
   private Context mContext;
 
   private String[] mTipArray;
+  private String[] mMarkArray;
 
   public TaxiFormPresenter(Context context, ITaxiView view) {
     mContext = context;
     mView = view;
     mTipArray = context.getResources().getStringArray(R.array.TaxiTip);
+    mMarkArray = context.getResources().getStringArray(R.array.TaxiMarks);
   }
 
   public void saveAddress(int type, Address address) {
@@ -47,6 +49,10 @@ public class TaxiFormPresenter {
       }
     }
     return items;
+  }
+
+  public List<String> getMarkItems() {
+    return Arrays.asList(mMarkArray);
   }
 
   public int getTip(int selectPosition) {
