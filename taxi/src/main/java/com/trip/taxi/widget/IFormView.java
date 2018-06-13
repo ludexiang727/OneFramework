@@ -2,6 +2,7 @@ package com.trip.taxi.widget;
 
 import android.support.annotation.IntDef;
 import android.view.View;
+import com.trip.taxi.net.model.TaxiOrder;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -57,6 +58,8 @@ public interface IFormView {
     void onTipClick();
 
     void onMarkClick(View view);
+
+    void forward(TaxiOrder order);
   }
 
   void showLoading(boolean isLoading);

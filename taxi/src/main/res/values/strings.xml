@@ -14,6 +14,7 @@
   <string name="taxi_money_title">选择调度费</string>
   <string name="taxi_call_now_taxi">呼叫出租车</string>
   <string name="taxi_call_booking_taxi">预约出租车</string>
+  <string name="taxi_wait_driver_time">%1ds</string>
 
   <string name="ridehailing_init_trip_unfinish_text">你有一个正在进行的行程</string>
   <string name="ridehailing_init_trip_unfinish_text_more">你有多个正在进行的行程</string>

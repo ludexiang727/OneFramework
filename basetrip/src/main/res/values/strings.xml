@@ -10,4 +10,6 @@
   <string name="address_input_address_hint">输入%1$s的位置</string>
   <string name="address_normal_company_address">公司</string>
   <string name="address_normal_set_company_address">设置公司地址</string>
+
+  <string name="base_wait_cancel_order">取消订单</string>
 </resources>

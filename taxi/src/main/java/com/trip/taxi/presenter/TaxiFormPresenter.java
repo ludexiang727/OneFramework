@@ -7,6 +7,7 @@ import com.one.map.model.Address;
 import com.trip.base.provider.FormDataProvider;
 import com.trip.taxi.ITaxiView;
 import com.trip.taxi.R;
+import com.trip.taxi.net.model.TaxiOrder;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +38,10 @@ public class TaxiFormPresenter {
     } else {
       FormDataProvider.getInstance().saveEndAddress(address);
     }
+  }
+
+  public void saveOrder(TaxiOrder order) {
+    FormDataProvider.getInstance().saveOrder(order);
   }
 
   public List<String> getTipItems() {

@@ -1,0 +1,10 @@
+<merge
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:padding="15dp"
+    android:layout_margin="10dp"
+    android:text="@string/base_wait_cancel_order"/>
+</merge>

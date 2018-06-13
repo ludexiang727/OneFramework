@@ -1,6 +1,7 @@
 package com.trip.base.provider;
 
 import com.one.map.model.Address;
+import com.trip.base.model.IOrder;
 
 /**
  * Created by ludexiang on 2018/6/7.
@@ -10,6 +11,8 @@ public class FormDataProvider {
 
   private Address mStartAddress;
   private Address mEndAddress;
+
+  private IOrder mOrder;
 
   private long mBookingTime;
 
@@ -63,6 +66,14 @@ public class FormDataProvider {
 
   public long obtainBookingTime() {
     return  mBookingTime;
+  }
+
+  public void saveOrder(IOrder order) {
+    mOrder = order;
+  }
+
+  public IOrder obtainOrder() {
+    return mOrder;
   }
 
   public void clearData() {

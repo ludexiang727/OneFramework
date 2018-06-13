@@ -1,11 +1,11 @@
 package com.trip.taxi.net;
 
-import android.content.Context;
 import android.text.TextUtils;
 import com.one.framework.net.Api;
 import com.one.framework.net.response.IResponseListener;
 import com.one.map.model.Address;
 import com.trip.taxi.net.model.TaxiEstimatePrice;
+import com.trip.taxi.net.model.TaxiOrder;
 import java.util.HashMap;
 
 /**
@@ -15,6 +15,7 @@ import java.util.HashMap;
 public class TaxiRequest {
 
   private static final String TAXI_ESTIMATE_PRICE_URL = "/api/chariot/trip/taxi/price";
+  private static final String TAXI_ORDER_CREATE_URL = "/api/chariot/trip/taxi/create";
 
 //  private val TAXI_PRICE = "/api/chariot/trip/taxi/price"
 //  private val TAXI_PAY = "/api/chariot/trip/taxi/pay"
@@ -64,7 +65,42 @@ public class TaxiRequest {
     requestCode = Api.request(TAXI_ESTIMATE_PRICE_URL, params, listener, TaxiEstimatePrice.class);
   }
 
-  public static void taxiCreateOrder() {
+  /**
+   *
+   * @param start
+   * @param end
+   * @param marks
+   * @param bookingTime
+   * @param tip
+   * @param isTick 是否打表来接
+   * @param type 实时订单还是预约订单
+   * @param listener
+   */
+  public static void taxiCreateOrder(Address start, Address end, String marks, long bookingTime,
+      int tip, boolean isTick, int type, IResponseListener<TaxiOrder> listener) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("bizType", 3);
 
+    params.put("startLat", start.mAdrLatLng.latitude);
+    params.put("startLng", start.mAdrLatLng.longitude);
+
+    params.put("endLat", end.mAdrLatLng.latitude);
+    params.put("endLng", end.mAdrLatLng.longitude);
+
+    params.put("originName", start.mAdrDisplayName);
+    params.put("originDetailAdr", start.mAdrFullName);
+
+    params.put("destinationName", end.mAdrDisplayName);
+    params.put("destinationDetailAdr", end.mAdrFullName);
+
+
+    params.put("bookTime", bookingTime == 0 ? System.currentTimeMillis() : bookingTime);
+    params.put("payForPickUp", isTick ? 1 : 0);
+
+    params.put("riderTags", marks);
+    params.put("thanksFee", tip);
+    params.put("type", type);
+
+    requestCode = Api.request(TAXI_ORDER_CREATE_URL, params, listener, TaxiOrder.class);
   }
 }

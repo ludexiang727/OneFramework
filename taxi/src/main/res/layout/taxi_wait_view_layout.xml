@@ -1,0 +1,36 @@
+<merge
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:layout_alignParentTop="true"
+    android:clipChildren="false"
+    android:background="@android:color/white">
+    <com.one.framework.app.widget.LoadingView
+      android:id="@+id/taxi_wait_loading_view"
+      android:layout_width="80dp"
+      android:layout_height="80dp"
+      android:layout_centerInParent="true"
+      app:loading_type="progress"
+      app:loading_progress_type="circle"
+      app:loading_progress_color="#f05b48"
+      app:loading_progress_width="3dp"/>
+
+    <TextView
+      android:id="@+id/taxi_wait_count_down"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"/>
+  </RelativeLayout>
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="#f00"
+    android:layout_alignParentBottom="true">
+
+  </LinearLayout>
+</merge>

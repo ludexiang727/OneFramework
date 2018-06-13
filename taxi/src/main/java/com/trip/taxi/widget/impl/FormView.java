@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.trip.taxi.R;
 import com.trip.taxi.divider.DividerViewLayout;
+import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.widget.IFormView;
 import com.trip.taxi.widget.IFullFormView;
 import com.trip.taxi.widget.IOptionView;
@@ -238,6 +239,9 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
       iFormView.onTipClick();
     } else if (id == R.id.taxi_full_form_mark_layout) {
       iFormView.onMarkClick(view);
+    } else if (id == R.id.taxi_invoke_driver) {
+      TaxiOrder order = (TaxiOrder) view.getTag();
+      iFormView.forward(order);
     }
   }
 

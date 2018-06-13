@@ -16,12 +16,12 @@ import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.TripButton;
 import com.one.framework.utils.UIUtils;
 import com.trip.taxi.R;
+import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.presenter.TaxiFullFormPresenter;
 
-public class TaxiFullFormView extends LinearLayout implements IFullFormView,
-    View.OnClickListener {
-
+public class TaxiFullFormView extends LinearLayout implements IFullFormView, View.OnClickListener {
   private TripButton mSendOrder;
+  private LoadingView mInvokeLoading;
   private LinearLayout mRetryEstimateLayout;
   private LinearLayout mTimeLayout;
   private TextView mTimeView;
@@ -48,6 +48,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
   private boolean mPlayAnimator = false;
   private View mViewSeparator;
   private boolean isChecked;
+  private String mMarkMsg = "";
   private TaxiFullFormPresenter mTaxiFullPresenter;
 
   public TaxiFullFormView(Context context) {
@@ -94,10 +95,12 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
     mEstimateTicket = (TextView) view.findViewById(R.id.taxi_estimate_price_ticket);
 
     mSendOrder = (TripButton) view.findViewById(R.id.taxi_invoke_driver);
+    mInvokeLoading = (LoadingView) view.findViewById(R.id.taxi_invoke_loading);
 
     mTipLayout.setOnClickListener(this);
     mMarkLayout.setOnClickListener(this);
     mTimeLayout.setOnClickListener(this);
+    mSendOrder.setOnClickListener(this);
 
     mCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
       @Override
@@ -116,7 +119,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
     }
     mLoadingView.setVisibility(show ? View.VISIBLE : View.GONE);
     if (show) {
-      mTaxiFullPresenter.taxiEstimatePrice("", isChecked);
+      mTaxiFullPresenter.taxiEstimatePrice(mMarkMsg, isChecked);
     }
   }
 
@@ -125,6 +128,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
     mFormType = type;
     mTimeLayout.setVisibility(mFormType == NOW ? View.GONE : View.VISIBLE);
     mSendOrder.setTripButtonText(mFormType == NOW ? R.string.taxi_call_now_taxi : R.string.taxi_call_booking_taxi);
+    mInvokeLoading.setVisibility(View.GONE);
   }
 
   /**
@@ -188,6 +192,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
 
   @Override
   public void setMsg(String msg) {
+    mMarkMsg = msg;
     if (TextUtils.isEmpty(msg)) {
       mMark.setText(R.string.taxi_msg);
       mMarkSelect.setText("");
@@ -233,8 +238,28 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView,
 
   @Override
   public void onClick(View view) {
+    if (mInvokeLoading.getVisibility() == View.VISIBLE) {
+      // 暂停所有选择操作
+      return;
+    }
+    int id = view.getId();
+    if (id == R.id.taxi_invoke_driver) {
+      mSendOrder.setTripButtonText("");
+      mInvokeLoading.setVisibility(View.VISIBLE);
+      mTaxiFullPresenter.taxiCreateOrder(mMarkMsg, isChecked, mFormType);
+    } else {
+      if (mClickListener != null) {
+        mClickListener.onClick(view);
+      }
+    }
+  }
+
+  @Override
+  public void createOrderSuccess(TaxiOrder order) {
+    mInvokeLoading.setVisibility(View.GONE);
     if (mClickListener != null) {
-      mClickListener.onClick(view);
+      mSendOrder.setTag(order);
+      mClickListener.onClick(mSendOrder);
     }
   }
 

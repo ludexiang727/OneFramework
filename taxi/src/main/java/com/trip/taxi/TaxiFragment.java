@@ -22,7 +22,6 @@ import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
 import com.one.framework.app.widget.wheelview.WheelView;
 import com.one.framework.db.DBTables.AddressTable;
-import com.one.framework.dialog.BottomSheetDialog;
 import com.one.framework.dialog.DataPickerDialog.ISelectResultListener;
 import com.one.map.location.LocationProvider;
 import com.one.map.map.MarkerOption;
@@ -31,8 +30,11 @@ import com.one.map.model.BestViewModel;
 import com.one.map.model.LatLng;
 import com.trip.base.page.AbsBaseFragment;
 import com.trip.base.page.AbsBaseFragment.IChooseResultListener;
+import com.trip.base.page.WaitFragment;
 import com.trip.base.provider.FormDataProvider;
+import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.presenter.TaxiFormPresenter;
+import com.trip.taxi.wait.TaxiWaitFragment;
 import com.trip.taxi.widget.IFormView;
 import com.trip.taxi.widget.IFormView.IFormListener;
 import com.trip.taxi.widget.IFormView.IOnHeightChange;
@@ -199,9 +201,14 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
         } else {
           mFormView.setMsg("");
         }
-//        mFormView.showLoading(true);
       }
     });
+  }
+
+  @Override
+  public void forward(TaxiOrder order) {
+    mPresenter.saveOrder(order);
+    forward(TaxiWaitFragment.class);
   }
 
   @Override

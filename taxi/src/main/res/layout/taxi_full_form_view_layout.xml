@@ -34,17 +34,33 @@
 
   </com.trip.taxi.widget.BaseLinearLayout>
 
-  <!-- 发单按钮 -->
-  <com.one.framework.app.widget.TripButton
-    android:id="@+id/taxi_invoke_driver"
+  <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:layout_alignParentBottom="true"
-    android:textColor="@android:color/white"
-    android:textSize="16sp"
-    app:disable_color="#ffffff"
-    app:enable_color="#343d4a"
-    app:radius="0.5dp"
-    app:text="@string/carpool_index_booking"/>
+    android:layout_alignParentBottom="true">
+    <!-- 发单按钮 -->
+    <com.one.framework.app.widget.TripButton
+      android:id="@+id/taxi_invoke_driver"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:textColor="@android:color/white"
+      android:textSize="16sp"
+      app:disable_color="#ffffff"
+      app:enable_color="#343d4a"
+      app:radius="0.5dp"
+      app:text="@string/carpool_index_booking"/>
+
+    <com.one.framework.app.widget.LoadingView
+      android:id="@+id/taxi_invoke_loading"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:visibility="gone"
+      app:loading_point_color="#ffffff"
+      app:loading_point_count="3"
+      app:loading_point_normal_size="3dp"
+      app:loading_point_selector_size="4dp"
+      app:loading_type="point"/>
+  </FrameLayout>
+
 
 </merge>

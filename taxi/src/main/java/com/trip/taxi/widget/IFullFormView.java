@@ -1,6 +1,7 @@
 package com.trip.taxi.widget;
 
 import android.view.View;
+import com.trip.taxi.net.model.TaxiOrder;
 
 public interface IFullFormView {
 
@@ -25,6 +26,8 @@ public interface IFullFormView {
   void setMoney(int fee);
 
   void setMsg(String msg);
+
+  void createOrderSuccess(TaxiOrder order);
 
   interface IFullFormListener {
     void onClick(View view);

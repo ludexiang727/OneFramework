@@ -6,6 +6,7 @@ import com.one.map.model.Address;
 import com.trip.base.provider.FormDataProvider;
 import com.trip.taxi.net.TaxiRequest;
 import com.trip.taxi.net.model.TaxiEstimatePrice;
+import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.widget.IFullFormView;
 import java.text.Normalizer.Form;
 
@@ -42,6 +43,37 @@ public class TaxiFullFormPresenter {
 
           @Override
           public void onFinish(TaxiEstimatePrice taxiEstimatePrice) {
+
+          }
+        });
+  }
+
+  /**
+   * @param marks 捎话
+   * @param isTick 是否达标来接
+   */
+  public void taxiCreateOrder(String marks, boolean isTick, final int type) {
+    // todo if Login
+//    if (Login)
+
+    Address start = FormDataProvider.getInstance().obtainStartAddress();
+    Address end = FormDataProvider.getInstance().obtainEndAddress();
+    long bookingTime = FormDataProvider.getInstance().obtainBookingTime();
+    int tip = FormDataProvider.getInstance().obtainTip();
+    TaxiRequest.taxiCreateOrder(start, end, marks, bookingTime, tip, isTick, type,
+        new IResponseListener<TaxiOrder>() {
+          @Override
+          public void onSuccess(TaxiOrder taxiOrder) {
+            mFullFormView.createOrderSuccess(taxiOrder);
+          }
+
+          @Override
+          public void onFail(TaxiOrder taxiOrder) {
+            mFullFormView.setFormType(type);
+          }
+
+          @Override
+          public void onFinish(TaxiOrder taxiOrder) {
 
           }
         });
