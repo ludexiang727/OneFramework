@@ -14,10 +14,6 @@ import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 import com.trip.taxi.R;
 
-/**
- * Created by mobike on 2017/11/29.
- */
-
 public class BaseRelativeLayout extends RelativeLayout {
   
   private ForegroundAttacher foregroundAttacher;

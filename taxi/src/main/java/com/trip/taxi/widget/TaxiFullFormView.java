@@ -11,19 +11,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.TripButton;
 import com.one.framework.utils.UIUtils;
-import com.trip.base.provider.FormDataProvider;
 import com.trip.taxi.R;
 import com.trip.taxi.presenter.TaxiFullFormPresenter;
-import java.util.Date;
-
-/**
- * Created by mobike on 2017/12/12.
- */
 
 public class TaxiFullFormView extends LinearLayout implements IFullFormView,
     View.OnClickListener {

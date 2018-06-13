@@ -20,10 +20,6 @@ import com.trip.taxi.widget.IOptionView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by mobike on 2017/12/5.
- */
-
 public class OptionsView extends View implements IOptionView {
 
   private int mViewType;

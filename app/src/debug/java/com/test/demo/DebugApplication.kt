@@ -9,7 +9,6 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
-import com.mobike.debug.ShakeSensorListener
 //import com.facebook.stetho.Stetho
 import com.one.framework.app.base.OneApplication
 import com.one.framework.net.Api
@@ -40,7 +39,8 @@ class DebugApplication : OneApplication() {
         if (TextUtils.isEmpty(env)) {
 
         } else {
-            val apiUrl: String = "https://" + env + "-app.mobike.com"
+//            taxi must be fix mo/
+            val apiUrl: String = env/*"https://" + env + "-app.taxi.com"*/
             H5Page.initEnv(env)
             Api.apiUrl(apiUrl)
         }

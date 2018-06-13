@@ -7,10 +7,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Created by mobike on 2017/12/12.
- */
-
 public interface IFormView {
 
   int EASY_FORM = 1;

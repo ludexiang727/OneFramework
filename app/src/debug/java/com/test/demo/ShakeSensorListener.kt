@@ -1,4 +1,4 @@
-package com.mobike.debug
+package com.test.demo
 
 import android.app.Activity
 import android.content.Context

@@ -13,8 +13,9 @@ public class WebpageQueryHelper {
 
 
   private static boolean isHostQualified(@NonNull Uri uri) {
-    return !TextUtils.isEmpty(uri.getHost()) && (uri.getHost().endsWith("mobike.com") || uri
-        .getHost().endsWith("mobike.io"));
+    // taxi must be fix m  / o/ b
+    return !TextUtils.isEmpty(uri.getHost()) && (uri.getHost().endsWith("taxi.com") || uri
+        .getHost().endsWith("taxi.io"));
   }
 
 

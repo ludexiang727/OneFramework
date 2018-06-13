@@ -18,10 +18,6 @@ import com.trip.taxi.widget.IFullFormView;
 import com.trip.taxi.widget.IOptionView;
 import com.trip.taxi.widget.TaxiFullFormView;
 
-/**
- * Created by mobike on 2017/12/12.
- */
-
 public class FormView extends DividerViewLayout implements IFormView, View.OnClickListener,
     IOptionView.IOptionChange, IFullFormView.IFullFormListener {
 

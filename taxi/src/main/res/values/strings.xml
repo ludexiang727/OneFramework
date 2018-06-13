@@ -96,14 +96,6 @@
   <string name="ridehailing_inprogress_dialog_cancel_order_left_button">不取消</string>
   <string name="ridehailing_inprogress_dialog_cancel_order_right_button">确定取消</string>
 
-  <string name="ridehailing_index_tab_bike">Mobike</string>
-  <string name="ridehailing_index_tab_premier">Limo</string>
-  <string name="ridehailing_index_tab_carpool">Carpool</string>
-  <string name="ridehailing_index_tab_taxi">Taxi</string>
-  <string name="ridehailing_index_tab_carsharing">CarShare</string>
-  <string name="ridehailing_index_tab_e_bike">E-Bike</string>
-  <string name="ridehailing_index_tab_mini_bus">摩拜巴士</string>
-
 
 
   <string name="ridehailing_net_error">系统开小差，等一会儿再试吧</string>
