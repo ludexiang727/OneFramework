@@ -15,6 +15,10 @@
   <string name="taxi_call_now_taxi">呼叫出租车</string>
   <string name="taxi_call_booking_taxi">预约出租车</string>
   <string name="taxi_wait_driver_time">%1ds</string>
+  <string name="taxi_wait_page_title">等待应答</string>
+  <string name="taxi_wait_cancel_order">取消订单</string>
+
+  <string name="taxi_cancel_confirm_msg">确认取消订单吗？</string>
 
   <string name="ridehailing_init_trip_unfinish_text">你有一个正在进行的行程</string>
   <string name="ridehailing_init_trip_unfinish_text_more">你有多个正在进行的行程</string>

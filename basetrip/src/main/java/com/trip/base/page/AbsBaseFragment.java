@@ -142,7 +142,6 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
       List<Address> homeOrCompanyLists = DBUtil.queryDataFromAddress(getContext(), type);
       if (homeOrCompanyLists != null && !homeOrCompanyLists.isEmpty()) {
         int updateRow = DBUtil.updateDataToAddress(getContext(), address, type);
-        Logger.e("ldx", "update row " + updateRow);
         return;
       }
     }
@@ -152,6 +151,11 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
   @Override
   public void searchByKeyWord(String curCity, CharSequence key, IPoiSearchListener listener) {
     mMap.poiSearchByKeyWord(curCity, key, listener);
+  }
+
+  @Override
+  public void onNormalAdrSetting(int type) {
+
   }
 
   @Override

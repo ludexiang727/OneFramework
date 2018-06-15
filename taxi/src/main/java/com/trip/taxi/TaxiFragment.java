@@ -24,6 +24,7 @@ import com.one.framework.app.widget.wheelview.WheelView;
 import com.one.framework.db.DBTables.AddressTable;
 import com.one.framework.dialog.DataPickerDialog.ISelectResultListener;
 import com.one.map.location.LocationProvider;
+import com.one.map.log.Logger;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
 import com.one.map.model.BestViewModel;
@@ -73,10 +74,16 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     return view;
   }
 
+  @Override
+  public void onResume() {
+    super.onResume();
+  }
+
   private void initView(View view) {
     mFormView = (FormView) view.findViewById(R.id.taxi_form_view);
     mFormView.setOnHeightChange(this);
     mFormView.setFormListener(this);
+    mMap.displayMyLocation();
   }
 
   private void initBroadcast() {
@@ -218,6 +225,24 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     } else {
       addressSelector(AddressTable.COMPANY, this);
     }
+  }
+
+
+
+  @Override
+  public void setUserVisibleHint(boolean isVisibleToUser) {
+    super.setUserVisibleHint(isVisibleToUser);
+    if (mFormView.getFormType() == IFormView.EASY_FORM && isVisibleToUser) {
+      pinViewHide(false);
+    }
+
+    Logger.e("ldx", "osetUserVIsiblee " + isVisibleToUser);
+  }
+
+  @Override
+  public void onHiddenChanged(boolean hidden) {
+    super.onHiddenChanged(hidden);
+    Logger.e("ldx", "onHiden change " + hidden);
   }
 
   @Override

@@ -2,10 +2,14 @@ package com.trip.taxi.net;
 
 import android.text.TextUtils;
 import com.one.framework.net.Api;
+import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
 import com.one.map.model.Address;
 import com.trip.taxi.net.model.TaxiEstimatePrice;
 import com.trip.taxi.net.model.TaxiOrder;
+import com.trip.taxi.net.model.TaxiOrderCancel;
+import com.trip.taxi.net.model.TaxiOrderDetail;
+import com.trip.taxi.net.model.TaxiOrderStatus;
 import java.util.HashMap;
 
 /**
@@ -16,8 +20,13 @@ public class TaxiRequest {
 
   private static final String TAXI_ESTIMATE_PRICE_URL = "/api/chariot/trip/taxi/price";
   private static final String TAXI_ORDER_CREATE_URL = "/api/chariot/trip/taxi/create";
+  private static final String TAXI_WAIT_ADD_TIP = "/api/chariot/trip/taxi/thanksfee";
+  private static final String TAXI_WAIT_PAY4PICKUP = "/api/chariot/trip/taxi/pay4pickup";
+  private static final String TAXI_ORDER_CANCEL = "/api/chariot/trip/cancel";
+  private static final String TAXI_REPORT_LOCATION = "/api/chariot/trip/report";
+  private static final String TAXI_ORDER_STATUS = "/api/chariot/trip/status";
+  private static final String TAXI_ORDER_INFO_DETAIL = "/api/chariot/trip/detail";
 
-//  private val TAXI_PRICE = "/api/chariot/trip/taxi/price"
 //  private val TAXI_PAY = "/api/chariot/trip/taxi/pay"
 //  private val TAXI_BY_METER = "/api/chariot/trip/taxi/pay4pickup"
 //  private val TAXI_THX = "/api/chariot/trip/taxi/thanksfee"
@@ -102,5 +111,80 @@ public class TaxiRequest {
     params.put("type", type);
 
     requestCode = Api.request(TAXI_ORDER_CREATE_URL, params, listener, TaxiOrder.class);
+  }
+
+  /**
+   * 添加感谢费
+   * @param oid
+   * @param tip
+   * @param listener
+   */
+  public static void taxiAddTip(String oid, int tip, IResponseListener<BaseObject> listener) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("orderId", oid);
+    params.put("thanksFee", tip);
+    requestCode = Api.request(TAXI_WAIT_ADD_TIP, params, listener, BaseObject.class);
+  }
+
+  /**
+   * 打表来接
+   * @param oid
+   * @param listener
+   */
+  public static void  taxiWaitPay4PickUp(String oid, IResponseListener<BaseObject> listener) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("orderId", oid);
+    requestCode = Api.request(TAXI_WAIT_PAY4PICKUP, params, listener, BaseObject.class);
+  }
+
+  /**
+   * 取消订单
+   * @param oid
+   * @param userId
+   * @param reason
+   * @param listener
+   */
+  public static void taxiCancelOrder(String oid, String userId, String reason, IResponseListener<TaxiOrderCancel> listener) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("orderId", oid);
+    params.put("userId", userId);
+    params.put("reason", reason);
+    params.put("bizType", 3);
+    requestCode = Api.request(TAXI_ORDER_CANCEL, params, listener, TaxiOrderCancel.class);
+  }
+
+  /**
+   * 上报位置
+   * @param oid
+   * @param address
+   * @param listener
+   */
+  public static void taxiReportLocation(String oid, Address address, IResponseListener<BaseObject> listener) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("orderId", oid);
+    params.put("latitude", address.mAdrLatLng.latitude);
+    params.put("longitude", address.mAdrLatLng.longitude);
+    params.put("bizType", 3);
+    requestCode = Api.request(TAXI_REPORT_LOCATION, params, listener, BaseObject.class);
+  }
+
+  /**
+   * 轮询订单状态
+   */
+  public static void taxiLoopOrderStatus(String userId, String oid, IResponseListener<TaxiOrderStatus> listener) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("orderId", oid);
+    params.put("userId", userId);
+    requestCode = Api.request(TAXI_ORDER_STATUS, params, listener, TaxiOrderStatus.class);
+  }
+
+  /**
+   * 订单信息
+   */
+  public static void taxiOrderDetail(String userId, String oid, IResponseListener<TaxiOrderDetail> listener) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("orderId", oid);
+    params.put("userId", userId);
+    requestCode = Api.request(TAXI_ORDER_INFO_DETAIL, params, listener, TaxiOrderDetail.class);
   }
 }

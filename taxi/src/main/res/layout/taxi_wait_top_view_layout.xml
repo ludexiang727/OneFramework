@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@android:color/white"
+  android:clipChildren="false">
+  <com.one.framework.app.widget.LoadingView
+    android:id="@+id/taxi_wait_loading_view"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:layout_centerInParent="true"
+    app:loading_progress_color="#f05b48"
+    app:loading_progress_type="circle"
+    app:loading_progress_width="3dp"
+    app:loading_type="progress"/>
+
+  <TextView
+    android:id="@+id/taxi_wait_count_down"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"/>
+
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="正在为您寻找司机，请稍后"
+    android:textSize="14sp"
+    android:textColor="#f05b48"
+    android:layout_centerHorizontal="true"
+    android:layout_below="@id/taxi_wait_loading_view"
+    android:layout_margin="5dp"/>
+</RelativeLayout>

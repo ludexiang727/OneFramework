@@ -18,6 +18,8 @@ public class FormDataProvider {
 
   private int mTip = 0;
 
+  private boolean mPay4PickUp;
+
   private FormDataProvider() {
 
   }
@@ -54,6 +56,14 @@ public class FormDataProvider {
 
   public void saveTip(int tip) {
     mTip = tip;
+  }
+
+  public void savePick4Up(boolean isPay4PickUp) {
+    mPay4PickUp = isPay4PickUp;
+  }
+
+  public boolean isPay4PickUp() {
+    return mPay4PickUp;
   }
 
   public Address obtainStartAddress() {

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.TripButton;
 import com.one.framework.utils.UIUtils;
+import com.trip.base.provider.FormDataProvider;
 import com.trip.taxi.R;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.presenter.TaxiFullFormPresenter;
@@ -106,6 +107,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView, Vie
       @Override
       public void onCheckedChanged(CompoundButton buttonView, boolean isCheck) {
         isChecked = isCheck;
+        FormDataProvider.getInstance().savePick4Up(isCheck);
         showLoading(true);
       }
     });

@@ -8,4 +8,12 @@ import android.view.View;
 
 public interface IWaitView {
   View getWaitView();
+
+  void addTip(int tip);
+
+  void setClickListener(IClickListener listener);
+
+  interface IClickListener {
+    void onClick(View view);
+  }
 }
