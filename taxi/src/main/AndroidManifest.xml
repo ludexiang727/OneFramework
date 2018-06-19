@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.trip.taxi">
   <application>
-    <service android:name=".TaxiService"
-      android:process=":remote"/>
+    <service android:name=".TaxiService" />
   </application>
 </manifest>

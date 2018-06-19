@@ -2,11 +2,11 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:layout_marginBottom="10dp"
   android:layout_marginLeft="10dp"
   android:layout_marginRight="10dp"
-  android:layout_marginBottom="10dp"
-  android:clickable="true"
-  android:background="@android:color/white">
+  android:background="@android:color/white"
+  android:clickable="true">
 
   <com.one.framework.app.widget.ShapeImageView
     android:id="@+id/taxi_service_driver_icon"
@@ -76,7 +76,7 @@
 
     <TextView
       android:id="@+id/taxi_service_driver_company"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="3dp"
       android:layout_below="@id/taxi_service_driver_name"
@@ -88,7 +88,12 @@
       android:id="@+id/taxi_service_driver_star"
       android:layout_width="match_parent"
       android:layout_height="10dp"
+      android:layout_alignParentLeft="true"
+      android:layout_marginTop="3dp"
       android:layout_below="@id/taxi_service_driver_company"
-      app:starView_isSlide="false"/>
+      app:starView_isSlide="false"
+      app:starViewWidth="10dp"
+      app:starViewHeight="10dp"
+      app:starViewRightMargin="5dp"/>
   </RelativeLayout>
 </RelativeLayout>

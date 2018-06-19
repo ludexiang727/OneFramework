@@ -1,5 +1,6 @@
-package com.trip.base.status;
+package com.trip.taxi.states;
 
+import android.support.annotation.NonNull;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,6 +67,20 @@ public class Status {
 
     public int getValue() {
       return mValue;
+    }
+
+    @NonNull
+    public static OrderStatus fromStateCode(int code) {
+      for (OrderStatus state : OrderStatus.values()) {
+        if (state.mValue == code) {
+          return state;
+        }
+      }
+      return UNKNOW;
+    }
+
+    public static boolean isValid(OrderStatus state) {
+      return state != null && state != OrderStatus.UNKNOW;
     }
   }
 }

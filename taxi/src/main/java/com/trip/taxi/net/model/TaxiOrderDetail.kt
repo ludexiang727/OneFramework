@@ -9,37 +9,46 @@ import com.one.framework.net.base.BaseObject
 data class TaxiOrderDetail(
         @field:SerializedName("orderId")
         val orderId: String,
-        @field:SerializedName("start")
-        val start : OrderAddress,
-        @field:SerializedName("end")
-        val end: OrderAddress,
+        @field:SerializedName("planStartPlace")
+        val startPlaceName: String,
+        @field:SerializedName("planEndPlace")
+        val endPlaceName: String,
+        @field:SerializedName("planStartLat")
+        val startLat: Double,
+        @field:SerializedName("planStartLng")
+        val startLng: Double,
+        @field:SerializedName("planEndLat")
+        val endLat: Double,
+        @field:SerializedName("planEndLng")
+        val endLng: Double,
+        @field:SerializedName("cityCode")
+        val cityCode: String,
         @field:SerializedName("driverInfo")
         val driver: OrderDriver,
         @field:SerializedName("status")
-        val orderStatus: Int
+        val orderStatus: Int,
+        @field:SerializedName("carType")
+        val carType: Int,
+        @field:SerializedName("vendorId")
+        val vendorId: Int,
+        @field:SerializedName("payType")
+        val payType: Int,
+        @field:SerializedName("type")
+        val type: Int
 ) : BaseObject()
-
-data class OrderAddress(
-        @field:SerializedName("displayName")
-        val displayName: String,
-        @field:SerializedName("latitude")
-        val latitude: Double,
-        @field:SerializedName("longitude")
-        val longitude: Double
-)
 
 data class OrderDriver(
         @field:SerializedName("driverId")
         val driverId: String,
-        @field:SerializedName("driverName")
+        @field:SerializedName("name")
         val driverName: String,
-        @field:SerializedName("driverIconUrl")
+        @field:SerializedName("driverIcon")
         val driverIcon: String,
         @field:SerializedName("driverReceivedCount")
         val driverReceiveOrderCount: Long,
-        @field:SerializedName("driverStar")
-        val driverStar : Float,
-        @field:SerializedName("driverTel")
+        @field:SerializedName("driverRate")
+        val driverStar: Float? = null,
+        @field:SerializedName("phoneNo")
         val driverTel: String,
         @field:SerializedName("driverCar")
         val driverCar: String,

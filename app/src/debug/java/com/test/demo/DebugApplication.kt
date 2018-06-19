@@ -29,7 +29,7 @@ class DebugApplication : OneApplication() {
 
     override fun onCreate() {
         super.onCreate()
-        Toast.makeText(this, "欢迎使用摩拜司机端！！\n摇一摇可切环境", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "欢迎使出租车乘客端！！\n摇一摇可切环境", Toast.LENGTH_LONG).show()
         initDebugMode()
         initNetworkManager()
     }

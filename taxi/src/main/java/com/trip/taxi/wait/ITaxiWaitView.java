@@ -1,6 +1,7 @@
 package com.trip.taxi.wait;
 
 import com.trip.base.wait.IWaitView.IClickListener;
+import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.net.model.TaxiOrderCancel;
 
 /**
@@ -11,5 +12,5 @@ public interface ITaxiWaitView extends IClickListener{
   void updateSweepAngle(float sweepAngle);
   void countDown(int count);
   void cancelOrderSuccess(TaxiOrderCancel orderCancel);
-  void onTripping();
+  void onTripping(TaxiOrder order);
 }

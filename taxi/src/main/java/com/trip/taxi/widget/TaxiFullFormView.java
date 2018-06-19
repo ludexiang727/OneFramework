@@ -62,7 +62,7 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView, Vie
 
   public TaxiFullFormView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
-    mTaxiFullPresenter = new TaxiFullFormPresenter(this);
+    mTaxiFullPresenter = new TaxiFullFormPresenter(context, this);
     setOrientation(LinearLayout.VERTICAL);
     mContext = context;
     setClipChildren(false);

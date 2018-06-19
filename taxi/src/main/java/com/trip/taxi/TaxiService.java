@@ -8,12 +8,14 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
 import com.one.map.location.LocationProvider;
 import com.one.map.location.LocationProvider.OnLocationChangedListener;
 import com.one.map.model.Address;
+import com.trip.taxi.common.Common;
 import com.trip.taxi.net.TaxiRequest;
 import com.trip.taxi.net.model.TaxiOrderStatus;
 
@@ -34,10 +36,15 @@ public class TaxiService extends Service {
   private static final int KEY_COMMAND_ORDER_STATUS = 2;
 
   private static final int REPORT_LOCATION = 4000;
+  private static final int LOOP_ORDER_STATUS = 2000;
+
+  private LocalBroadcastManager mBroadManager;
 
   private static final int TRACK_DURING = 60000;
   private HandlerThread mHandlerThread;
   private Handler mHandler;
+
+  private static boolean isLooperOrderStatus = false;
 
 //  private Handler trackHandler = new Handler(Looper.getMainLooper());
 
@@ -50,6 +57,7 @@ public class TaxiService extends Service {
   @Override
   public void onCreate() {
     super.onCreate();
+    mBroadManager = LocalBroadcastManager.getInstance(getApplicationContext());
     mHandlerThread = new HandlerThread("SERVICE_THREAD");
     mHandlerThread.start();
     mHandler = new Handler(mHandlerThread.getLooper()) {
@@ -95,9 +103,11 @@ public class TaxiService extends Service {
   }
 
   public static void loopOrderStatus(Context context, boolean isStart, String orderId) {
-    Intent intent = new Intent();
-    intent.putExtra(COMMAND_ORDERID, orderId);
-    start(intent, context, KEY_COMMAND_ORDER_STATUS, isStart);
+    if (!isLooperOrderStatus) {
+      Intent intent = new Intent();
+      intent.putExtra(COMMAND_ORDERID, orderId);
+      start(intent, context, KEY_COMMAND_ORDER_STATUS, isStart);
+    }
   }
 
   @Override
@@ -263,11 +273,14 @@ public class TaxiService extends Service {
   /**
    * 轮询订单状态
    */
-  private void  startLoopOrderStatus(String oid) {
+  private void startLoopOrderStatus(final String oid) {
+    isLooperOrderStatus = true;
     TaxiRequest.taxiLoopOrderStatus("", oid, new IResponseListener<TaxiOrderStatus>() {
       @Override
       public void onSuccess(TaxiOrderStatus taxiOrderStatus) {
-
+        Intent intent = new Intent(Common.COMMON_LOOPER_ORDER_STATUS);
+        intent.putExtra(Common.COMMON_LOOPER_ORDER, taxiOrderStatus);
+        mBroadManager.sendBroadcast(intent);
       }
 
       @Override
@@ -277,7 +290,10 @@ public class TaxiService extends Service {
 
       @Override
       public void onFinish(TaxiOrderStatus taxiOrderStatus) {
-
+        mHandler.removeMessages(KEY_COMMAND_ORDER_STATUS);
+        Message message = mHandler.obtainMessage(KEY_COMMAND_ORDER_STATUS);
+        message.obj = oid;
+        mHandler.sendMessageDelayed(message, LOOP_ORDER_STATUS);
       }
     });
   }

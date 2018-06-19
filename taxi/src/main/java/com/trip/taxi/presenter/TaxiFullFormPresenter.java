@@ -1,5 +1,10 @@
 package com.trip.taxi.presenter;
 
+import android.content.Context;
+import com.one.framework.app.login.ILogin;
+import com.one.framework.app.login.ILogin.LoginType;
+import com.one.framework.app.login.UserProfile;
+import com.one.framework.app.login.UserProfile.User;
 import com.one.framework.net.response.IResponseListener;
 import com.one.map.log.Logger;
 import com.one.map.model.Address;
@@ -17,9 +22,11 @@ import java.text.Normalizer.Form;
 public class TaxiFullFormPresenter {
 
   private IFullFormView mFullFormView;
+  private Context mContext;
 
-  public TaxiFullFormPresenter(IFullFormView fullFormView) {
+  public TaxiFullFormPresenter(Context context, IFullFormView fullFormView) {
     mFullFormView = fullFormView;
+    mContext = context;
   }
 
 
@@ -53,8 +60,10 @@ public class TaxiFullFormPresenter {
    * @param isTick 是否达标来接
    */
   public void taxiCreateOrder(String marks, boolean isTick, final int type) {
-    // todo if Login
-//    if (Login)
+    if (!UserProfile.getInstance(mContext).isLogin()) {
+      UserProfile.getInstance(mContext).getLoginInterface().showLogin(ILogin.DIALOG);
+      return;
+    }
 
     Address start = FormDataProvider.getInstance().obtainStartAddress();
     Address end = FormDataProvider.getInstance().obtainEndAddress();

@@ -15,6 +15,7 @@ import com.trip.base.page.WaitFragment;
 import com.trip.base.provider.FormDataProvider;
 import com.trip.base.wait.IWaitView;
 import com.trip.taxi.R;
+import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.net.model.TaxiOrderCancel;
 import com.trip.taxi.service.ServiceFragment;
 import com.trip.taxi.wait.presenter.TaxiWaitPresenter;
@@ -74,17 +75,19 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
   public void onClick(View view) {
     int id = view.getId();
     if (id == R.id.taxi_wait_add_tip_layout) {
-//      onTipClick();
-      onTripping();
+      onTipClick();
     } else if (id == R.id.taxi_wait_cancel_order) {
       cancelOrder();
     }
   }
 
   @Override
-  public void onTripping() {
+  public void onTripping(TaxiOrder order) {
     mMap.stopRadarAnim();
-    forward(ServiceFragment.class);
+    mWaitPresenter.release();
+    Bundle bundle = new Bundle();
+    bundle.putSerializable("order", order);
+    forward(ServiceFragment.class, bundle);
   }
 
   /**
@@ -136,5 +139,10 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
 
       }
     }
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
   }
 }

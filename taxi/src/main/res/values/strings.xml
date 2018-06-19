@@ -20,6 +20,13 @@
 
   <string name="taxi_cancel_confirm_msg">确认取消订单吗？</string>
 
+  <string name="taxi_service_wait_meet">等待接驾</string>
+  <string name="taxi_service_driver_arrived">司机已到达</string>
+  <string name="taxi_service_driver_tripping">开始行程</string>
+  <string name="taxi_service_driver_trip_ending">行程结束</string>
+
+  <string name="taxi_service_title_bar_right_more">更多</string>
+
   <string name="ridehailing_init_trip_unfinish_text">你有一个正在进行的行程</string>
   <string name="ridehailing_init_trip_unfinish_text_more">你有多个正在进行的行程</string>
   <string name="ridehailing_init_trip_unfinish_action">查看详情</string>
@@ -215,7 +222,7 @@
   <string name="carpool_wait_cancel_add_thx">增加感谢费</string>
   <string name="carpool_wait_cancel_title">取消订单</string>
   <string name="carpool_wait_cancel_waitmore">继续等待</string>
-  
+
   <string-array name="options_op_array">
     <item>现在</item>
     <item>预约</item>

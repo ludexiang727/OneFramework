@@ -5,5 +5,8 @@ package com.trip.taxi.service;
  */
 
 public interface IServiceView {
-
+  void driverSetOff();
+  void driverReady();
+  void driverStart();
+  void driverEnd();
 }

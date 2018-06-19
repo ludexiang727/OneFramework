@@ -24,4 +24,6 @@ public abstract class AbsWaitPresenter {
   public abstract void addTip(int tip);
 
   public abstract void pay4Pickup();
+
+  public abstract void release();
 }

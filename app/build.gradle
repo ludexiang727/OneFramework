@@ -13,6 +13,11 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            //设置支持的SO库架构
+            abiFilters 'armeabi'
+        }
     }
     buildTypes {
         release {
@@ -23,6 +28,19 @@ android {
 
     packagingOptions {
         exclude 'assets/infowindow_bg.9.png'
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs "libs"
+            jni.srcDirs = []
+        }
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
     }
 }
 

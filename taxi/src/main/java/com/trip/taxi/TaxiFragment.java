@@ -227,24 +227,6 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     }
   }
 
-
-
-  @Override
-  public void setUserVisibleHint(boolean isVisibleToUser) {
-    super.setUserVisibleHint(isVisibleToUser);
-    if (mFormView.getFormType() == IFormView.EASY_FORM && isVisibleToUser) {
-      pinViewHide(false);
-    }
-
-    Logger.e("ldx", "osetUserVIsiblee " + isVisibleToUser);
-  }
-
-  @Override
-  public void onHiddenChanged(boolean hidden) {
-    super.onHiddenChanged(hidden);
-    Logger.e("ldx", "onHiden change " + hidden);
-  }
-
   @Override
   public boolean onBackPressed() {
     if (mFormView.getFormType() == IFormView.FULL_FORM) {
