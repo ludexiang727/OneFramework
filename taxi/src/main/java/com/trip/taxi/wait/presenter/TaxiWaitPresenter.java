@@ -8,22 +8,22 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
+import com.one.framework.app.common.Status.OrderStatus;
 import com.one.framework.app.login.UserProfile;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
 import com.one.framework.utils.UIThreadHandler;
+import com.trip.base.common.CommonParams;
 import com.trip.base.provider.FormDataProvider;
 import com.trip.base.wait.IWaitView;
 import com.trip.base.wait.presenter.AbsWaitPresenter;
 import com.trip.taxi.R;
-import com.trip.taxi.common.Common;
 import com.trip.taxi.net.TaxiRequest;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.net.model.TaxiOrderCancel;
 import com.trip.taxi.TaxiService;
 import com.trip.taxi.net.model.TaxiOrderDetail;
 import com.trip.taxi.net.model.TaxiOrderStatus;
-import com.trip.taxi.states.Status.OrderStatus;
 import com.trip.taxi.wait.ITaxiWaitView;
 import com.trip.taxi.wait.TaxiWaitView;
 import java.util.ArrayList;
@@ -97,7 +97,7 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
     mBroadManager = LocalBroadcastManager.getInstance(mContext);
     mReceiver = new BroadReceiver();
     IntentFilter filter = new IntentFilter();
-    filter.addAction(Common.COMMON_LOOPER_ORDER_STATUS);
+    filter.addAction(CommonParams.COMMON_LOOPER_ORDER_STATUS);
     mBroadManager.registerReceiver(mReceiver, filter);
   }
 
@@ -221,8 +221,8 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
     @Override
     public void onReceive(Context context, Intent intent) {
       String action = intent.getAction();
-      if (Common.COMMON_LOOPER_ORDER_STATUS.equalsIgnoreCase(action)) {
-        TaxiOrderStatus orderStatus = (TaxiOrderStatus) intent.getSerializableExtra(Common.COMMON_LOOPER_ORDER);
+      if (CommonParams.COMMON_LOOPER_ORDER_STATUS.equalsIgnoreCase(action)) {
+        TaxiOrderStatus orderStatus = (TaxiOrderStatus) intent.getSerializableExtra(CommonParams.COMMON_LOOPER_ORDER);
         handleOrderStatus(OrderStatus.fromStateCode(orderStatus.getStatus()));
       }
     }

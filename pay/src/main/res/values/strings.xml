@@ -1,0 +1,9 @@
+<resources>
+  <string name="app_name">pay</string>
+  <string name="pay_dlg_title">支付</string>
+  <string name="pay_dlg_cur_trip">行程费用</string>
+  <string name="pay_dlg_cur_trip_total">共 </string>
+  <string name="pay_dlg_cur_trip_fee_unit"> 元</string>
+  <string name="pay_dlg_cur_trip_fee_detail">费用明细</string>
+  <string name="pay_dlg_pay_fee_confirm">确认支付%1$s元</string>
+</resources>

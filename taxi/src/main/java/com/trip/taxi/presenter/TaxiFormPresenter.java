@@ -1,13 +1,16 @@
 package com.trip.taxi.presenter;
 
 import android.content.Context;
+import com.one.framework.net.model.OrderDetail;
 import com.one.map.map.BitmapDescriptorFactory;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
 import com.trip.base.provider.FormDataProvider;
 import com.trip.taxi.ITaxiView;
 import com.trip.taxi.R;
+import com.trip.taxi.net.model.OrderDriver;
 import com.trip.taxi.net.model.TaxiOrder;
+import com.trip.taxi.net.model.TaxiOrderDetail;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,5 +105,41 @@ public class TaxiFormPresenter {
       markers.add(endOption);
       mView.showFullForm(markers);
     }
+  }
+
+  public TaxiOrder copyOrderDetailToTaxiOrder(OrderDetail orderDetail) {
+    String oid = orderDetail.getOrderId();
+    long orderCreateTime = orderDetail.getOrderCreateTime();
+    long currentServerTime = orderDetail.getCurrentServerTime();
+    int waitConfigTime = orderDetail.getWaitConfigTime();
+    String startAdrName = orderDetail.getStartPlaceName();
+    String endAdrName = orderDetail.getEndPlaceName();
+    double startLat = orderDetail.getStartLat();
+    double startLng = orderDetail.getStartLng();
+    double endLat = orderDetail.getEndLat();
+    double endLng = orderDetail.getEndLng();
+    String cityCode = orderDetail.getCityCode();
+    int orderStatus = orderDetail.getOrderStatus();
+    int carType = orderDetail.getCarType();
+    int vendorId = orderDetail.getVendorId();
+    int payType = orderDetail.getPayType();
+    int type = orderDetail.getType();
+    String driverId = orderDetail.getDriver().getDriverId();
+    String driverName = orderDetail.getDriver().getDriverName();
+    String driverIcon = orderDetail.getDriver().getDriverIcon();
+    long driverReceiverCount = orderDetail.getDriver().getDriverReceiveOrderCount();
+    float driverStar = orderDetail.getDriver().getDriverStar() != null ? orderDetail.getDriver().getDriverStar() : 4f;
+    String driverPhone = orderDetail.getDriver().getDriverTel();
+    String driverCar = orderDetail.getDriver().getDriverCar();
+    String driverCarColor = orderDetail.getDriver().getDriverCarColor();
+    String driverCompany = orderDetail.getDriver().getDriverCompany();
+    OrderDriver driver = new OrderDriver(driverId, driverName, driverIcon, driverReceiverCount,
+        driverStar, driverPhone, driverCar, driverCarColor, driverCompany);
+
+    TaxiOrder taxiOrder = new TaxiOrder(oid, orderCreateTime, currentServerTime, waitConfigTime);
+    TaxiOrderDetail detail = new TaxiOrderDetail(oid, startAdrName, endAdrName, startLat, startLng,
+        endLat, endLng, cityCode, driver, orderStatus, carType, vendorId, payType, type);
+    taxiOrder.saveOrderInfo(detail);
+    return taxiOrder;
   }
 }

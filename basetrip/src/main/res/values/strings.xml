@@ -12,4 +12,5 @@
   <string name="address_normal_set_company_address">设置公司地址</string>
 
   <string name="base_wait_cancel_order">取消订单</string>
+  <string name="base_end_evaluate_title">评价</string>
 </resources>

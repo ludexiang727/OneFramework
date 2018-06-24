@@ -12,6 +12,9 @@
         <option value="app_debug" />
         <option value="oneframework_debug" />
         <option value="taxi_debug" />
+        <option value="app_debug" />
+        <option value="oneframework_debug" />
+        <option value="taxi_debug" />
       </list>
     </option>
   </component>

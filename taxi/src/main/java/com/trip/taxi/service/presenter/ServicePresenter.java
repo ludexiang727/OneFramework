@@ -5,12 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import com.one.framework.app.common.Status.OrderStatus;
+import com.one.map.map.BitmapDescriptorFactory;
+import com.one.map.map.MarkerOption;
+import com.one.map.model.Address;
+import com.one.map.model.LatLng;
+import com.trip.base.common.CommonParams;
+import com.trip.taxi.R;
 import com.trip.taxi.TaxiService;
-import com.trip.taxi.common.Common;
 import com.trip.taxi.net.model.TaxiOrder;
+import com.trip.taxi.net.model.TaxiOrderDriverLocation;
 import com.trip.taxi.net.model.TaxiOrderStatus;
 import com.trip.taxi.service.IServiceView;
-import com.trip.taxi.states.Status.OrderStatus;
 
 /**
  * Created by ludexiang on 2018/6/15.
@@ -22,6 +28,7 @@ public class ServicePresenter {
   private LocalBroadcastManager mBroadManager;
   private BroadReceiver mReceiver;
   private TaxiOrder mOrder;
+  private OrderStatus mCurrentStatus;
   public ServicePresenter(Context context, TaxiOrder order, IServiceView view) {
     mContext = context;
     mView = view;
@@ -33,7 +40,8 @@ public class ServicePresenter {
     mBroadManager = LocalBroadcastManager.getInstance(mContext);
     mReceiver = new BroadReceiver();
     IntentFilter filter = new IntentFilter();
-    filter.addAction(Common.COMMON_LOOPER_ORDER_STATUS);
+    filter.addAction(CommonParams.COMMON_LOOPER_ORDER_STATUS);
+    filter.addAction(CommonParams.COMMON_LOOPER_DRIVER_LOCATION);
     mBroadManager.registerReceiver(mReceiver, filter);
 
     TaxiService.loopOrderStatus(mContext, true, mOrder.getOrderId());
@@ -43,33 +51,87 @@ public class ServicePresenter {
     @Override
     public void onReceive(Context context, Intent intent) {
       String action = intent.getAction();
-      if (Common.COMMON_LOOPER_ORDER_STATUS.equalsIgnoreCase(action)) {
-        TaxiOrderStatus orderStatus = (TaxiOrderStatus) intent.getSerializableExtra(Common.COMMON_LOOPER_ORDER);
+      if (CommonParams.COMMON_LOOPER_ORDER_STATUS.equalsIgnoreCase(action)) {
+        TaxiOrderStatus orderStatus = (TaxiOrderStatus) intent.getSerializableExtra(CommonParams.COMMON_LOOPER_ORDER);
         handleOrderStatus(OrderStatus.fromStateCode(orderStatus.getStatus()));
+      } else if (CommonParams.COMMON_LOOPER_DRIVER_LOCATION.equals(action)) {
+        TaxiOrderDriverLocation driverLocation = (TaxiOrderDriverLocation) intent.getSerializableExtra(
+            CommonParams.COMMON_LOOPER_DRIVER);
+        updateDriverLocation(driverLocation);
       }
     }
   }
 
+  public void addMarks(TaxiOrder order) {
+    MarkerOption startOption = new MarkerOption();
+    startOption.position = new LatLng(order.getOrderInfo().getStartLat(), order.getOrderInfo().getStartLng());
+    startOption.title = order.getOrderInfo().getStartPlaceName();
+    startOption.descriptor = BitmapDescriptorFactory.fromResources(mContext.getResources(), R.drawable.base_map_start_icon);
+
+    MarkerOption endOption = new MarkerOption();
+    endOption.position = new LatLng(order.getOrderInfo().getEndLat(), order.getOrderInfo().getEndLng());
+    endOption.title = order.getOrderInfo().getEndPlaceName();
+    endOption.descriptor = BitmapDescriptorFactory.fromResources(mContext.getResources(), R.drawable.base_map_end_icon);
+
+    mView.addMarks(startOption, endOption);
+  }
+
+  private void updateDriverLocation(TaxiOrderDriverLocation driverLocation) {
+    MarkerOption driverOption = new MarkerOption();
+    driverOption.position = new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude());
+    driverOption.rotate = driverLocation.getBearing();
+    driverOption.descriptor = BitmapDescriptorFactory.fromResources(mContext.getResources(), R.drawable.taxi_driver);
+    Address driverAdr = new Address();
+    driverAdr.mAdrLatLng = new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude());
+    driverAdr.bearing = driverLocation.getBearing();
+    if (mCurrentStatus != null) {
+      Address to;
+      switch (mCurrentStatus) {
+        case RECEIVED:
+        case SETOFF: {
+          to = new Address();
+          to.mAdrLatLng = new LatLng(mOrder.getOrderInfo().getStartLat(), mOrder.getOrderInfo().getStartLng());
+          to.mAdrDisplayName = mOrder.getOrderInfo().getStartPlaceName();
+          break;
+        }
+        default: {
+          to = new Address();
+          to.mAdrLatLng = new LatLng(mOrder.getOrderInfo().getEndLat(), mOrder.getOrderInfo().getEndLng());
+          to.mAdrDisplayName = mOrder.getOrderInfo().getEndPlaceName();
+        }
+      }
+      mView.addDriverMarker(driverAdr, to, driverOption);
+    }
+  }
+
   private void handleOrderStatus(OrderStatus state) {
+    if (mCurrentStatus == state) {
+      return;
+    }
+    mCurrentStatus = state;
     switch (state) {
+      case RECEIVED: {
+        mView.driverReceive(mCurrentStatus);
+        break;
+      }
       case SETOFF: {
         // 司机已出发
-        mView.driverSetOff();
+        mView.driverSetOff(mCurrentStatus);
         break;
       }
       case READY: {
         // 司机已到达
-        mView.driverReady();
+        mView.driverReady(mCurrentStatus);
         break;
       }
       case START: {
         // 开始行程
-        mView.driverStart();
+        mView.driverStart(mCurrentStatus);
         break;
       }
       case ARRIVED: {
         // 到达终点
-        mView.driverEnd();
+        mView.driverEnd(mCurrentStatus);
         break;
       }
     }

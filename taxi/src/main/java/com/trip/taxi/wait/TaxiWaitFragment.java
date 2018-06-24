@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.wheelview.WheelView;
 import com.one.framework.dialog.SupportDialogFragment;
-import com.one.map.log.Logger;
-import com.trip.base.page.WaitFragment;
+import com.trip.base.common.CommonParams.Service;
+import com.trip.base.wait.WaitFragment;
 import com.trip.base.provider.FormDataProvider;
 import com.trip.base.wait.IWaitView;
 import com.trip.taxi.R;
@@ -86,7 +86,7 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
     mMap.stopRadarAnim();
     mWaitPresenter.release();
     Bundle bundle = new Bundle();
-    bundle.putSerializable("order", order);
+    bundle.putSerializable(Service.ORDER, order);
     forward(ServiceFragment.class, bundle);
   }
 

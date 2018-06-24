@@ -35,6 +35,8 @@ dependencies {
     // 此处先源码依赖
     compile project(':onemap')
     compile project(':oneframework')
+    compile project(':evaluate')
+    compile project(':pay')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

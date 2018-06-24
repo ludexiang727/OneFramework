@@ -9,9 +9,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.one.framework.utils.TimeUtils;
 import com.one.listener.ICalendar;
 import com.test.demo.R;
-import com.test.demo.utils.TimeUtils;
 import java.util.Calendar;
 
 /**
@@ -64,7 +64,7 @@ public class CalendarTitleLayout extends RelativeLayout implements ICalendar, On
     } else if (TimeUtils.getDayDiff(mCurrentShowTime) >= 4) {
       mNext.setEnabled(false);
     }
-    mTime.setText(TimeUtils.convertMonthMillis(getContext(), time, true, false, true));
+//    mTime.setText(TimeUtils.convertMonthMillis(getContext(), time, true, false, true));
   }
 
 //  @Override

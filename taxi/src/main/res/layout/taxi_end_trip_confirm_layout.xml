@@ -1,0 +1,58 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/taxi_end_trip_finish_confirm_money_layout"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_gravity="bottom"
+  android:background="@android:color/white"
+  android:clickable="true"
+  android:orientation="vertical">
+
+  <EditText
+    android:id="@+id/taxi_end_input_money"
+    android:textStyle="bold"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
+    android:layout_marginLeft="20dp"
+    android:background="@null"
+    android:hint="@string/taxi_end_pay_manual_msg"
+    android:inputType="number"
+    android:textColorHint="#d3d3d3"
+    android:textSize="18sp"/>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="0.5dp"
+    android:layout_marginBottom="30dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:paddingTop="3dp"
+    android:background="#e3e3e3"/>
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+    <com.one.framework.app.widget.TripButton
+      android:id="@+id/taxi_end_pay"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:disable_color="@android:color/white"
+      app:enable_color="#343d4a"
+      app:radius="0dp"
+      app:text="@string/taxi_end_pay_options"
+      app:text_color="@android:color/white"/>
+
+    <com.one.framework.app.widget.LoadingView
+      android:id="@+id/taxi_end_loading_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:visibility="gone"
+      app:loading_point_color="#ffffff"
+      app:loading_point_count="3"
+      app:loading_point_normal_size="3dp"
+      app:loading_point_selector_size="4dp"
+      app:loading_type="point"/>
+  </FrameLayout>
+
+</LinearLayout>

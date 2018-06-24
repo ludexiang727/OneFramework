@@ -4,10 +4,15 @@ import static com.one.framework.db.DBTables.AddressTable.END;
 import static com.one.framework.db.DBTables.AddressTable.HOME;
 import static com.one.framework.db.DBTables.AddressTable.START;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow.OnDismissListener;
@@ -18,20 +23,24 @@ import com.one.framework.dialog.BottomSheetDialog;
 import com.one.framework.dialog.BottomSheetDialog.Builder;
 import com.one.framework.dialog.DataPickerDialog;
 import com.one.framework.dialog.DataPickerDialog.ISelectResultListener;
+import com.one.framework.net.model.OrderDetail;
 import com.one.framework.provider.HomeDataProvider;
 import com.one.framework.utils.DBUtil;
 import com.one.framework.utils.UIUtils;
 import com.one.map.IMap.IPoiSearchListener;
 import com.one.map.IMap.IRoutePlanMsgCallback;
-import com.one.map.log.Logger;
 import com.one.map.model.Address;
 import com.one.map.model.LatLng;
 import com.trip.base.R;
+import com.trip.base.common.CommonParams;
 import com.trip.base.widget.AddressViewLayout;
 import com.trip.base.widget.IAddressView;
 import com.trip.base.widget.IAddressView.IAddressListener;
 import java.util.List;
 import java.util.Stack;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by ludexiang on 2018/6/7.
@@ -39,18 +48,62 @@ import java.util.Stack;
 
 public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlanMsgCallback, IAddressListener {
 
-
   private Stack<PopWindow> mPopStack;
 
   private IAddressView mAddressView;
 
   private IChooseResultListener mChooseResultListener;
 
+  protected LocalBroadcastManager mLocalBroadManager;
+
+  private BroadReceiver mReceiver;
+
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mMap.setRoutePlanCallback(this);
     mPopStack = new Stack<>();
+    initBroadcast();
+    EventBus.getDefault().register(this);
+  }
+
+  private void initBroadcast() {
+    mLocalBroadManager = LocalBroadcastManager.getInstance(getActivity());
+    mReceiver = new BroadReceiver();
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(CommonParams.COMMON_ADDRESS_INTENT_ACTION);
+    filter.addAction(CommonParams.COMMON_RECOVERY_ACTION);
+    mLocalBroadManager.registerReceiver(mReceiver, filter);
+  }
+
+  private class BroadReceiver extends BroadcastReceiver {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      String action = intent.getAction();
+      if (CommonParams.COMMON_ADDRESS_INTENT_ACTION.equalsIgnoreCase(action)) {
+        handleReceiveLocAddress(intent);
+      } else if (CommonParams.COMMON_RECOVERY_ACTION.equals(action)) {
+        handleReceiveRecovery(intent);
+      }
+    }
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void event(OrderDetail orderDetail) {
+    handleReceiveHistory(orderDetail);
+  }
+
+  protected void handleReceiveLocAddress(Intent intent) {
+    // do noting
+  }
+
+  protected void handleReceiveRecovery(Intent intent) {
+    // do noting
+  }
+
+  protected void handleReceiveHistory(OrderDetail orderDetail) {
+    // do nothing
   }
 
   @Override
@@ -167,5 +220,11 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
 
   public interface IChooseResultListener {
     void onResult(@AddressType int type, Address address);
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    EventBus.getDefault().unregister(this);
   }
 }

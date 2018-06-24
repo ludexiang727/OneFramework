@@ -16,7 +16,6 @@ import com.one.model.CalendarModel;
 import com.one.widget.CalendarTitleLayout;
 import com.one.framework.app.widget.PullScrollRelativeLayout;
 import com.test.demo.R;
-import com.test.demo.utils.TimeUtils;
 import com.trip.base.page.BaseFragment;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,8 +71,8 @@ public class CalendarFragment extends BaseFragment {
       model.startAdr = "曼宁国际";
       model.price = "" + i;
       model.walk = "南行685米";
-      model.startTime = TimeUtils.convertMillisToString(getActivity(), System.currentTimeMillis(), true);
-      model.endTime = TimeUtils.convertMillisToString(getActivity(), System.currentTimeMillis() + i * 10000, true);
+//      model.startTime = TimeUtils.convertMillisToString(getActivity(), System.currentTimeMillis(), true);
+//      model.endTime = TimeUtils.convertMillisToString(getActivity(), System.currentTimeMillis() + i * 10000, true);
       lists.add(model);
     }
     return lists;

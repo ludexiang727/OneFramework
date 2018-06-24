@@ -38,6 +38,7 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
   private BottomViewLayout mBottomContainer;
   private boolean isAttached = true;
   private static final int REFRESH_MAP = 0X101;
+
   /**
    * 缓存top bottom container width and height
    */
@@ -58,11 +59,6 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
    * 最佳View 框对应的元素
    */
   protected abstract void boundsLatlng(BestViewModel bestView);
-
-  @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-  }
 
   @Nullable
   @Override
@@ -156,7 +152,7 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
     bestView.padding.right += 0;
     bestView.padding.bottom += mBottomRect[1];
     boundsLatlng(bestView);
-    mBusContext.getMap().doBestView(bestView);
+    mMap.doBestView(bestView);
   }
 
   /**

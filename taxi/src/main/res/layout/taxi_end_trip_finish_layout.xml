@@ -1,0 +1,97 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/taxi_end_trip_finished_layout"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical"
+  android:background="@android:color/white"
+  android:visibility="gone">
+
+  <LinearLayout
+    android:id="@+id/taxi_end_trip_finish_main_options"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:layout_marginTop="27dp"
+    android:layout_marginBottom="27dp"
+    android:orientation="vertical">
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:orientation="horizontal">
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:textSize="10sp"
+        android:text="@string/taxi_end_fee_pay"/>
+
+      <TextView
+        android:id="@+id/taxi_end_finish_trip_total_fee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#666666"
+        android:textStyle="bold"
+        android:text="25.0"
+        android:textSize="24sp"/>
+
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:textSize="10sp"
+        android:text="@string/taxi_end_fee_unit"/>
+    </LinearLayout>
+    <TextView
+      android:id="@+id/taxi_end_finish_trip_voucher"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="10sp"
+      android:visibility="gone"
+      android:text="@string/taxi_end_fee_voucher"/>
+  </LinearLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="0.5dp"
+    android:background="#e3e3e3"/>
+
+  <LinearLayout
+    android:id="@+id/taxi_end_finish_options_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+      android:id="@+id/taxi_end_options_charge"
+      style="@style/FinishTripOptions"
+      android:gravity="center"
+      android:text="@string/taxi_end_charge_distant"/>
+
+    <View
+      android:layout_width="0.5dp"
+      android:layout_height="20dp"
+      android:layout_gravity="center_vertical"
+      android:background="#e3e3e3"/>
+
+    <TextView
+      android:id="@+id/taxi_end_options_wipe"
+      style="@style/FinishTripOptions"
+      android:gravity="center"
+      android:text="@string/taxi_end_ticket_wipe"/>
+
+    <View
+      android:layout_width="0.5dp"
+      android:layout_height="20dp"
+      android:layout_gravity="center_vertical"
+      android:padding="10dp"
+      android:background="#e3e3e3"/>
+
+    <TextView
+      android:id="@+id/taxi_end_options_evaluate"
+      style="@style/FinishTripOptions"
+      android:gravity="center"
+      android:text="@string/taxi_end_evaluate_service"/>
+  </LinearLayout>
+
+</LinearLayout>

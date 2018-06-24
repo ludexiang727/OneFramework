@@ -10,13 +10,15 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import com.one.framework.app.login.UserProfile;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
 import com.one.map.location.LocationProvider;
 import com.one.map.location.LocationProvider.OnLocationChangedListener;
 import com.one.map.model.Address;
-import com.trip.taxi.common.Common;
+import com.trip.base.common.CommonParams;
 import com.trip.taxi.net.TaxiRequest;
+import com.trip.taxi.net.model.TaxiOrderDriverLocation;
 import com.trip.taxi.net.model.TaxiOrderStatus;
 
 /**
@@ -72,6 +74,7 @@ public class TaxiService extends Service {
           case KEY_COMMAND_ORDER_STATUS: {
             String orderId = (String) msg.obj;
             startLoopOrderStatus(orderId);
+            startLoopDriverLocation(orderId);
             break;
           }
         }
@@ -275,11 +278,11 @@ public class TaxiService extends Service {
    */
   private void startLoopOrderStatus(final String oid) {
     isLooperOrderStatus = true;
-    TaxiRequest.taxiLoopOrderStatus("", oid, new IResponseListener<TaxiOrderStatus>() {
+    TaxiRequest.taxiLoopOrderStatus(UserProfile.getInstance(this).getUserId(), oid, new IResponseListener<TaxiOrderStatus>() {
       @Override
       public void onSuccess(TaxiOrderStatus taxiOrderStatus) {
-        Intent intent = new Intent(Common.COMMON_LOOPER_ORDER_STATUS);
-        intent.putExtra(Common.COMMON_LOOPER_ORDER, taxiOrderStatus);
+        Intent intent = new Intent(CommonParams.COMMON_LOOPER_ORDER_STATUS);
+        intent.putExtra(CommonParams.COMMON_LOOPER_ORDER, taxiOrderStatus);
         mBroadManager.sendBroadcast(intent);
       }
 
@@ -296,6 +299,31 @@ public class TaxiService extends Service {
         mHandler.sendMessageDelayed(message, LOOP_ORDER_STATUS);
       }
     });
+  }
+
+  /**
+   * 轮询司机位置
+   */
+  private void startLoopDriverLocation(String oid) {
+    TaxiRequest.taxiDriverLocation(UserProfile.getInstance(this).getUserId(), oid,
+        new IResponseListener<TaxiOrderDriverLocation>() {
+          @Override
+          public void onSuccess(TaxiOrderDriverLocation taxiOrderDriverLocation) {
+            Intent intent = new Intent(CommonParams.COMMON_LOOPER_DRIVER_LOCATION);
+            intent.putExtra(CommonParams.COMMON_LOOPER_DRIVER, taxiOrderDriverLocation);
+            mBroadManager.sendBroadcast(intent);
+          }
+
+          @Override
+          public void onFail(TaxiOrderDriverLocation taxiOrderDriverLocation) {
+
+          }
+
+          @Override
+          public void onFinish(TaxiOrderDriverLocation taxiOrderDriverLocation) {
+
+          }
+        });
   }
 
   @Override

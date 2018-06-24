@@ -1,13 +1,10 @@
 package com.trip.taxi;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,23 +15,28 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import com.one.framework.api.annotation.ServiceProvider;
+import com.one.framework.app.common.Status.OrderStatus;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
 import com.one.framework.app.widget.wheelview.WheelView;
 import com.one.framework.db.DBTables.AddressTable;
 import com.one.framework.dialog.DataPickerDialog.ISelectResultListener;
+import com.one.framework.dialog.SupportDialogFragment;
+import com.one.framework.net.model.OrderDetail;
 import com.one.map.location.LocationProvider;
 import com.one.map.log.Logger;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
 import com.one.map.model.BestViewModel;
 import com.one.map.model.LatLng;
+import com.trip.base.common.CommonParams;
 import com.trip.base.page.AbsBaseFragment;
 import com.trip.base.page.AbsBaseFragment.IChooseResultListener;
-import com.trip.base.page.WaitFragment;
 import com.trip.base.provider.FormDataProvider;
+import com.trip.taxi.end.TaxiEndFragment;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.presenter.TaxiFormPresenter;
+import com.trip.taxi.service.ServiceFragment;
 import com.trip.taxi.wait.TaxiWaitFragment;
 import com.trip.taxi.widget.IFormView;
 import com.trip.taxi.widget.IFormView.IFormListener;
@@ -51,18 +53,17 @@ import java.util.List;
 public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeightChange,
     IFormListener, IChooseResultListener {
 
-  private static final String ADDRESS_INTENT_ACTION = "INTENT_CURRENT_LOCATION_ADDRESS";
   private IFormView mFormView;
-  private LocalBroadcastManager mBroadcast;
-  private BroadReceiver mReceiver;
   private TaxiFormPresenter mPresenter;
   private int mParamsMargin;
+  private SupportDialogFragment mHaveTripDlg;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mPresenter = new TaxiFormPresenter(getContext(), this);
-    mParamsMargin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
+    mParamsMargin = (int) TypedValue
+        .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
   }
 
   @Override
@@ -70,7 +71,6 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
       @Nullable Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.taxi_main_layout, container, true);
     initView(view);
-    initBroadcast();
     return view;
   }
 
@@ -84,14 +84,6 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     mFormView.setOnHeightChange(this);
     mFormView.setFormListener(this);
     mMap.displayMyLocation();
-  }
-
-  private void initBroadcast() {
-    mBroadcast = LocalBroadcastManager.getInstance(getContext());
-    mReceiver = new BroadReceiver();
-    IntentFilter filter = new IntentFilter();
-    filter.addAction(ADDRESS_INTENT_ACTION);
-    mBroadcast.registerReceiver(mReceiver, filter);
   }
 
   @Override
@@ -108,6 +100,26 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     BestViewModel model = new BestViewModel();
     model.zoomCenter = address.mAdrLatLng;
     mMap.doBestView(model);
+  }
+
+  @Override
+  protected void handleReceiveLocAddress(Intent intent) {
+    Address address = (Address) intent.getSerializableExtra(CommonParams.COMMON_CURRENT_LOCATION_ADDRESS);
+    mPresenter.saveAddress(0, address);
+    mFormView.setStartPoint(address.mAdrDisplayName);
+  }
+
+  @Override
+  protected void handleReceiveRecovery(Intent intent) {
+    OrderDetail orderDetail = (OrderDetail) intent.getSerializableExtra(CommonParams.COMMON_RECOVERY_DATA);
+    OrderStatus orderStatus = OrderStatus.fromStateCode(orderDetail.getOrderStatus());
+    showHaveTripDialog(orderDetail, orderStatus);
+  }
+
+  @Override
+  protected void handleReceiveHistory(OrderDetail orderDetail) {
+    OrderStatus orderStatus = OrderStatus.fromStateCode(orderDetail.getOrderStatus());
+    handleRecoveryData(orderDetail, orderStatus, true);
   }
 
   @Override
@@ -150,7 +162,8 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   @Override
   public void onMarkClick(View markView) {
     View view = LayoutInflater.from(getContext()).inflate(R.layout.taxi_mark_dialog_layout, null);
-    final LinearLayout markViewParent = (LinearLayout) view.findViewById(R.id.taxi_mark_view_parent);
+    final LinearLayout markViewParent = (LinearLayout) view
+        .findViewById(R.id.taxi_mark_view_parent);
     int rowIndex = -1;
     List<String> marks = mPresenter.getMarkItems();
     LinearLayout.LayoutParams params = new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -169,7 +182,8 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
         rowLayout = new LinearLayout(getContext());
         markViewParent.addView(rowLayout, rowIndex);
       }
-      final TextView itemView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.taxi_mark_item_layout, null);
+      final TextView itemView = (TextView) LayoutInflater.from(getContext())
+          .inflate(R.layout.taxi_mark_item_layout, null);
       Object marksStr = markView.getTag();
       if (marksStr != null && marksStr instanceof String) {
         for (String text : ((String) marksStr).split(",")) {
@@ -244,23 +258,26 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   }
 
   @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
+  public void setUserVisibleHint(boolean isVisibleToUser) {
+    super.setUserVisibleHint(isVisibleToUser);
+    Logger.e("ldx", "TaxiUserVisible hint .... " + isVisibleToUser);
   }
 
   @Override
   protected void boundsLatlng(BestViewModel model) {
-    if (mFormView.getFormType() == IFormView.FULL_FORM) {
-      model.bounds.add(LocationProvider.getInstance().getLocation().mAdrLatLng);
-      model.bounds.add(FormDataProvider.getInstance().obtainStartAddress().mAdrLatLng);
-      model.bounds.add(FormDataProvider.getInstance().obtainEndAddress().mAdrLatLng);
-      if (mMap.getLinePoints() != null) {
-        model.bounds.addAll(mMap.getLinePoints());
+    if (isRootFragment) { // todo 建议用其他方法来区别是否在首页
+      if (mFormView.getFormType() == IFormView.FULL_FORM) {
+        model.bounds.add(LocationProvider.getInstance().getLocation().mAdrLatLng);
+        model.bounds.add(FormDataProvider.getInstance().obtainStartAddress().mAdrLatLng);
+        model.bounds.add(FormDataProvider.getInstance().obtainEndAddress().mAdrLatLng);
+        if (mMap.getLinePoints() != null) {
+          model.bounds.addAll(mMap.getLinePoints());
+        }
+      } else {
+        LatLng location = LocationProvider.getInstance().getLocation().mAdrLatLng;
+        model.zoomCenter = location;
+        model.zoomLevel = 16.788f;
       }
-    } else {
-      LatLng location = LocationProvider.getInstance().getLocation().mAdrLatLng;
-      model.zoomCenter = location;
-      model.bounds.add(location);
     }
   }
 
@@ -279,28 +296,62 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
       }
     });
     mTopbarView.setTitle(R.string.taxi_confirm_page_title);
-    mTopbarView.setLeft(R.drawable.base_top_bar_back_selector);
+    mTopbarView.setLeft(R.drawable.one_top_bar_back_selector);
     mNavigator.lockDrawerLayout(true);
     mFormView.showLoading(true);
     pinViewHide(true);
     toggleMapView();
   }
 
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
-    mBroadcast.unregisterReceiver(mReceiver);
+  private void showHaveTripDialog(final OrderDetail orderDetail, final OrderStatus orderStatus) {
+    final SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(getContext())
+        .setTitle(getString(R.string.taxi_have_unfinish_order_title))
+        .setMessage(getString(R.string.taxi_have_unfinish_order_message))
+        .setPositiveButton(getString(R.string.taxi_have_unfinish_order_go), new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            mHaveTripDlg.dismiss();
+            handleRecoveryData(orderDetail, orderStatus, false);
+          }
+        })
+        .setPositiveButtonTextColor(Color.parseColor("#A3D2E4"))
+        .setNegativeButton(getString(R.string.taxi_have_unfinish_order_no), new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            mHaveTripDlg.dismiss();
+          }
+        });
+    mHaveTripDlg = builder.create();
+    mHaveTripDlg.show(getFragmentManager(), "");
   }
 
-  private class BroadReceiver extends BroadcastReceiver {
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      String action = intent.getAction();
-      if (ADDRESS_INTENT_ACTION.equalsIgnoreCase(action)) {
-        Address address = (Address) intent.getSerializableExtra("current_location_address");
-        mPresenter.saveAddress(0, address);
-        mFormView.setStartPoint(address.mAdrDisplayName);
+  private void handleRecoveryData(OrderDetail order, OrderStatus status, boolean isFromHistory) {
+    switch (status) {
+      case CREATE: {
+        forward(TaxiWaitFragment.class);
+        break;
+      }
+      case RECEIVED:
+      case SETOFF:
+      case READY:
+      case START: {
+        pinViewHide(true);
+        TaxiOrder taxiOrder = mPresenter.copyOrderDetailToTaxiOrder(order);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(CommonParams.Service.FROM_HISITORY, isFromHistory);
+        bundle.putSerializable(CommonParams.Service.ORDER, taxiOrder);
+        forward(ServiceFragment.class, bundle);
+        break;
+      }
+      case CONFIRM:
+      case ARRIVED: {
+        pinViewHide(true);
+        TaxiOrder taxiOrder = mPresenter.copyOrderDetailToTaxiOrder(order);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(CommonParams.Service.FROM_HISITORY, isFromHistory);
+        bundle.putSerializable(CommonParams.Service.ORDER, taxiOrder);
+        forward(TaxiEndFragment.class, bundle);
+        break;
       }
     }
   }
@@ -315,4 +366,5 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     }
     mPresenter.checkAddress();
   }
+
 }

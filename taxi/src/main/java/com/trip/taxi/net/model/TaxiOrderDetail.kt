@@ -2,9 +2,8 @@ package com.trip.taxi.net.model
 
 import com.google.gson.annotations.SerializedName
 import com.one.framework.net.base.BaseObject
-
 /**
- * Created by ludexiang on 2018/6/15.
+ * Created by ludexiang on 2018/6/21.
  */
 data class TaxiOrderDetail(
         @field:SerializedName("orderId")
@@ -35,7 +34,7 @@ data class TaxiOrderDetail(
         val payType: Int,
         @field:SerializedName("type")
         val type: Int
-) : BaseObject()
+): BaseObject()
 
 data class OrderDriver(
         @field:SerializedName("driverId")
@@ -45,15 +44,15 @@ data class OrderDriver(
         @field:SerializedName("driverIcon")
         val driverIcon: String,
         @field:SerializedName("driverReceivedCount")
-        val driverReceiveOrderCount: Long,
+        val driverReceiveOrderCount: Long? = 0,
         @field:SerializedName("driverRate")
         val driverStar: Float? = null,
         @field:SerializedName("phoneNo")
         val driverTel: String,
         @field:SerializedName("driverCar")
-        val driverCar: String,
+        val driverCar: String ? = null,
         @field:SerializedName("driverCarColor")
-        val driverCarColor: String,
+        val driverCarColor: String ? = null,
         @field:SerializedName("driverCompany")
-        val driverCompany: String
+        val driverCompany: String? = null
 )

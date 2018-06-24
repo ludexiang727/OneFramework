@@ -9,7 +9,9 @@ import com.trip.taxi.net.model.TaxiEstimatePrice;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.net.model.TaxiOrderCancel;
 import com.trip.taxi.net.model.TaxiOrderDetail;
+import com.trip.taxi.net.model.TaxiOrderDriverLocation;
 import com.trip.taxi.net.model.TaxiOrderStatus;
+import com.trip.taxi.net.model.TaxiPayList;
 import java.util.HashMap;
 
 /**
@@ -26,6 +28,11 @@ public class TaxiRequest {
   private static final String TAXI_REPORT_LOCATION = "/api/chariot/trip/report";
   private static final String TAXI_ORDER_STATUS = "/api/chariot/trip/status";
   private static final String TAXI_ORDER_INFO_DETAIL = "/api/chariot/trip/detail";
+
+  /**
+   * 获取司机位置
+   */
+  private static final String TAXI_DRIVER_LOCATION = "/api/chariot/trip/driver/location";
 
 //  private val TAXI_PAY = "/api/chariot/trip/taxi/pay"
 //  private val TAXI_BY_METER = "/api/chariot/trip/taxi/pay4pickup"
@@ -187,4 +194,16 @@ public class TaxiRequest {
     params.put("userId", userId);
     requestCode = Api.request(TAXI_ORDER_INFO_DETAIL, params, listener, TaxiOrderDetail.class);
   }
+
+  /**
+   * 司机位置 2s looper
+   */
+  public static void taxiDriverLocation(String userId, String oid, IResponseListener<TaxiOrderDriverLocation> listener) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("orderId", oid);
+    params.put("userId", userId);
+    requestCode = Api.request(TAXI_DRIVER_LOCATION, params, listener, TaxiOrderDriverLocation.class);
+  }
+
+
 }

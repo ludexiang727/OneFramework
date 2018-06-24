@@ -22,8 +22,4 @@ data class TaxiOrder(
     fun saveOrderInfo(order: TaxiOrderDetail) {
         orderInfo = order
     }
-
-    fun obtainOrderInfo(): TaxiOrderDetail? {
-        return orderInfo
-    }
 }
