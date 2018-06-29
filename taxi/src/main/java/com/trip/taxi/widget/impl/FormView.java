@@ -1,5 +1,10 @@
 package com.trip.taxi.widget.impl;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +16,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.one.map.log.Logger;
 import com.trip.taxi.R;
 import com.trip.taxi.divider.DividerViewLayout;
 import com.trip.taxi.net.model.TaxiOrder;
@@ -140,6 +146,7 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
     // state == 1 now == 2 booking default now
     int state = mOptionsView.getState();
     mFullView.setFormType(state);
+//    translation(state);
     mBookingTimeLayout.setVisibility(state == 1 ? View.GONE : View.VISIBLE);
     if (type == EASY_FORM) {
       showEasyForm();
@@ -150,6 +157,42 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
     if (mHeightChangeListener != null) {
       mHeightChangeListener.onHeightChange(-1);
     }
+  }
+
+  private void translation(final int state) {
+    int width = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+    int height = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+    mBookingTimeLayout.measure(width, height);
+    float from = state == 1 ? 0f : mBookingTimeLayout.getMeasuredHeight();
+    float to = state == 1 ? mBookingTimeLayout.getMeasuredHeight() : 0f;
+    ObjectAnimator translation = ObjectAnimator.ofFloat(mBookingTimeLayout, "translationY", from, to);
+    translation.addListener(new AnimatorListenerAdapter() {
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        super.onAnimationEnd(animation);
+        mBookingTimeLayout.setVisibility(state == 1 ? View.GONE : View.VISIBLE);
+        Logger.e("ldx", "Animation  End ");
+        if (mHeightChangeListener != null) {
+          mHeightChangeListener.onHeightChange(-1);
+        }
+      }
+
+      @Override
+      public void onAnimationStart(Animator animation) {
+        super.onAnimationStart(animation);
+        Logger.e("ldx", "Animation  Start ");
+        mBookingTimeLayout.setVisibility(View.VISIBLE);
+      }
+
+    });
+    translation.addUpdateListener(new AnimatorUpdateListener() {
+      @Override
+      public void onAnimationUpdate(ValueAnimator animation) {
+        mBookingTimeLayout.setTranslationY((Float) animation.getAnimatedValue());
+      }
+    });
+    translation.setDuration(300);
+    translation.start();
   }
 
   @Override
@@ -221,6 +264,11 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
   @Override
   public void setMsg(String msg) {
     mFullView.setMsg(msg);
+  }
+
+  @Override
+  public void setPay4PickUp(boolean isPickUp) {
+    mFullView.setPay4PickUp(isPickUp);
   }
 
   @Override

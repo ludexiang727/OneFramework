@@ -7,6 +7,8 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import com.one.framework.app.common.Status.OrderStatus;
+import com.one.framework.app.login.UserProfile;
+import com.one.framework.net.response.IResponseListener;
 import com.one.map.map.BitmapDescriptorFactory;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
@@ -15,7 +17,10 @@ import com.trip.base.common.CommonParams;
 import com.trip.base.end.IEndView;
 import com.trip.taxi.R;
 import com.trip.taxi.TaxiService;
+import com.trip.taxi.end.ITaxiEndView;
+import com.trip.taxi.net.TaxiRequest;
 import com.trip.taxi.net.model.TaxiOrder;
+import com.trip.taxi.net.model.TaxiOrderDetail;
 import com.trip.taxi.net.model.TaxiOrderStatus;
 
 /**
@@ -26,12 +31,12 @@ public class TaxiEndPresenter {
 
   private Context mContext;
   private TaxiOrder mOrder;
-  private IEndView mView;
+  private ITaxiEndView mView;
   private BroadReceiver mReceiver;
   private LocalBroadcastManager mBroadManager;
   private OrderStatus mCurrentStatus;
 
-  public TaxiEndPresenter(Context context, TaxiOrder order, IEndView view) {
+  public TaxiEndPresenter(Context context, TaxiOrder order, ITaxiEndView view) {
     mContext = context;
     mView = view;
     mOrder = order;
@@ -93,6 +98,11 @@ public class TaxiEndPresenter {
         mView.handleArrived(mCurrentStatus);
         break;
       }
+      case COMPLAINT: {
+        // 司机发起支付
+        mView.handlePay(mCurrentStatus);
+        break;
+      }
       case CONFIRM: {
         // 已支付
         mView.handleFinish();
@@ -101,7 +111,28 @@ public class TaxiEndPresenter {
     }
   }
 
+  public void loopOrderDetail(String oid) {
+    TaxiRequest.taxiOrderDetail(UserProfile.getInstance(mContext).getUserId(), oid,
+        new IResponseListener<TaxiOrderDetail>() {
+          @Override
+          public void onSuccess(TaxiOrderDetail taxiOrderDetail) {
+            mView.handlePayInfo(taxiOrderDetail);
+          }
+
+          @Override
+          public void onFail(int errCode, TaxiOrderDetail taxiOrderDetail) {
+
+          }
+
+          @Override
+          public void onFinish(TaxiOrderDetail taxiOrderDetail) {
+
+          }
+        });
+  }
+
   public void release() {
+    TaxiService.stopService(mContext);
     mBroadManager.unregisterReceiver(mReceiver);
   }
 

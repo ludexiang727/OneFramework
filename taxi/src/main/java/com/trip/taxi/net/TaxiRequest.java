@@ -11,7 +11,6 @@ import com.trip.taxi.net.model.TaxiOrderCancel;
 import com.trip.taxi.net.model.TaxiOrderDetail;
 import com.trip.taxi.net.model.TaxiOrderDriverLocation;
 import com.trip.taxi.net.model.TaxiOrderStatus;
-import com.trip.taxi.net.model.TaxiPayList;
 import java.util.HashMap;
 
 /**
@@ -56,6 +55,7 @@ public class TaxiRequest {
     HashMap<String, Object> params = new HashMap<String, Object>();
     params.put("startAdrName", start.mAdrDisplayName);
     params.put("startAdrDetail", start.mAdrFullName);
+
     params.put("startAdrLat", start.mAdrLatLng.latitude);
     params.put("startAdrLng", start.mAdrLatLng.longitude);
 

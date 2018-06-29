@@ -45,7 +45,7 @@ public class TaxiFullFormPresenter {
           }
 
           @Override
-          public void onFail(TaxiEstimatePrice taxiEstimatePrice) {
+          public void onFail(int errCode, TaxiEstimatePrice taxiEstimatePrice) {
           }
 
           @Override
@@ -77,8 +77,9 @@ public class TaxiFullFormPresenter {
           }
 
           @Override
-          public void onFail(TaxiOrder taxiOrder) {
+          public void onFail(int errCode, TaxiOrder taxiOrder) {
             mFullFormView.setFormType(type);
+
           }
 
           @Override

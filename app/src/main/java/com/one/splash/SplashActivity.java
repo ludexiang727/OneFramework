@@ -1,6 +1,10 @@
 package com.one.splash;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -11,8 +15,9 @@ import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.widget.RelativeLayout;
 import com.one.framework.MainActivity;
+import com.one.framework.app.base.AbsBaseActivity;
 import com.one.map.location.LocationProvider;
 import com.one.map.location.LocationProvider.OnLocationChangedListener;
 import com.one.map.model.Address;
@@ -24,7 +29,9 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends AbsBaseActivity {
+
+  private RelativeLayout mRootLayout;
 
   interface DialogClickListener {
 
@@ -41,10 +48,12 @@ public class SplashActivity extends AppCompatActivity {
   private boolean haveDoNext = false;
 
   @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
+  public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.splash_activity);
     SplashActivityPermissionsDispatcher.startLocationWithPermissionCheck(this);
+
+    mRootLayout = findViewById(R.id.splash_root_layout);
   }
 
   @OnPermissionDenied({Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -64,7 +73,7 @@ public class SplashActivity extends AppCompatActivity {
   public void startLocation() {
     LocationProvider.getInstance().addLocationChangeListener(locationChangedListener);
     LocationProvider provider = LocationProvider.getInstance();
-    provider.buildLocation(this, IMapView.TENCENT);
+    provider.buildLocation(this, IMapView.AMAP);
     provider.start();
   }
 
@@ -192,9 +201,26 @@ public class SplashActivity extends AppCompatActivity {
   }
 
   private void finishActivity() {
-    startMainActivity();
-    finish();
-    overridePendingTransition(0, R.anim.splash_exit_anim);
+    startAnim();
+  }
+
+  private void startAnim() {
+    AnimatorSet animator = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.splash_scale_anim);
+    animator.setTarget(mRootLayout);
+    animator.addListener(new AnimatorListenerAdapter() {
+      @Override
+      public void onAnimationStart(Animator animation) {
+        super.onAnimationStart(animation);
+        startMainActivity();
+      }
+
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        super.onAnimationEnd(animation);
+        finish();
+      }
+    });
+    animator.start();
   }
 
   private void startMainActivity() {

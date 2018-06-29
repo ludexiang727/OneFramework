@@ -5,21 +5,6 @@
     <attr name="gift_text_size" format="dimension"/>
   </declare-styleable>
 
-  <declare-styleable name="ScriptTextView">
-    <attr name="script_color" format="color"/>
-    <attr name="script_text" format="reference"/>
-    <attr name="script_text_size" format="dimension"/>
-    <attr name="script_direction" format="enum">
-      <enum name="right" value="0"/>
-      <enum name="left" value="1"/>
-    </attr>
-    <attr name="script_loc" format="enum">
-      <enum name="top" value="0"/>
-      <enum name="mid" value="1"/>
-      <enum name="bottom" value="2"/>
-    </attr>
-  </declare-styleable>
-
   <declare-styleable name="ProgressView">
     <attr name="progress_from" format="integer"/>
     <attr name="progress_to" format="integer"/>

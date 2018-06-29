@@ -1,7 +1,8 @@
 package com.trip.base.provider;
 
 import com.one.map.model.Address;
-import com.trip.base.model.IOrder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ludexiang on 2018/6/7.
@@ -12,13 +13,12 @@ public class FormDataProvider {
   private Address mStartAddress;
   private Address mEndAddress;
 
-  private IOrder mOrder;
-
   private long mBookingTime;
 
   private int mTip = 0;
 
   private boolean mPay4PickUp;
+  private List<String> mMarks = new ArrayList<>();
 
   private FormDataProvider() {
 
@@ -62,8 +62,21 @@ public class FormDataProvider {
     mPay4PickUp = isPay4PickUp;
   }
 
+  public void saveMarks(List<String> marks) {
+    marks.clear();
+    mMarks.addAll(marks);
+  }
+
   public boolean isPay4PickUp() {
     return mPay4PickUp;
+  }
+
+  /**
+   * 获取taxi 捎话内容
+   * @return
+   */
+  public List<String> obtainMarks() {
+    return mMarks;
   }
 
   public Address obtainStartAddress() {
@@ -76,14 +89,6 @@ public class FormDataProvider {
 
   public long obtainBookingTime() {
     return  mBookingTime;
-  }
-
-  public void saveOrder(IOrder order) {
-    mOrder = order;
-  }
-
-  public IOrder obtainOrder() {
-    return mOrder;
   }
 
   public void clearData() {

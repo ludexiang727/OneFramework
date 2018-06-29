@@ -12,6 +12,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Gravity;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.one.framework.dialog.BottomSheetDialog;
 import com.one.framework.dialog.BottomSheetDialog.Builder;
 import com.one.framework.dialog.DataPickerDialog;
 import com.one.framework.dialog.DataPickerDialog.ISelectResultListener;
+import com.one.framework.log.Logger;
 import com.one.framework.net.model.OrderDetail;
 import com.one.framework.provider.HomeDataProvider;
 import com.one.framework.utils.DBUtil;
@@ -61,10 +64,10 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mMap.setRoutePlanCallback(this);
     mPopStack = new Stack<>();
     initBroadcast();
     EventBus.getDefault().register(this);
+    mMap.registerPlanCallback(this);
   }
 
   private void initBroadcast() {
@@ -220,6 +223,12 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
 
   public interface IChooseResultListener {
     void onResult(@AddressType int type, Address address);
+  }
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    mMap.unRegisterPlanCallback(this);
   }
 
   @Override

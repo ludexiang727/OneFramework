@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/basetrip/basetrip.iml" filepath="$PROJECT_DIR$/basetrip/basetrip.iml" />
       <module fileurl="file://$PROJECT_DIR$/../evaluate/evaluate.iml" filepath="$PROJECT_DIR$/../evaluate/evaluate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../OneFrameworkCore/onecore.iml" filepath="$PROJECT_DIR$/../OneFrameworkCore/onecore.iml" />
       <module fileurl="file://$PROJECT_DIR$/../TheOne/oneframework.iml" filepath="$PROJECT_DIR$/../TheOne/oneframework.iml" />
       <module fileurl="file://$PROJECT_DIR$/theoneframework/oneframework.iml" filepath="$PROJECT_DIR$/theoneframework/oneframework.iml" />
       <module fileurl="file://$PROJECT_DIR$/../OneMap/onemap.iml" filepath="$PROJECT_DIR$/../OneMap/onemap.iml" />

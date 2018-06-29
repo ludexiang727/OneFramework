@@ -42,7 +42,7 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
   private int mWaitTime;
   private HandlerThread mHandlerThread;
   private Handler mHandler;
-  private int mCurrentTime = -1;
+  private int mCurrentTime = 0;
   private byte[] lock = new byte[0];
   private String[] mTipArray;
 
@@ -50,13 +50,13 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
   private LocalBroadcastManager mBroadManager;
   private BroadReceiver mReceiver;
 
-  public TaxiWaitPresenter(Context context, final ITaxiWaitView taxiWaitView) {
+  public TaxiWaitPresenter(Context context, TaxiOrder order, final ITaxiWaitView taxiWaitView) {
     mContext = context;
     iTaxiWaitView = taxiWaitView;
     mTipArray = context.getResources().getStringArray(R.array.TaxiTip);
     mWaitView = new TaxiWaitView(context);
     mWaitView.setClickListener(taxiWaitView);
-    mTaxiOrder = (TaxiOrder) FormDataProvider.getInstance().obtainOrder();
+    mTaxiOrder = order;
     mWaitTime = mTaxiOrder.getWaitConfigTime();
     mHandlerThread = new HandlerThread("UPDATE_PROGRESS");
     mHandlerThread.start();
@@ -66,9 +66,8 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
         super.handleMessage(msg);
         switch (msg.what) {
           case COUNT_DOWN: {
+            iTaxiWaitView.waitConfigTime(mWaitTime);
             while (mCurrentTime < mWaitTime) {
-              float sweepAngle = (mCurrentTime * 1f / mWaitTime) * 360;
-              iTaxiWaitView.updateSweepAngle(sweepAngle);
               mCurrentTime++;
               UIThreadHandler.post(new Runnable() {
                 @Override
@@ -127,7 +126,7 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
               }
 
               @Override
-              public void onFail(TaxiOrderDetail taxiOrderDetail) {
+              public void onFail(int errCode, TaxiOrderDetail taxiOrderDetail) {
 
               }
 
@@ -162,12 +161,13 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
         "", new IResponseListener<TaxiOrderCancel>() {
       @Override
       public void onSuccess(TaxiOrderCancel taxiOrderCancel) {
-        iTaxiWaitView.cancelOrderSuccess(taxiOrderCancel);
+        FormDataProvider.getInstance().saveEndAddress(null);
         TaxiService.stopService(mContext);
+        iTaxiWaitView.cancelOrderSuccess(taxiOrderCancel);
       }
 
       @Override
-      public void onFail(TaxiOrderCancel taxiOrderCancel) {
+      public void onFail(int errCode, TaxiOrderCancel taxiOrderCancel) {
       }
 
       @Override
@@ -177,16 +177,20 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
     });
   }
 
+  /**
+   * 增加小费
+   * @param tip
+   */
   @Override
   public void addTip(int tip) {
     TaxiRequest.taxiAddTip(mTaxiOrder.getOrderId(), tip, new IResponseListener<BaseObject>() {
       @Override
       public void onSuccess(BaseObject baseObject) {
-
+        // 增加小费成功
       }
 
       @Override
-      public void onFail(BaseObject baseObject) {
+      public void onFail(int errCode, BaseObject baseObject) {
 
       }
 
@@ -206,7 +210,7 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
       }
 
       @Override
-      public void onFail(BaseObject baseObject) {
+      public void onFail(int errCode, BaseObject baseObject) {
 
       }
 

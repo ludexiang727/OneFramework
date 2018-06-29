@@ -13,6 +13,7 @@ import android.widget.Toast
 import com.one.framework.app.base.OneApplication
 import com.one.framework.net.Api
 import com.one.framework.utils.PreferenceUtil
+import com.one.framework.utils.ToastUtils
 import com.test.demo.activity.DebugActivity
 import com.trip.taxi.utils.H5Page
 
@@ -29,7 +30,7 @@ class DebugApplication : OneApplication() {
 
     override fun onCreate() {
         super.onCreate()
-        Toast.makeText(this, "欢迎使出租车乘客端！！\n摇一摇可切环境", Toast.LENGTH_LONG).show()
+        ToastUtils.toast(this, "欢迎使出租车乘客端！！\n摇一摇可切环境")
         initDebugMode()
         initNetworkManager()
     }

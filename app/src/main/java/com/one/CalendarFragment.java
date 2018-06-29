@@ -78,4 +78,8 @@ public class CalendarFragment extends BaseFragment {
     return lists;
   }
 
+  @Override
+  protected void mapClearElement() {
+
+  }
 }

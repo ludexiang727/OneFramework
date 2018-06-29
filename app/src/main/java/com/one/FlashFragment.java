@@ -83,4 +83,9 @@ public class FlashFragment extends BaseFragment {
     }
     mBusContext.getMap().addMarkers(options);
   }
+
+  @Override
+  protected void mapClearElement() {
+
+  }
 }

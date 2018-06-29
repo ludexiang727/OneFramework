@@ -62,12 +62,10 @@ public class OptionsView extends View implements IOptionView {
     super(context, attrs, defStyleAttr);
     mContext = context;
     Resources res = context.getResources();
-    mMinWidth = (int) TypedValue
-        .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 67, res.getDisplayMetrics());
-    mMinHeight = (int) TypedValue
-        .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 36, res.getDisplayMetrics());
-    mPadding = (int) TypedValue
-        .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, res.getDisplayMetrics());
+    mMinWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 67, res.getDisplayMetrics());
+    mMinHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 36, res.getDisplayMetrics());
+    mPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, res.getDisplayMetrics());
+
     TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.OptionsView);
     mViewType = a.getInt(R.styleable.OptionsView_options_type, 0); // default 0 -> rect 1 - > oval
     mReferenceId = a.getResourceId(R.styleable.OptionsView_options_op, 0);

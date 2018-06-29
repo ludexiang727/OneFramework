@@ -54,6 +54,11 @@ public class PremiumFragment extends BaseFragment {
 
   }
 
+  @Override
+  protected void mapClearElement() {
+
+  }
+
   //////////////// test demo
   private List<ListModel> testDemo() {
     List<ListModel> datas = new ArrayList<ListModel>();

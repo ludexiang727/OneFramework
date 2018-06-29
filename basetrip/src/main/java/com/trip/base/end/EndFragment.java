@@ -6,10 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -31,13 +27,13 @@ import com.one.framework.net.response.IResponseListener;
 import com.one.map.map.MarkerOption;
 import com.one.map.map.element.Marker;
 import com.one.map.model.Address;
-import com.one.map.model.BestViewModel;
 import com.one.map.model.LatLng;
 import com.one.pay.Pay;
 import com.one.pay.dialog.PayBottomDlg.IPayCallback;
 import com.one.pay.model.PayList;
 import com.one.pay.model.PayModel;
 import com.trip.base.R;
+import com.trip.base.common.CommonParams;
 import com.trip.base.net.BaseRequest;
 import com.trip.base.net.model.BasePayList;
 import com.trip.base.net.model.PayTypeList;
@@ -52,9 +48,20 @@ import java.util.List;
 public abstract class EndFragment extends BaseFragment implements IEndView, IPayCallback {
 
   protected EvaluateComponent mEvaluate;
+  protected boolean isFromHistory;
 
   private Marker mStartMarker;
   private Marker mEndMarker;
+
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    mEvaluate = new EvaluateComponent();
+    Bundle bundle = getArguments();
+    if (bundle != null) {
+      isFromHistory = bundle.getBoolean(CommonParams.Service.FROM_HISITORY, false);
+    }
+  }
 
   @Override
   public void addMarks(MarkerOption start, MarkerOption end) {
@@ -65,6 +72,15 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
     if (mEndMarker == null) {
       mEndMarker = mMap.addMarker(end);
     }
+  }
+
+  @Override
+  public boolean onBackPressed() {
+    if (!isFromHistory) {
+      onBackHome();
+      return true;
+    }
+    return false;
   }
 
   @Override
@@ -84,7 +100,7 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
 
   protected abstract String getOrderId();
 
-  protected void payList(final String oid) {
+  protected void payList(final String oid, final float fee) {
     BaseRequest.basePayList(UserProfile.getInstance(getContext()).getUserId(), oid, new IResponseListener<BasePayList>() {
       @Override
       public void onSuccess(BasePayList taxiPayList) {
@@ -94,14 +110,15 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
               payList.getPayItemSelected(), payList.getPayItemIconRes(), payList.getPayItemType());
           payLists.add(pay);
         }
-        PayModel model = new PayModel(taxiPayList.getTotalFee(), taxiPayList.getFeeDetail(),
+
+        PayModel model = new PayModel(fee/*taxiPayList.getTotalFee()*/, taxiPayList.getFeeDetail(),
             taxiPayList.getVoucherUrl(), payLists);
 
         Pay.getInstance(getActivity()).showPayBottom(model, EndFragment.this);
       }
 
       @Override
-      public void onFail(BasePayList taxiPayList) {
+      public void onFail(int errCode, BasePayList taxiPayList) {
 
       }
 
@@ -121,7 +138,7 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
       }
 
       @Override
-      public void onFail(BaseObject baseObject) {
+      public void onFail(int errCode, BaseObject baseObject) {
       }
 
       @Override
@@ -132,14 +149,28 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
   }
 
   @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    if (mStartMarker != null) {
+      mStartMarker.remove();
+      mStartMarker = null;
+    }
+    if (mEndMarker != null) {
+      mEndMarker.remove();
+      mEndMarker = null;
+    }
+    mMap.removeDriverLine();
+    mMap.clearElements();
+  }
+
+  @Override
   public void onPaySuccess() {
     handleFinish();
   }
 
-
   @Override
   public void onPayFail() {
-
+    handlePayFail();
   }
 
   public class EvaluateComponent implements EvaluateListener {

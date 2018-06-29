@@ -72,5 +72,7 @@ public interface IFormView {
 
   void setMsg(String msg);
 
+  void setPay4PickUp(boolean isPickUp);
+
   View getFormView();
 }

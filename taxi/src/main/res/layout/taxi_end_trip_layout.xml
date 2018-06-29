@@ -25,6 +25,8 @@
 
     <include layout="@layout/taxi_end_trip_confirm_layout"/>
 
+    <include layout="@layout/taxi_end_trip_pay_layout"/>
+
     <include layout="@layout/taxi_end_trip_finish_layout"/>
   </FrameLayout>
 

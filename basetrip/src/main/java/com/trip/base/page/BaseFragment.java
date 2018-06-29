@@ -60,6 +60,8 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
    */
   protected abstract void boundsLatlng(BestViewModel bestView);
 
+  protected abstract void mapClearElement();
+
   @Nullable
   @Override
   public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -139,7 +141,6 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
 
   @Override
   public void onMarkerClick(IMarker marker) {
-    Logger.e("ldx", "Top level receive marker click");
   }
 
   /**
@@ -158,11 +159,30 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
   /**
    * attach to top container and invoke onSizeChange and callback reCalculate
    */
-  protected void attachToTopContainer(final View view) {
+  protected final void attachToTopContainer(final View view) {
     mTopContainer.setVisibility(View.VISIBLE);
     mTopContainer.addView(view);
     reCalculateHeight();
   }
+
+  protected final void detachFromTopContainer(final View view) {
+    if (mTopContainer.getVisibility() == View.GONE || mTopContainer.getChildCount() <= 0) {
+      return;
+    }
+    if (mTopContainer.getChildCount() > 0) {
+      for (int i = 0; i < mTopContainer.getChildCount(); i++) {
+        View childView = mTopContainer.getChildAt(i);
+        if (childView == view) {
+          mTopContainer.removeView(childView);
+        }
+      }
+      if (mTopContainer.getChildCount() == 0) {
+        mTopContainer.setVisibility(View.GONE);
+      }
+      toggleMapView();
+    }
+  }
+
 
   /**
    * 重新测量子view高度
@@ -192,7 +212,8 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
         mBottomRect[1] = view.getHeight();
       }
     }
-    Logger.e("ldx", "top " + mTopRect[0] + " " + mTopRect[1] + " bottom " + mBottomRect[0] + " " + mBottomRect[1]);
+    Logger.e("ldx", "top " + mTopRect[1] + " bottom  " + mBottomRect[1]);
+    updatePinViewPosition(mTopRect[1], mBottomRect[1]);
     toggleMapView();
   }
 
@@ -203,8 +224,8 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
   }
 
   @Override
-  public void onDestroy() {
-    super.onDestroy();
-    mBusContext.getMap().clearElements();
+  public void onDestroyView() {
+    super.onDestroyView();
+    mapClearElement();
   }
 }

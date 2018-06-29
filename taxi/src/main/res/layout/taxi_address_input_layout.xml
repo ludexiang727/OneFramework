@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:background="#FFFFFF"
   android:clickable="true"
   android:clipChildren="false"
   android:orientation="vertical"
-  android:transitionName="searchView"
-  app:outsideBackground="@drawable/taxi_common_round_ract">
+  android:transitionName="searchView">
 
   <include layout="@layout/taxi_extra_info_layout"/>
 
@@ -32,7 +29,7 @@
     android:layout_width="match_parent"
     android:layout_height="0.5dp"
     android:layout_marginLeft="26dp"
-    android:background="#e4e6e7"/>
+    android:background="#f3f3f3"/>
 
   <TextView
     android:id="@+id/taxi_end_address"

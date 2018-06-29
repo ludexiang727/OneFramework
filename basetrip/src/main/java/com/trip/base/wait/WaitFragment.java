@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.one.map.location.LocationProvider;
 import com.one.map.model.Address;
 import com.one.map.model.BestViewModel;
 import com.trip.base.R;
@@ -39,5 +40,13 @@ public class WaitFragment extends AbsBaseFragment {
   protected void boundsLatlng(BestViewModel model) {
     model.zoomCenter = start.mAdrLatLng;
     model.zoomLevel = 18f;
+//    model.bounds.add(LocationProvider.getInstance().getLocation().mAdrLatLng);
   }
+
+  @Override
+  protected void mapClearElement() {
+    mMap.stopRadarAnim();
+    mMap.clearElements();
+  }
+
 }

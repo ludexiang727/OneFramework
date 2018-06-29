@@ -1,4 +1,4 @@
-include ':app', ':taxi', ':basetrip', ':pay', ':onemap', ':oneframework', ':evaluate'
+include ':app', ':taxi', ':basetrip', ':pay', ':onemap', ':oneframework', ':evaluate', ':onecore'
 
 def map = project(':onemap')
 map.projectDir = new File('../OneMap')
@@ -8,3 +8,6 @@ oneFramework.projectDir = new File('../TheOne')
 
 def evaluate = project(':evaluate')
 evaluate.projectDir = new File('../evaluate')
+
+def onecore = project(':onecore')
+onecore.projectDir = new File('../OneFrameworkCore')

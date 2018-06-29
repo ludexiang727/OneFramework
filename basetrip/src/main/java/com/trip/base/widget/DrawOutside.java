@@ -1,4 +1,4 @@
-package com.trip.taxi.widget;
+package com.trip.base.widget;
 
 import android.graphics.Canvas;
 import android.graphics.Color;

@@ -122,6 +122,12 @@ public class PayBottomDlg extends BottomSheetDialog implements OnClickListener, 
       // h5
     } else if (id == R.id.pay_dlg_close) {
       dismiss();
+      UIThreadHandler.post(new Runnable() {
+        @Override
+        public void run() {
+          mPayListener.onPayFail();
+        }
+      });
     } else if (id == R.id.pay_voucher_choose) {
       // voucher choose list
     } else if (id == R.id.pay) {
@@ -193,6 +199,12 @@ public class PayBottomDlg extends BottomSheetDialog implements OnClickListener, 
     } else {
       // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
       Toast.makeText(mActivity, "支付失败", Toast.LENGTH_SHORT).show();
+      UIThreadHandler.post(new Runnable() {
+        @Override
+        public void run() {
+          mPayListener.onPayFail();
+        }
+      });
     }
   }
 

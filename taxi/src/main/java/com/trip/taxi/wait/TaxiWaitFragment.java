@@ -30,30 +30,37 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
   private TextView mWaitSeconds;
   private IWaitView mWaitView;
   private SupportDialogFragment mCancelDialog;
+  private TaxiOrder mTaxiOrder;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mWaitPresenter = new TaxiWaitPresenter(getContext(), this);
+    Bundle bundle = getArguments();
+    boolean isFromHistory = false;
+    if (bundle != null) {
+      mTaxiOrder = (TaxiOrder) bundle.getSerializable(Service.ORDER);
+      isFromHistory = bundle.getBoolean(Service.FROM_HISITORY);
+    }
+    mWaitPresenter = new TaxiWaitPresenter(getActivity(), mTaxiOrder, this);
     mWaitView = mWaitPresenter.getWaitView();
     mTopbarView.setTitle(R.string.taxi_wait_page_title);
-    mTopbarView.setLeft(0);
+    mTopbarView.setLeft(isFromHistory ? R.drawable.one_top_bar_back_selector : 0);
   }
 
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    View topView = LayoutInflater.from(getContext())
-        .inflate(R.layout.taxi_wait_top_view_layout, null);
+    View topView = LayoutInflater.from(getContext()).inflate(R.layout.taxi_wait_top_view_layout, null);
     mWaitLoadingView = (LoadingView) topView.findViewById(R.id.taxi_wait_loading_view);
     mWaitSeconds = (TextView) topView.findViewById(R.id.taxi_wait_count_down);
     attachToTopContainer(topView);
     mWaitPresenter.startCountDown();
   }
 
+
   @Override
-  public void updateSweepAngle(float sweepAngle) {
-    mWaitLoadingView.setSweepAngle(sweepAngle);
+  public void waitConfigTime(int waitTime) {
+    mWaitLoadingView.setConfigWaitTime(waitTime);
   }
 
   private void onTipClick() {
@@ -67,6 +74,7 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
         int position = tipWheel.getSelectedPosition();
         int tip = mWaitPresenter.getTip(position);
         mWaitView.addTip(tip);
+        mWaitPresenter.addTip(tip);
       }
     });
   }
@@ -78,16 +86,18 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
       onTipClick();
     } else if (id == R.id.taxi_wait_cancel_order) {
       cancelOrder();
+    } else if (id == R.id.taxi_wait_pick_up_checkbox) {
+      mWaitPresenter.pay4Pickup();
     }
   }
 
   @Override
   public void onTripping(TaxiOrder order) {
     mMap.stopRadarAnim();
-    mWaitPresenter.release();
+    mWaitLoadingView.release();
     Bundle bundle = new Bundle();
     bundle.putSerializable(Service.ORDER, order);
-    forward(ServiceFragment.class, bundle);
+    forwardWithPop(ServiceFragment.class, bundle);
   }
 
   /**
@@ -136,13 +146,14 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
       mWaitSeconds.setText(waitTime);
       if (count == 0) {
         // 没有司机接单 回全表单页面 todo
-
+        finishSelf();
       }
     }
   }
 
   @Override
-  public void onDestroy() {
-    super.onDestroy();
+  public void onDestroyView() {
+    super.onDestroyView();
+    mWaitPresenter.release();
   }
 }

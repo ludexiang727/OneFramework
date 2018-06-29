@@ -9,7 +9,7 @@ import com.trip.taxi.net.model.TaxiOrderCancel;
  */
 
 public interface ITaxiWaitView extends IClickListener{
-  void updateSweepAngle(float sweepAngle);
+  void waitConfigTime(int time);
   void countDown(int count);
   void cancelOrderSuccess(TaxiOrderCancel orderCancel);
   void onTripping(TaxiOrder order);

@@ -48,12 +48,16 @@ public class TaxiService extends Service {
 
   private static boolean isLooperOrderStatus = false;
 
+  private static boolean isStopService = false;
+
 //  private Handler trackHandler = new Handler(Looper.getMainLooper());
 
   public static void stopService(Context ctx) {
     Intent serviceIntent = new Intent();
     serviceIntent.setClass(ctx, TaxiService.class);
     ctx.stopService(serviceIntent);
+    isStopService = true;
+    isLooperOrderStatus = false;
   }
 
   @Override
@@ -66,6 +70,10 @@ public class TaxiService extends Service {
       @Override
       public void handleMessage(Message msg) {
         super.handleMessage(msg);
+        if (isStopService) {
+          mHandlerThread.quit();
+          stopSelf();
+        }
         switch (msg.what) {
           case KEY_COMMAND_REPORT_LOCATION: {
             startReportLocation();
@@ -84,13 +92,13 @@ public class TaxiService extends Service {
   }
 
   private static void start(Intent baseIntent, Context ctx, int command, boolean isStart) {
+    isStopService = false;
     Intent serviceIntent = new Intent(baseIntent);
     serviceIntent.setClass(ctx, TaxiService.class);
     serviceIntent.putExtra(COMMAND_KEY, command);
     serviceIntent.putExtra(COMMAND_ISSTART, isStart);
     ctx.startService(serviceIntent);
   }
-
 
   /**
    * 上传经纬度
@@ -168,7 +176,7 @@ public class TaxiService extends Service {
         }
 
         @Override
-        public void onFail(BaseObject baseObject) {
+        public void onFail(int errCode, BaseObject baseObject) {
 
         }
 
@@ -287,7 +295,7 @@ public class TaxiService extends Service {
       }
 
       @Override
-      public void onFail(TaxiOrderStatus taxiOrderStatus) {
+      public void onFail(int errCode, TaxiOrderStatus taxiOrderStatus) {
 
       }
 
@@ -315,7 +323,7 @@ public class TaxiService extends Service {
           }
 
           @Override
-          public void onFail(TaxiOrderDriverLocation taxiOrderDriverLocation) {
+          public void onFail(int errCode, TaxiOrderDriverLocation taxiOrderDriverLocation) {
 
           }
 

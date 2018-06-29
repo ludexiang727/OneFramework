@@ -23,6 +23,8 @@ public interface IFullFormView {
 
   void setTime(long time, String showTime);
 
+  void setPay4PickUp(boolean isPickUp);
+
   void setMoney(int fee);
 
   void setMsg(String msg);

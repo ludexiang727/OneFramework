@@ -1,0 +1,6 @@
+<resources>
+  <declare-styleable name="View">
+    <attr name="outsideBackground" format="reference" />
+    <attr name="foreground" format="reference|color" />
+  </declare-styleable>
+</resources>

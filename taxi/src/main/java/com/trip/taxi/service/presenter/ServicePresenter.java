@@ -138,6 +138,7 @@ public class ServicePresenter {
   }
 
   public void release() {
+    TaxiService.stopService(mContext);
     mBroadManager.unregisterReceiver(mReceiver);
   }
 }

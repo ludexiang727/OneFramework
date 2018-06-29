@@ -14,6 +14,8 @@ public interface IEndView {
   void addMarks(MarkerOption start, MarkerOption end);
   void handleArrived(OrderStatus status);
   void handleFinish();
+  void handlePayFail();
+  void handlePay(OrderStatus status);
   void endRoutePlan(List<LatLng> driverLines);
   void endRoutePlan(Address from, Address to);
 }

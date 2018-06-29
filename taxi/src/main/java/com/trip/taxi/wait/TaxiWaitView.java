@@ -2,14 +2,17 @@ package com.trip.taxi.wait;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.one.framework.app.widget.LoadingView;
+import com.one.framework.dialog.SupportDialogFragment;
 import com.one.framework.utils.UIUtils;
 import com.trip.base.provider.FormDataProvider;
 import com.trip.base.wait.IWaitView;
@@ -28,7 +31,7 @@ public class TaxiWaitView extends RelativeLayout implements IWaitView, View.OnCl
   private CheckBox mCheckBox;
   private TextView mCancelOrder;
   private IClickListener mClickListener;
-
+  private SupportDialogFragment dialogFragment;
 
   public TaxiWaitView(Context context) {
     this(context, null);
@@ -48,8 +51,49 @@ public class TaxiWaitView extends RelativeLayout implements IWaitView, View.OnCl
     mCancelOrder = (TextView) view.findViewById(R.id.taxi_wait_cancel_order);
 
     addTip(FormDataProvider.getInstance().obtainTip());
+
+    mCheckBox.setChecked(FormDataProvider.getInstance().isPay4PickUp());
+    addTip(FormDataProvider.getInstance().obtainTip());
     mCancelOrder.setOnClickListener(this);
     mTipLayout.setOnClickListener(this);
+
+    mCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        boolean isPay4PickUp = FormDataProvider.getInstance().isPay4PickUp();
+        if (isPay4PickUp) {
+          // 乘客已经选择达标来接 则不能取消
+          showTip();
+          mCheckBox.setChecked(isPay4PickUp);
+          mCheckBox.setClickable(false);
+          return;
+        }
+        FormDataProvider.getInstance().savePick4Up(true);
+        mCheckBox.setChecked(isChecked);
+
+        if (mClickListener != null) {
+          mClickListener.onClick(mCheckBox);
+        }
+      }
+    });
+  }
+
+  private void showTip() {
+    final SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(getContext())
+        .setTitle(mContext.getString(R.string.taxi_support_dlg_title))
+        .setMessage(mContext.getString(R.string.taxi_tell_driver_pick_up))
+        .setPositiveButton(mContext.getString(R.string.taxi_wait_checkbox_i_know),
+            new OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                dialogFragment.dismiss();
+              }
+            })
+        .setPositiveButtonTextColor(Color.parseColor("#A3D2E4"));
+    dialogFragment = builder.create();
+    if (mContext instanceof FragmentActivity) {
+      dialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(), "");
+    }
   }
 
   @Override

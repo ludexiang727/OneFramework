@@ -20,10 +20,12 @@
 
   <string name="taxi_cancel_confirm_msg">确认取消订单吗？</string>
 
-  <string name="taxi_have_unfinish_order_title">提示</string>
+  <string name="taxi_support_dlg_title">提示</string>
   <string name="taxi_have_unfinish_order_message">您有一个未完成的订单，是否前往?</string>
   <string name="taxi_have_unfinish_order_go">前往</string>
   <string name="taxi_have_unfinish_order_no">不</string>
+
+  <string name="taxi_have_trip_click_forward">您有一个未完成的订单，{点击前往}</string>
 
   <string name="taxi_service_wait_meet">等待接驾</string>
   <string name="taxi_service_driver_arrived">司机已到达</string>
@@ -40,11 +42,16 @@
 
   <string name="taxi_end_pay_confirm">确认支付%1$s元</string>
   <string name="taxi_end_fee_pay">支付</string>
+  <string name="taxi_end_fee_go_pay">去支付</string>
   <string name="taxi_end_fee_unit">元</string>
   <string name="taxi_end_charge_distant">费用疑问?</string>
   <string name="taxi_end_ticket_wipe">发票与报销</string>
   <string name="taxi_end_evaluate_service">评价本次服务</string>
   <string name="taxi_end_fee_voucher">已优惠{%$s}元</string>
+  <string name="taxi_tell_driver_pick_up">不能取消啦!已告知司机打表来接</string>
+  <string name="taxi_wait_checkbox_i_know">我知道了</string>
+  <string name="taxi_service_driver_wait_time">已等待%1$s</string>
+  <string name="taxi_end_pay_money">%1$s元</string>
 
 
 

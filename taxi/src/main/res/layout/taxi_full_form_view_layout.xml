@@ -11,7 +11,7 @@
   app:movable="true">
 
   <!-- 预估界面 -->
-  <com.trip.taxi.widget.BaseLinearLayout
+  <com.trip.base.widget.BaseLinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
@@ -32,7 +32,7 @@
     <!-- 预估 -->
     <include layout="@layout/taxi_estimate_price_layout"/>
 
-  </com.trip.taxi.widget.BaseLinearLayout>
+  </com.trip.base.widget.BaseLinearLayout>
 
   <FrameLayout
     android:layout_width="match_parent"

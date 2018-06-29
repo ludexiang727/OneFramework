@@ -68,4 +68,9 @@ public class DriverFragment extends BaseFragment {
   public void onMarkerClick(IMarker marker) {
     super.onMarkerClick(marker);
   }
+
+  @Override
+  protected void mapClearElement() {
+
+  }
 }

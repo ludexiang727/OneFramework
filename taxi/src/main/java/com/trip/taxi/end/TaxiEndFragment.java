@@ -7,6 +7,10 @@ import android.animation.AnimatorSet;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,14 +33,16 @@ import com.trip.base.common.CommonParams.Service;
 import com.trip.base.end.EndFragment;
 import com.trip.taxi.R;
 import com.trip.taxi.end.presenter.TaxiEndPresenter;
+import com.trip.taxi.net.model.FeeInfo;
 import com.trip.taxi.net.model.OrderDriver;
 import com.trip.taxi.net.model.TaxiOrder;
+import com.trip.taxi.net.model.TaxiOrderDetail;
 
 /**
  * Created by ludexiang on 2018/6/24.
  */
 
-public class TaxiEndFragment extends EndFragment implements View.OnClickListener {
+public class TaxiEndFragment extends EndFragment implements View.OnClickListener, ITaxiEndView {
   private TaxiEndPresenter mEndPresenter;
   private LinearLayout mConfirmLayout;
   private ShapeImageView mDriverHeaderIcon;
@@ -56,6 +62,14 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
   private LoadingView mEndLoading;
   private EditWatch mWatcher;
 
+  private LinearLayout mPayLayout;
+  private TextView mEndTotalFee;
+  private LinearLayout mPayExtraInfoLayout;
+  private TextView mNeedPayFee;
+  private LinearLayout mPayChargeDistant;
+  private TripButton mGoPay;
+  private LoadingView mPayLoading;
+
   private LinearLayout mFinishedLayout;
   private TextView mEvaluateDriver;
   private TextView mPayMoney;
@@ -66,6 +80,19 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
   private AnimatorSet mRightOutSet;
   private AnimatorSet mLeftInSet;
 
+  private String mConfirmPayFee;
+  private boolean isSelfPay; // 是否是乘客发起支付
+  private static final int PAY_INFO_STATUS = 0x001;
+  private HandlerThread mPayInfoHandler = new HandlerThread("PAY_INFO");
+  private PayHandler mPayHandler;
+  private FeeInfo feeInfo;
+
+  private Handler mHandler = new Handler(Looper.getMainLooper()) {
+    @Override
+    public void handleMessage(Message msg) {
+      super.handleMessage(msg);
+    }
+  };
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,13 +104,15 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
       isFromHistory = bundle.getBoolean(Service.FROM_HISITORY);
     }
     mEndPresenter = new TaxiEndPresenter(getContext(), mTaxiOrder, this);
+    mPayInfoHandler.start();
+    mPayHandler = new PayHandler(mPayInfoHandler.getLooper());
+    mPayHandler.sendEmptyMessage(PAY_INFO_STATUS);
     mMap.removeDriverLine();
     mMap.stopRadarAnim();
     mTopbarView.setTitle(R.string.taxi_service_driver_trip_ending);
     mTopbarView.setLeft(isFromHistory ? R.drawable.one_top_bar_back_selector : 0);
     mTopbarView.setTitleRight(0);
     mCurrentStatus = OrderStatus.ARRIVED;
-    mMap.hideMyLocation();
     mWatcher = new EditWatch();
     mEndPresenter.addMarks(mTaxiOrder);
   }
@@ -97,6 +126,7 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
   }
 
   private void initView(View view) {
+    mMap.hideMyLocation();
     mConfirmLayout = (LinearLayout) view.findViewById(R.id.taxi_end_trip_finish_confirm_money_layout);
     mDriverHeaderIcon = (ShapeImageView) view.findViewById(R.id.taxi_service_driver_icon);
     mDriverIM = (ImageView) view.findViewById(R.id.taxi_service_driver_im);
@@ -109,6 +139,14 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
     mEndPay = (TripButton) view.findViewById(R.id.taxi_end_pay);
     mEndLoading = (LoadingView) view.findViewById(R.id.taxi_end_loading_view);
 
+    mPayLayout = (LinearLayout) view.findViewById(R.id.taxi_end_trip_finish_pay_layout);
+    mEndTotalFee = (TextView) view.findViewById(R.id.taxi_end_trip_total_fee);
+    mPayExtraInfoLayout = (LinearLayout) view.findViewById(R.id.taxi_end_trip_pay_extra_layout);
+    mNeedPayFee = (TextView) view.findViewById(R.id.taxi_end_pay_trip_fee);
+    mPayChargeDistant = (LinearLayout) view.findViewById(R.id.taxi_end_trip_charge_distant_layout);
+    mGoPay = (TripButton) view.findViewById(R.id.taxi_end_go_pay);
+    mPayLoading = (LoadingView) view.findViewById(R.id.taxi_end_pay_loading_view);
+
     mFinishedLayout = (LinearLayout) view.findViewById(R.id.taxi_end_trip_finished_layout);
     mPayMoney = (TextView) view.findViewById(R.id.taxi_end_finish_trip_total_fee);
     mPayVoucher = (TextView) view.findViewById(R.id.taxi_end_finish_trip_voucher);
@@ -116,6 +154,8 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
     mTickWipe = (TextView) view.findViewById(R.id.taxi_end_options_wipe);
     mEvaluateDriver = (TextView) view.findViewById(R.id.taxi_end_options_evaluate);
 
+    mPayChargeDistant.setOnClickListener(this);
+    mGoPay.setOnClickListener(this);
     mFeeCharge.setOnClickListener(this);
     mTickWipe.setOnClickListener(this);
     mEvaluateDriver.setOnClickListener(this);
@@ -131,7 +171,7 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
     OrderDriver driver = mTaxiOrder.getOrderInfo().getDriver();
     mDriverHeaderIcon.loadImageByUrl(null, driver.getDriverIcon(), "");
     mDriverName.setText(driver.getDriverName());
-    mDriverStarView.setLevel(driver.getDriverStar().intValue());
+    mDriverStarView.setLevel((int) driver.getDriverStar());
   }
 
   @Override
@@ -140,7 +180,30 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
   }
 
   @Override
+  public void handlePay(OrderStatus status) {
+    switch (status) {
+      case COMPLAINT: {
+        // 司机发起支付
+        mPayLayout.setVisibility(View.VISIBLE);
+        break;
+      }
+    }
+  }
+
+  @Override
+  public void handlePayFail() {
+    if (isSelfPay) {
+      mEndPay.setTripButtonText(mConfirmPayFee);
+      mEndLoading.setVisibility(View.GONE);
+    } else {
+      mGoPay.setTripButtonText(R.string.taxi_end_fee_go_pay);
+      mPayLoading.setVisibility(View.GONE);
+    }
+  }
+
+  @Override
   public void handleFinish() {
+    mPayLayout.setVisibility(View.GONE);
     // 已支付
     if (mRightOutSet != null && mLeftInSet != null) {
       mRightOutSet.setTarget(mConfirmLayout);
@@ -185,19 +248,39 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
     } else if (id == R.id.taxi_end_options_evaluate) {
       mEvaluate.onEvaluate();
     } else if (id == R.id.taxi_end_pay) {
-      mEndPay.setTripButtonText("");
-      mEndLoading.setVisibility(View.VISIBLE);
-      final String oid = mTaxiOrder.getOrderId();
-      payList(oid);
+      isSelfPay = true;
+      pay(mEndPay, mEndLoading);
+    } else if (id == R.id.taxi_end_go_pay) {
+      isSelfPay = false;
+      pay(mGoPay, mPayLoading);
     }
   }
 
   @Override
+  public void handlePayInfo(TaxiOrderDetail orderDetail) {
+    feeInfo = orderDetail.getFeeInfo();
+    if (feeInfo != null) {
+      mEndTotalFee.setText(String.format(getString(R.string.taxi_end_pay_money), feeInfo.getTotalMoney() / 100));
+      mNeedPayFee.setText(String.valueOf(feeInfo.getActualPayMoney() / 100));
+    }
+  }
+
+  /**
+   * 去支付
+   * @param tripButton
+   * @param loading
+   */
+  private void pay(TripButton tripButton, LoadingView loading) {
+    tripButton.setTripButtonText("");
+    loading.setVisibility(View.VISIBLE);
+    final String oid = mTaxiOrder.getOrderId();
+    payList(oid, feeInfo.getUnPayMoney() / 100);
+  }
+
+  @Override
   protected void boundsLatlng(BestViewModel model) {
-    model.bounds.add(new LatLng(mTaxiOrder.getOrderInfo().getStartLat(),
-        mTaxiOrder.getOrderInfo().getStartLng()));
-    model.bounds.add(
-        new LatLng(mTaxiOrder.getOrderInfo().getEndLat(), mTaxiOrder.getOrderInfo().getEndLng()));
+    model.bounds.add(new LatLng(mTaxiOrder.getOrderInfo().getStartLat(),mTaxiOrder.getOrderInfo().getStartLng()));
+    model.bounds.add(new LatLng(mTaxiOrder.getOrderInfo().getEndLat(), mTaxiOrder.getOrderInfo().getEndLng()));
     if (mMap.getLinePoints() != null) {
       model.bounds.addAll(mMap.getLinePoints());
     }
@@ -212,7 +295,8 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-      mEndPay.setTripButtonText(String.format(getString(R.string.taxi_end_pay_confirm), s));
+      mConfirmPayFee = String.format(getString(R.string.taxi_end_pay_confirm), s);
+      mEndPay.setTripButtonText(mConfirmPayFee);
     }
 
     @Override
@@ -221,6 +305,28 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
     }
   }
 
+  class PayHandler extends Handler {
+
+    public PayHandler(Looper looper) {
+      super(looper);
+    }
+
+    @Override
+    public void handleMessage(Message msg) {
+      super.handleMessage(msg);
+      switch (msg.what) {
+        case PAY_INFO_STATUS: {
+          mEndPresenter.loopOrderDetail(mTaxiOrder.getOrderId());
+          break;
+        }
+      }
+    }
+  }
+
+  @Override
+  protected void mapClearElement() {
+    mMap.removeDriverLine();
+  }
 
   @Override
   public void onDestroyView() {

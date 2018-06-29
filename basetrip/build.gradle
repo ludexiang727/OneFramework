@@ -1,9 +1,13 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+
+buildscript {
+    ext.kotlin_version = '1.2.50'
+}
 
 android {
     compileSdkVersion 26
-
-
 
     defaultConfig {
         minSdkVersion 15
@@ -34,9 +38,11 @@ dependencies {
 
     // 此处先源码依赖
     compile project(':onemap')
-    compile project(':oneframework')
     compile project(':evaluate')
     compile project(':pay')
+    compile project(':onecore')
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

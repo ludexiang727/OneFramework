@@ -23,7 +23,11 @@ data class TaxiOrderDetail(
         @field:SerializedName("cityCode")
         val cityCode: String,
         @field:SerializedName("driverInfo")
-        val driver: OrderDriver,
+        val driver: OrderDriver? = null,
+        @field:SerializedName("taxiInfo")
+        val taxiInfo: TaxiInfo? = null,
+        @field:SerializedName("feeInfo")
+        val feeInfo: FeeInfo,
         @field:SerializedName("status")
         val orderStatus: Int,
         @field:SerializedName("carType")
@@ -46,7 +50,7 @@ data class OrderDriver(
         @field:SerializedName("driverReceivedCount")
         val driverReceiveOrderCount: Long? = 0,
         @field:SerializedName("driverRate")
-        val driverStar: Float? = null,
+        val driverStar: Float = 4f,
         @field:SerializedName("phoneNo")
         val driverTel: String,
         @field:SerializedName("driverCar")
@@ -55,4 +59,32 @@ data class OrderDriver(
         val driverCarColor: String ? = null,
         @field:SerializedName("driverCompany")
         val driverCompany: String? = null
+)
+
+data class FeeInfo(
+        @field:SerializedName("actualTime")
+        val actualTime: Long,
+        @field:SerializedName("actualDistance")
+        val actualDistance: Long,
+        @field:SerializedName("totalMoney")
+        val totalMoney: Int,// 分
+        @field:SerializedName("actualPayMoney")
+        val actualPayMoney: Int,
+        @field:SerializedName("unPayMoney")
+        val unPayMoney: Int,
+        @field:SerializedName("discountMoney")
+        val discountMoney: Int,// 券
+        @field:SerializedName("refundMoney")
+        val refundMoney: Int
+)
+
+data class TaxiInfo(
+        @field:SerializedName("payForPickUp")
+        val pay4PickUp : Int,
+        @field:SerializedName("riderTags")
+        val taxiMarks: List<String>,
+        @field:SerializedName("dispatchFee")
+        val taxiTip : Int,
+        @field:SerializedName("feedback")
+        val taxiFeedBack: Int
 )

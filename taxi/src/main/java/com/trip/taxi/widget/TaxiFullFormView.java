@@ -193,6 +193,11 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView, Vie
   }
 
   @Override
+  public void setPay4PickUp(boolean isPickUp) {
+    mCheck.setChecked(isPickUp);
+  }
+
+  @Override
   public void setMsg(String msg) {
     mMarkMsg = msg;
     if (TextUtils.isEmpty(msg)) {
@@ -213,7 +218,6 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView, Vie
       return;
     }
     fullView();
-    play();
   }
 
   @Override
@@ -226,7 +230,6 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView, Vie
     } else {
       mViewSeparator.setVisibility(View.GONE);
     }
-    play();
   }
 
   private boolean checkPlayAnim() {
@@ -263,32 +266,6 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView, Vie
       mSendOrder.setTag(order);
       mClickListener.onClick(mSendOrder);
     }
-  }
-
-  private void play() {
-//    if (mPlayAnimator) {
-//      return;
-//    }
-//    mPlayAnimator = true;
-//    PanelAnimator animator = new PanelAnimator();
-//    animator.attachView(mOptionsLayout, mOptionsLayout);
-//    animator.addListener(new ViewAnimator.DefaultAnimatorListener() {
-//      @Override
-//      public void onAnimationEnd(Animator animation) {
-//        super.onAnimationEnd(animation);
-//        mPlayAnimator = false;
-//        if (mOptionsLayout.getScaleY() == 1.0f) {
-//          isFullView = true;
-//          mArrow.setRotation(180);
-//        } else {
-//          isFullView = false;
-//          mArrow.setRotation(0);
-//        }
-//
-//      }
-//    });
-//    animator.setDuration(200);
-//    animator.start();
   }
 
   @Override

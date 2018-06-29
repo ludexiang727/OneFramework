@@ -25,4 +25,9 @@ public class FirstTestFragment extends BaseFragment {
   protected void boundsLatlng(BestViewModel bestView) {
 
   }
+
+  @Override
+  protected void mapClearElement() {
+
+  }
 }

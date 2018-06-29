@@ -1,10 +1,4 @@
 <resources>
-
-  <declare-styleable name="View">
-    <attr name="outsideBackground" format="reference" />
-    <attr format="reference|color" name="foreground"/>
-  </declare-styleable>
-
   <declare-styleable name="DividerViewLayout">
     <attr name="dividerHeight" format="dimension|reference" />
     <attr name="dividerColor" format="color|reference" />

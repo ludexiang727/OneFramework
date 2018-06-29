@@ -59,6 +59,9 @@ public class AddressViewLayout extends LinearLayout implements IAddressView, OnC
   private LinearLayout mNormalAddressLayout;
 
   @AddressType
+  private int mLastAdrType = AddressTable.NONE;
+
+  @AddressType
   private int mAdrType = AddressTable.START;
 
   public AddressViewLayout(Context context) {
@@ -280,6 +283,10 @@ public class AddressViewLayout extends LinearLayout implements IAddressView, OnC
 
   private void onAddressChoose(Address chooseAddress) {
     if (mAdrItemClick != null) {
+      if (mLastAdrType != AddressTable.NONE) {
+        mAdrType = mLastAdrType;
+        mLastAdrType = AddressTable.NONE;
+      }
       mAdrItemClick.onAddressItemClick(chooseAddress, mAdrType);
     }
   }
@@ -295,10 +302,11 @@ public class AddressViewLayout extends LinearLayout implements IAddressView, OnC
     public void onTextChanged(CharSequence sequence, int start, int before, int count) {
       if (!TextUtils.isEmpty(sequence)) {
         if (mAdrType == AddressTable.START || mAdrType == AddressTable.END) {
+          mLastAdrType = mAdrType;
           mAdrType = AddressTable.SEARCH_HISTORY;
         }
         /**
-         * 通过POI搜索的Address 默认type = SEARCH_HISTORY (6)
+         * 通过POI搜索的Address 默认type = SEARCH (6)
          */
         mAdrItemClick.searchByKeyWord(mCurLocCity.getText().toString(), sequence, new IPoiSearchListener() {
           @Override

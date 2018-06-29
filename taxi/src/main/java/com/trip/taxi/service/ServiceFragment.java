@@ -5,8 +5,12 @@ import static com.one.framework.app.pop.PopTabItem.CONNECT_SERVICE;
 import static com.one.framework.app.pop.PopTabItem.EMERGENCY_CONTACT;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -24,7 +28,12 @@ import com.one.framework.app.pop.PopUpService;
 import com.one.framework.app.widget.ShapeImageView;
 import com.one.framework.app.widget.StarView;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
+import com.one.framework.utils.SystemUtils;
+import com.one.framework.utils.TimeUtils;
+import com.one.framework.utils.UIUtils;
+import com.one.map.IMap.IRoutePlanMsgCallback;
 import com.one.map.location.LocationProvider;
+import com.one.map.log.Logger;
 import com.one.map.map.MarkerOption;
 import com.one.map.map.element.Marker;
 import com.one.map.model.Address;
@@ -44,8 +53,10 @@ import java.util.List;
  * Created by ludexiang on 2018/6/15.
  */
 
-public class ServiceFragment extends BaseFragment implements IServiceView, OnClickListener {
-
+public class ServiceFragment extends BaseFragment implements IServiceView, IRoutePlanMsgCallback, OnClickListener {
+  private static final int FORMAT_COLOR = Color.parseColor("#f05b48");
+  private static final int UPDATE_INFO_WINDOW = 0x110;
+  private static final int ONE_HOUR = 60 * 60 * 1000;
   private ServicePresenter mServicePresenter;
   private ShapeImageView mDriverHeaderIcon;
   private ImageView mDriverIM;
@@ -61,6 +72,33 @@ public class ServiceFragment extends BaseFragment implements IServiceView, OnCli
   private boolean isAddedMark = false;
   private Marker mStartMarker;
   private Marker mEndMarker;
+  private boolean infoWindowShowing;
+  private long currentTime;
+  private long backgroundSystemTime;// 后台系统时间
+  private long interval;
+
+  private boolean isStartTrip;
+
+  private Handler mHandler = new Handler(Looper.getMainLooper()) {
+    @Override
+    public void handleMessage(Message msg) {
+      super.handleMessage(msg);
+      switch (msg.what) {
+        case UPDATE_INFO_WINDOW: {
+          if (isAdded() && isVisible()) {
+            CharSequence infoMsg = createInfoWindowTime();
+            mMap.updateInfoWindowMsg(infoMsg);
+            if (!isStartTrip) {
+              updateInfoWindow();
+            } else {
+              mHandler.removeCallbacksAndMessages(null);
+            }
+          }
+          break;
+        }
+      }
+    }
+  };
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,12 +110,25 @@ public class ServiceFragment extends BaseFragment implements IServiceView, OnCli
       isFromHistory = bundle.getBoolean(Service.FROM_HISITORY);
     }
     mMap.removeDriverLine();
-    mServicePresenter = new ServicePresenter(getContext(), mTaxiOrder, this);
     mMap.stopRadarAnim();
+    mMap.registerPlanCallback(this);
     mTopbarView.setTitle(R.string.taxi_service_wait_meet);
     mTopbarView.setLeft(isFromHistory ? R.drawable.one_top_bar_back_selector : 0);
     mTopbarView.setTitleRight(R.string.taxi_service_title_bar_right_more);
     mCurrentStatus = OrderStatus.RECEIVED;
+  }
+
+  @Override
+  protected View onCreateViewImpl(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.taxi_driver_view_layout, container, true);
+    initView(view);
+    return view;
+  }
+
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    mServicePresenter = new ServicePresenter(getContext(), mTaxiOrder, this);
   }
 
   @Override
@@ -140,20 +191,78 @@ public class ServiceFragment extends BaseFragment implements IServiceView, OnCli
     return true;
   }
 
+
   @Override
-  protected View onCreateViewImpl(LayoutInflater inflater, ViewGroup container,
-      @Nullable Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.taxi_driver_view_layout, container, true);
-    initView(view);
-    return view;
+  public void routePlanPoints(List<LatLng> points) {
+    toggleMapView();
+  }
+
+  @Override
+  public void routePlanMsg(String msg, List<LatLng> points) {
+    switch (mCurrentStatus) {
+      case RECEIVED:
+      case SETOFF: {
+        CharSequence infoMsg = UIUtils.highlight(msg, FORMAT_COLOR);
+        // 在起始点上展示info window
+        if (!infoWindowShowing) {
+          infoWindowShowing = mMap.showInfoWindow(mDriverMarker.getSourceMarker(), infoMsg);
+        } else {
+          mMap.updateInfoWindowMsg(infoMsg);
+        }
+        break;
+      }
+      case READY: {
+        if (currentTime == 0) {
+          CharSequence infoMsg = createInfoWindowTime();
+          mMap.showInfoWindow(mDriverMarker.getSourceMarker(), infoMsg);
+          updateInfoWindow();
+        }
+        break;
+      }
+      case START: {
+        isStartTrip = true;
+        CharSequence infoMsg = UIUtils.highlight(msg, FORMAT_COLOR);
+        // 在起始点上展示info window
+        if (!infoWindowShowing) {
+          infoWindowShowing = mMap.showInfoWindow(mDriverMarker.getSourceMarker(), infoMsg);
+        } else {
+          mMap.updateInfoWindowMsg(infoMsg);
+        }
+        break;
+      }
+    }
+  }
+
+  /**
+   * 等待乘客上车 更新infoWindow
+   */
+  private void updateInfoWindow() {
+    Message message = new Message();
+    message.obj = System.currentTimeMillis();
+    message.what = UPDATE_INFO_WINDOW;
+    // 去掉delay 因为获取ReceiveOrder curSystemTime 是2s轮询
+    mHandler.sendMessageDelayed(message, currentTime == 0 ? 0 : 1000);
+  }
+
+  private CharSequence createInfoWindowTime() {
+    if (currentTime == 0) {
+      currentTime = System.currentTimeMillis();
+      // 后台系统时间
+      backgroundSystemTime = mTaxiOrder.getCurrentServerTime();
+    } else {
+      interval += 1000;
+    }
+    long waitTime = backgroundSystemTime - currentTime + interval;
+    String formatTime = TimeUtils.longToString(waitTime, waitTime > ONE_HOUR ? "HH:mm:ss" : "mm:ss");
+    String time = String.format(getContext().getString(R.string.taxi_service_driver_wait_time), formatTime);
+    return UIUtils.highlight(time, FORMAT_COLOR);
   }
 
   @Override
   public void onClick(View v) {
     int id = v.getId();
     if (id == R.id.taxi_service_driver_call) {
-      Intent intent = new Intent(Intent.ACTION_DIAL,
-          Uri.parse("tel:" + mTaxiOrder.getOrderInfo().getDriver().getDriverTel()));
+      Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mTaxiOrder.getOrderInfo().getDriver().getDriverTel()));
       startActivity(intent);
     }
   }
@@ -184,7 +293,8 @@ public class ServiceFragment extends BaseFragment implements IServiceView, OnCli
     OrderDriver driver = mTaxiOrder.getOrderInfo().getDriver();
     mDriverHeaderIcon.loadImageByUrl(null, driver.getDriverIcon(), "");
     mDriverName.setText(driver.getDriverName());
-    mDriverStarView.setLevel(driver.getDriverStar().intValue());
+    mDriverCompany.setText(driver.getDriverCompany());
+    mDriverStarView.setLevel((int) driver.getDriverStar());
   }
 
   @Override
@@ -192,9 +302,10 @@ public class ServiceFragment extends BaseFragment implements IServiceView, OnCli
     if (mDriverMarker == null) {
       mDriverMarker = mMap.addMarker(driverMarker);
     }
+    mDriverMarker.rotate(driverMarker.rotate);
     mDriverMarker.setPosition(driverMarker.position);
 //    mMap.removeDriverLine();
-    mMap.drivingRoutePlan(driverAdr, to);
+    mMap.drivingRoutePlan(driverAdr, to, true);
   }
 
   @Override
@@ -231,6 +342,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, OnCli
     if (mStartMarker != null) {
       mStartMarker.remove();
     }
+    isStartTrip = true;
     serviceCommon(status);
   }
 
@@ -238,7 +350,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, OnCli
   public void driverEnd(OrderStatus status) {
     Bundle bundle = new Bundle();
     bundle.putSerializable(Service.ORDER, mTaxiOrder);
-    forward(TaxiEndFragment.class, bundle);
+    forwardWithPop(TaxiEndFragment.class, bundle);
   }
 
   private void serviceCommon(OrderStatus status) {
@@ -274,14 +386,16 @@ public class ServiceFragment extends BaseFragment implements IServiceView, OnCli
       }
       case START: {
         model.bounds.add(new LatLng(mTaxiOrder.getOrderInfo().getEndLat(), mTaxiOrder.getOrderInfo().getEndLng()));
-        model.bounds
-            .add(new LatLng(LocationProvider.getInstance().getLocation().mAdrLatLng.latitude,
+        model.bounds.add(new LatLng(LocationProvider.getInstance().getLocation().mAdrLatLng.latitude,
                 LocationProvider.getInstance().getLocation().mAdrLatLng.longitude));
         if (mMap.getLinePoints() != null) {
           model.bounds.addAll(mMap.getLinePoints());
         }
         if (mDriverMarker != null) {
           model.bounds.add(mDriverMarker.getPosition());
+        }
+        if (mStartMarker != null) {
+          mStartMarker.remove();
         }
         mMap.hideMyLocation();
         break;
@@ -290,13 +404,18 @@ public class ServiceFragment extends BaseFragment implements IServiceView, OnCli
   }
 
   @Override
-  public void onDestroyView() {
-    super.onDestroyView();
-    mServicePresenter.release();
+  protected void mapClearElement() {
     if (mDriverMarker != null) {
       mDriverMarker.remove();
       mDriverMarker = null;
     }
+    mMap.unRegisterPlanCallback(this);
+  }
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    mServicePresenter.release();
   }
 
 }

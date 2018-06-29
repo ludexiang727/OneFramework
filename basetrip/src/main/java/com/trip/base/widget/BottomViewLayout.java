@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
  * Created by ludexiang on 2018/6/2.
  */
 
-public class BottomViewLayout extends LinearLayout {
+public class BottomViewLayout extends BaseLinearLayout {
 
   public BottomViewLayout(Context context) {
     this(context, null);

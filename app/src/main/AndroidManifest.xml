@@ -12,7 +12,7 @@
     <activity
       android:name="com.one.splash.SplashActivity"
       android:screenOrientation="portrait"
-      android:theme="@style/Theme.Mocha.Splash">
+      android:theme="@style/Transparent">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
