@@ -1,10 +1,12 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.trip.base.widget.BaseLinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:background="@android:color/white"
   android:clipChildren="false"
-  android:orientation="vertical">
+  android:orientation="vertical"
+  app:outsideBackground="@drawable/base_common_round_rect">
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -40,4 +42,4 @@
     android:text="正在为您寻找司机，请稍后"
     android:textColor="#f05b48"
     android:textSize="14sp"/>
-</LinearLayout>
+</com.trip.base.widget.BaseLinearLayout>

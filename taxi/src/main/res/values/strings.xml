@@ -24,6 +24,9 @@
   <string name="taxi_cancel_confirm_msg">确认取消订单吗？</string>
 
   <string name="taxi_support_dlg_title">提示</string>
+  <string name="taxi_none_driver_receive">暂无司机接单,是否继续等待</string>
+  <string name="taxi_none_driver_no">不</string>
+  <string name="taxi_none_driver_wait">等待</string>
   <string name="taxi_have_unfinish_order_message">您有一个未完成的订单，是否前往?</string>
   <string name="taxi_have_unfinish_order_go">前往</string>
   <string name="taxi_have_unfinish_order_no">不</string>

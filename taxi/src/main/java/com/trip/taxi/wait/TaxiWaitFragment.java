@@ -9,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.wheelview.WheelView;
+import com.one.framework.dialog.BottomSheetDialog;
 import com.one.framework.dialog.SupportDialogFragment;
 import com.trip.base.common.CommonParams.Service;
 import com.trip.base.wait.WaitFragment;
@@ -30,7 +31,10 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
   private TextView mWaitSeconds;
   private IWaitView mWaitView;
   private SupportDialogFragment mCancelDialog;
+  private SupportDialogFragment mNoneDriverDlg;
   private TaxiOrder mTaxiOrder;
+  private BottomSheetDialog mTipDlg;
+  private View mWaitTopView;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,10 +54,10 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    View topView = LayoutInflater.from(getContext()).inflate(R.layout.taxi_wait_top_view_layout, null);
-    mWaitLoadingView = (LoadingView) topView.findViewById(R.id.taxi_wait_loading_view);
-    mWaitSeconds = (TextView) topView.findViewById(R.id.taxi_wait_count_down);
-    attachToTopContainer(topView);
+    mWaitTopView = LayoutInflater.from(getContext()).inflate(R.layout.taxi_wait_top_view_layout, null);
+    mWaitLoadingView = (LoadingView) mWaitTopView.findViewById(R.id.taxi_wait_loading_view);
+    mWaitSeconds = (TextView) mWaitTopView.findViewById(R.id.taxi_wait_count_down);
+    attachToTopContainer(mWaitTopView);
     mWaitPresenter.startCountDown();
   }
 
@@ -68,7 +72,7 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
     final WheelView tipWheel = (WheelView) view.findViewById(R.id.taxi_wheel_view_tip);
     tipWheel.setItems(mWaitPresenter.getTipItems(), 0);
 
-    showBottomDialog(view, new OnClickListener() {
+    mTipDlg = showBottomDialog(view, new OnClickListener() {
       @Override
       public void onClick(View v) {
         int position = tipWheel.getSelectedPosition();
@@ -131,6 +135,32 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
     mCancelDialog.show(getFragmentManager(), "");
   }
 
+  /**
+   * 无司机接单
+   */
+  private void noneDriverReceiver() {
+    SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(
+        getActivity()).setTitle(getString(R.string.taxi_support_dlg_title))
+        .setMessage(getString(R.string.taxi_none_driver_receive))
+        .setNegativeButton(getString(R.string.taxi_none_driver_no), new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            mWaitPresenter.cancelOrder(true);
+            finishSelf();
+          }
+        })
+        .setPositiveButton(getString(R.string.taxi_none_driver_wait), new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            mNoneDriverDlg.dismiss();
+
+          }
+        })
+        .setPositiveButtonTextColor(Color.parseColor("#A3D2E4"));
+    mNoneDriverDlg = builder.create();
+    mNoneDriverDlg.show(getFragmentManager(), "");
+  }
+
   @Override
   public void cancelOrderSuccess(TaxiOrderCancel orderCancel) {
     mMap.stopRadarAnim();
@@ -144,9 +174,11 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
       String waitTime = String.format(getString(R.string.taxi_wait_driver_time), count);
       mWaitSeconds.setText(waitTime);
       if (count == 0) {
-        // 没有司机接单 回全表单页面 todo
-        mWaitPresenter.cancelOrder(true);
-        finishSelf();
+        if (mTipDlg != null && mTipDlg.isShowing()) {
+          mTipDlg.dismiss();
+        }
+        detachFromTopContainer(mWaitTopView);
+        noneDriverReceiver();
       }
     }
   }

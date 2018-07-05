@@ -121,9 +121,11 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
 
   @Override
   protected void handleReceiveRecovery(Intent intent) {
-    OrderDetail orderDetail = (OrderDetail) intent.getSerializableExtra(CommonParams.COMMON_RECOVERY_DATA);
-    OrderStatus orderStatus = OrderStatus.fromStateCode(orderDetail.getOrderStatus());
-    showHaveTripDialog(orderDetail, orderStatus);
+    if (isAdded()) {
+      OrderDetail orderDetail = (OrderDetail) intent.getSerializableExtra(CommonParams.COMMON_RECOVERY_DATA);
+      OrderStatus orderStatus = OrderStatus.fromStateCode(orderDetail.getOrderStatus());
+      showHaveTripDialog(orderDetail, orderStatus);
+    }
   }
 
   @Override
@@ -262,6 +264,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
       mPresenter.showEasyForm();
       mFormView.setEndPoint("");
       mFormView.setFormType(IFormView.EASY_FORM);
+      FormDataProvider.getInstance().clearData();
       return true;
     }
     return super.onBackPressed();

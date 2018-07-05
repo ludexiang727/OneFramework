@@ -45,16 +45,21 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
   private Handler mHandler;
   private int mCurrentTime = 0;
   private byte[] lock = new byte[0];
-  private String[] mTipArray;
 
   private ITaxiWaitView iTaxiWaitView;
   private LocalBroadcastManager mBroadManager;
   private BroadReceiver mReceiver;
+  private List<String> mTipItems = new ArrayList<>();
+  private int mTipLength;
 
   public TaxiWaitPresenter(Context context, TaxiOrder order, final ITaxiWaitView taxiWaitView) {
     mContext = context;
     iTaxiWaitView = taxiWaitView;
-    mTipArray = context.getResources().getStringArray(R.array.TaxiTip);
+    String[] tipArray = context.getResources().getStringArray(R.array.TaxiTip);
+    mTipLength = tipArray.length;
+    for (String tipItem: tipArray) {
+      mTipItems.add(tipItem);
+    }
     mWaitView = new TaxiWaitView(context);
     mWaitView.setClickListener(taxiWaitView);
     mTaxiOrder = order;
@@ -91,6 +96,13 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
     };
     initBroadcast();
     TaxiService.loopOrderStatus(context, true, mTaxiOrder.getOrderId());
+
+    /** 初始化的时候 */
+    int userSelectTip = FormDataProvider.getInstance().obtainTip();
+    int position = userSelectTip == 0 ? 0 : mTipItems.indexOf(String.valueOf(userSelectTip));
+    for (int i = position; position == 0 ? i > 0 : i >= 0; i--) {
+      mTipItems.remove(i);
+    }
   }
 
   private void initBroadcast() {
@@ -99,20 +111,6 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
     IntentFilter filter = new IntentFilter();
     filter.addAction(CommonParams.COMMON_LOOPER_ORDER_STATUS);
     mBroadManager.registerReceiver(mReceiver, filter);
-  }
-
-  public List<String> getTipItems() {
-    int userSelectTip = FormDataProvider.getInstance().obtainTip();
-    List<String> items = new ArrayList<>();
-    int position = userSelectTip == 0 ? 0 : userSelectTip / 2 + 1;
-    for (int i = position; i < mTipArray.length; i++) {
-      if (i == 0) {
-        items.add(mTipArray[i]);
-      } else {
-        items.add(mTipArray[i] + "元");
-      }
-    }
-    return items;
   }
 
   private void handleOrderStatus(OrderStatus status) {
@@ -146,13 +144,45 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
     }
   }
 
+  /**
+   * 获取添加的小费
+   * @return
+   */
+  public List<String> getTipItems() {
+    List<String> tip = new ArrayList<>();
+    int userSelectTip = FormDataProvider.getInstance().obtainTip();
+    for (int i = 0; i < mTipItems.size(); i++) {
+      if (userSelectTip == 0 && i == 0) {
+        tip.add(mTipItems.get(0));
+      } else {
+        tip.add(String.format(mContext.getString(R.string.taxi_end_pay_money), mTipItems.get(i)));
+      }
+    }
+    return tip;
+  }
+
+  /**
+   * 用户选择的小费
+   * @param selectPosition
+   * @return
+   */
   public int getTip(int selectPosition) {
-    if (selectPosition == 0) {
+    // mTipItems 有可能第一条是 不加小费
+    if (mTipItems.size() == mTipLength && selectPosition == 0) {
       FormDataProvider.getInstance().saveTip(0);
       return 0;
     }
-    int tip = Integer.parseInt(mTipArray[selectPosition]);
+
+    String userSelect = mTipItems.get(selectPosition);
+    int tip = Integer.parseInt(userSelect);
     FormDataProvider.getInstance().saveTip(tip);
+
+    for (int i = selectPosition; i >= 0; i--) {
+      if (i == mTipItems.size() - 1) {
+        continue;
+      }
+      mTipItems.remove(i);
+    }
     return tip;
   }
 

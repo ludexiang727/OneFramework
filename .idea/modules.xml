@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/OneTrip.iml" filepath="$PROJECT_DIR$/OneTrip.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/basetrip/basetrip.iml" filepath="$PROJECT_DIR$/basetrip/basetrip.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../evaluate/evaluate.iml" filepath="$PROJECT_DIR$/../evaluate/evaluate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../OneFrameworkCore/onecore.iml" filepath="$PROJECT_DIR$/../OneFrameworkCore/onecore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../TheOne/oneframework.iml" filepath="$PROJECT_DIR$/../TheOne/oneframework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../OneMap/onemap.iml" filepath="$PROJECT_DIR$/../OneMap/onemap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pay/pay.iml" filepath="$PROJECT_DIR$/pay/pay.iml" />
+      <module fileurl="file://$PROJECT_DIR$/taxi/taxi.iml" filepath="$PROJECT_DIR$/taxi/taxi.iml" />
+    </modules>
+  </component>
+</project>

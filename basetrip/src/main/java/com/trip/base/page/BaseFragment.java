@@ -1,5 +1,11 @@
 package com.trip.base.page;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -166,8 +172,10 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
    * attach to top container and invoke onSizeChange and callback reCalculate
    */
   protected final void attachToTopContainer(final View view) {
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+    params.topMargin = UIUtils.dip2pxInt(getContext(), 6);
     mTopContainer.setVisibility(View.VISIBLE);
-    mTopContainer.addView(view);
+    mTopContainer.addView(view, mTopContainer.getChildCount(), params);
     reCalculateHeight();
   }
 
@@ -179,16 +187,43 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
       for (int i = 0; i < mTopContainer.getChildCount(); i++) {
         View childView = mTopContainer.getChildAt(i);
         if (childView == view) {
-          mTopContainer.removeView(childView);
+          topContainerRemoveView(childView);
+        } else {
+          continue;
         }
       }
-      if (mTopContainer.getChildCount() == 0) {
-        mTopContainer.setVisibility(View.GONE);
-      }
-      toggleMapView();
     }
   }
 
+  private void topContainerRemoveView(final View view) {
+    AnimatorSet set = new AnimatorSet();
+    ValueAnimator height = ValueAnimator.ofInt(view.getMeasuredHeight(), 0);
+    ObjectAnimator alpha = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f);
+    height.addUpdateListener(new AnimatorUpdateListener() {
+      @Override
+      public void onAnimationUpdate(ValueAnimator animation) {
+        int height = (int) animation.getAnimatedValue();
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
+        params.height = height;
+        view.setLayoutParams(params);
+      }
+    });
+    set.addListener(new AnimatorListenerAdapter() {
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        super.onAnimationEnd(animation);
+        mTopContainer.removeView(view);
+
+        if (mTopContainer.getChildCount() == 0) {
+          mTopContainer.setVisibility(View.GONE);
+        }
+        reCalculateHeight();
+      }
+    });
+    set.setDuration(300);
+    set.playTogether(height, alpha);
+    set.start();
+  }
 
   /**
    * 重新测量子view高度
