@@ -107,7 +107,7 @@
       android:layout_below="@id/start_icon"
       android:background="#d3d3d3"/>
 
-    <com.one.widget.ScriptTextView
+    <com.one.trip.widget.ScriptTextView
       android:id="@+id/price"
       android:textStyle="bold"
       android:layout_width="wrap_content"
@@ -147,21 +147,21 @@
       android:text="向南不行576米"
       android:textSize="14sp"/>
 
-    <!--<com.one.widget.TripButton-->
-      <!--android:id="@+id/buy"-->
-      <!--android:layout_width="68dp"-->
-      <!--android:layout_height="40dp"-->
-      <!--android:layout_marginTop="11.5dp"-->
-      <!--android:layout_marginRight="20dp"-->
-      <!--android:layout_alignParentRight="true"-->
-      <!--android:layout_below="@id/separator"-->
-      <!--app:disable_color="#c2c5c9"-->
-      <!--app:enable_color="#343d4a"-->
-      <!--app:radius="50dp"-->
-      <!--app:text="购票"-->
-      <!--app:text_color="#ffffff"-->
-      <!--app:text_size="14sp"-->
-      <!--app:text_style="body"/>-->
+    <com.one.framework.app.widget.TripButton
+      android:id="@+id/buy"
+      android:layout_width="68dp"
+      android:layout_height="40dp"
+      android:layout_marginTop="11.5dp"
+      android:layout_marginRight="20dp"
+      android:layout_alignParentRight="true"
+      android:layout_below="@id/separator"
+      app:disable_color="#c2c5c9"
+      app:enable_color="#343d4a"
+      app:radius="50dp"
+      app:text="购票"
+      app:text_color="#ffffff"
+      app:text_size="14sp"
+      app:text_style="body"/>
 
   </RelativeLayout>
 </FrameLayout>

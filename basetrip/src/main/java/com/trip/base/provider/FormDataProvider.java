@@ -1,5 +1,6 @@
 package com.trip.base.provider;
 
+import com.one.map.log.Logger;
 import com.one.map.model.Address;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class FormDataProvider {
   }
 
   public void saveStartAddress(Address start) {
+    Logger.e("ldx", "startAddress " + start);
     mStartAddress = start;
   }
 

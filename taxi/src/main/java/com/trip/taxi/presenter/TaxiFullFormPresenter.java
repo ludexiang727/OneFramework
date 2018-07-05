@@ -5,6 +5,7 @@ import com.one.framework.app.login.ILogin;
 import com.one.framework.app.login.ILogin.LoginType;
 import com.one.framework.app.login.UserProfile;
 import com.one.framework.app.login.UserProfile.User;
+import com.one.framework.net.NetConstant;
 import com.one.framework.net.response.IResponseListener;
 import com.one.map.log.Logger;
 import com.one.map.model.Address;
@@ -46,6 +47,12 @@ public class TaxiFullFormPresenter {
 
           @Override
           public void onFail(int errCode, TaxiEstimatePrice taxiEstimatePrice) {
+            mFullFormView.showLoading(false);
+            if (errCode == NetConstant.ADDRESS_EMPTY) {
+
+            } else {
+              mFullFormView.estimateFail();
+            }
           }
 
           @Override

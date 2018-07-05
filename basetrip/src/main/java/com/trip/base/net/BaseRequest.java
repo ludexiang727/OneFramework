@@ -11,8 +11,8 @@ import java.util.HashMap;
  */
 
 public class BaseRequest {
-  private static final String BASE_PAY_LIST = "/api/chariot/trip/paylist";
-  private static final String BASE_PAY_LIST_SWITCH = "/api/chariot/trip/paylist/switch";
+  private static final String BASE_PAY_LIST = "/api/taxi/trip/paylist";
+  private static final String BASE_PAY_LIST_SWITCH = "/api/taxi/trip/paylist/switch";
 
   private static int requestCode;
   /**

@@ -7,12 +7,29 @@ apply plugin: 'maven'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.test.demo"
+        applicationId "com.one.trip"
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionName "1.0.0"
+
+        multiDexEnabled true
+
+        manifestPlaceholders = [
+                GETUI_APP_ID    : "Ai5QigOdI98efhkdDbONO9",
+                GETUI_APP_KEY   : "2wA0vOBuNy8AzzuVUutnK",
+                GETUI_APP_SECRET: "3NyrUdH3Kg6AVGxIOP5QoA"
+        ]
+
+        applicationVariants.all { variant ->
+            variant.outputs.all { output ->
+                String build = new Date().format("MMddHH") + (char) (65 + (int) ((Calendar.getInstance().get(Calendar.MINUTE) % 60) / 15))
+                String fileName = rootProject.ext.fullBuildName || !variant.buildType.debuggable ?
+                        "taxi_${variant.versionName.replace(".", "")}_${variant.buildType.name}_build${build}.apk" :
+                        "taxi_${variant.versionName.replace(".", "")}_${variant.buildType.name}.apk"
+                outputFileName = fileName
+            }
+        }
 
         ndk {
             //设置支持的SO库架构
@@ -22,7 +39,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'rules_android.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'rules_android.pro', '3rd-rules.pro'
         }
     }
 
@@ -55,6 +72,7 @@ dependencies {
     }
     kapt "com.github.hotchemi:permissionsdispatcher-processor:3.1.0"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile 'com.android.support:multidex:1.0.2'
 
     compile project(':taxi')
     compile project(':basetrip')

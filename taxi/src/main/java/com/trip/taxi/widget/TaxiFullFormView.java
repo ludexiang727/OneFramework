@@ -162,7 +162,6 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView, Vie
   @Override
   public void updatePriceInfo(String price, String coupon, String discount) {
     mRetryEstimateLayout.setVisibility(GONE);
-//    mLoadingLayout.setVisibility(GONE);
     mPriceLayout.setVisibility(VISIBLE);
     mEstimatePrice.setText(price);
     mEstimatePrice.setVisibility(TextUtils.isEmpty(price) ? View.GONE : View.VISIBLE);
@@ -170,6 +169,12 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView, Vie
     mEstimateDiscount.setVisibility(TextUtils.isEmpty(coupon) ? View.GONE : View.VISIBLE);
     mEstimateTicket.setText(discount);
     mEstimateTicket.setVisibility(TextUtils.isEmpty(discount) ? View.GONE : View.VISIBLE);
+  }
+
+  @Override
+  public void estimateFail() {
+    mRetryEstimateLayout.setVisibility(VISIBLE);
+    mPriceLayout.setVisibility(GONE);
   }
 
   @Override

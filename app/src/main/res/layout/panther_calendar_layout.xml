@@ -5,7 +5,7 @@
   android:layout_height="match_parent"
   android:background="@android:color/white">
 
-  <com.one.widget.CalendarTitleLayout
+  <com.one.trip.widget.CalendarTitleLayout
     android:id="@+id/calendar_title_layout"
     android:layout_width="match_parent"
     android:layout_height="45dp"
@@ -27,7 +27,7 @@
       app:scroll_view="header"
       app:scroll_max_height="50dp"/>
 
-    <com.one.widget.EmptyView
+    <com.one.trip.widget.EmptyView
       android:id="@+id/empty_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"

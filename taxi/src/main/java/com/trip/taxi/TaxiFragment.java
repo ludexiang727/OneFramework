@@ -24,12 +24,12 @@ import com.one.framework.dialog.DataPickerDialog.ISelectResultListener;
 import com.one.framework.dialog.SupportDialogFragment;
 import com.one.framework.net.model.OrderDetail;
 import com.one.framework.provider.HomeDataProvider;
+import com.one.framework.utils.UIThreadHandler;
 import com.one.framework.utils.UIUtils;
 import com.one.map.location.LocationProvider;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
 import com.one.map.model.BestViewModel;
-import com.one.map.model.LatLng;
 import com.trip.base.common.CommonParams;
 import com.trip.base.page.AbsBaseFragment;
 import com.trip.base.page.AbsBaseFragment.IChooseResultListener;
@@ -85,7 +85,17 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   @Override
   public void onHeightChange(int height) {
     if (height == -1) {
+      // 关闭reverse geo because 来回切换会触发 map onMoveChange -> onMoveFinish invoke reverse geo
+      mPinView.isToggleLoading(false);
       reCalculateHeight();
+      UIThreadHandler.postDelayed(new Runnable() {
+        @Override
+        public void run() {
+          if (mFormView.getFormType() == IFormView.EASY_FORM) {
+            mPinView.isToggleLoading(true); // 开启reverse geo
+          }
+        }
+      }, 1000);
     } else {
       reLayoutLocationPosition(-height);
     }
@@ -98,6 +108,10 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     mMap.doBestView(model);
   }
 
+  /**
+   * reverse geo 设置地址
+   * @param intent
+   */
   @Override
   protected void handleReceiveLocAddress(Intent intent) {
     Address address = (Address) intent.getSerializableExtra(CommonParams.COMMON_CURRENT_LOCATION_ADDRESS);
@@ -269,8 +283,9 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
         model.bounds.addAll(mMap.getLinePoints());
       }
     } else {
-      LatLng location = LocationProvider.getInstance().getLocation().mAdrLatLng;
-      model.zoomCenter = location;
+      Address location = LocationProvider.getInstance().getLocation();
+      Address startAdr = FormDataProvider.getInstance().obtainStartAddress();
+      model.zoomCenter = startAdr != null ? startAdr.mAdrLatLng : location.mAdrLatLng;
       model.zoomLevel = 16.788f;
     }
   }
@@ -395,6 +410,11 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     forward(TaxiWaitFragment.class, bundle);
   }
 
+  /**
+   * 地址选择回调
+   * @param type
+   * @param address
+   */
   @Override
   public void onResult(int type, Address address) {
     mPresenter.saveAddress(type, address);

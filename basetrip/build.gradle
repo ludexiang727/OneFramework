@@ -15,8 +15,11 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        manifestPlaceholders = [
+                GETUI_APP_ID    : "Ai5QigOdI98efhkdDbONO9",
+                GETUI_APP_KEY   : "2wA0vOBuNy8AzzuVUutnK",
+                GETUI_APP_SECRET: "3NyrUdH3Kg6AVGxIOP5QoA"
+        ]
     }
 
     buildTypes {

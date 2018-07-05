@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.one.map.location.LocationProvider;
+import com.one.framework.log.Logger;
 import com.one.map.model.Address;
 import com.one.map.model.BestViewModel;
 import com.trip.base.R;
@@ -20,7 +20,7 @@ import com.trip.base.wait.presenter.AbsWaitPresenter;
 public class WaitFragment extends AbsBaseFragment {
 
   protected AbsWaitPresenter mWaitPresenter;
-  private Address start = FormDataProvider.getInstance().obtainStartAddress();
+  protected Address mStartAdr = FormDataProvider.getInstance().obtainStartAddress();
 
   @Override
   protected View onCreateViewImpl(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,14 +33,14 @@ public class WaitFragment extends AbsBaseFragment {
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    mMap.startRadarAnim(start.mAdrLatLng);
+    Logger.e("ldx", "center >>> " + mStartAdr);
+    mMap.startRadarAnim(mStartAdr.mAdrLatLng);
   }
 
   @Override
   protected void boundsLatlng(BestViewModel model) {
-    model.zoomCenter = start.mAdrLatLng;
+    model.zoomCenter = mStartAdr.mAdrLatLng;
     model.zoomLevel = 18f;
-//    model.bounds.add(LocationProvider.getInstance().getLocation().mAdrLatLng);
   }
 
   @Override

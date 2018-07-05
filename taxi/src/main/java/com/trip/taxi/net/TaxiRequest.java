@@ -2,6 +2,7 @@ package com.trip.taxi.net;
 
 import android.text.TextUtils;
 import com.one.framework.net.Api;
+import com.one.framework.net.NetConstant;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
 import com.one.map.model.Address;
@@ -19,21 +20,21 @@ import java.util.HashMap;
 
 public class TaxiRequest {
 
-  private static final String TAXI_ESTIMATE_PRICE_URL = "/api/chariot/trip/taxi/price";
-  private static final String TAXI_ORDER_CREATE_URL = "/api/chariot/trip/taxi/create";
-  private static final String TAXI_WAIT_ADD_TIP = "/api/chariot/trip/taxi/thanksfee";
-  private static final String TAXI_WAIT_PAY4PICKUP = "/api/chariot/trip/taxi/pay4pickup";
-  private static final String TAXI_ORDER_CANCEL = "/api/chariot/trip/cancel";
-  private static final String TAXI_REPORT_LOCATION = "/api/chariot/trip/report";
-  private static final String TAXI_ORDER_STATUS = "/api/chariot/trip/status";
-  private static final String TAXI_ORDER_INFO_DETAIL = "/api/chariot/trip/detail";
+  private static final String TAXI_ESTIMATE_PRICE_URL = "/api/taxi/trip/taxi/price";
+  private static final String TAXI_ORDER_CREATE_URL = "/api/taxi/trip/taxi/create";
+  private static final String TAXI_WAIT_ADD_TIP = "/api/taxi/trip/taxi/thanksfee";
+  private static final String TAXI_WAIT_PAY4PICKUP = "/api/taxi/trip/taxi/pay4pickup";
+  private static final String TAXI_ORDER_CANCEL = "/api/taxi/trip/cancel";
+  private static final String TAXI_REPORT_LOCATION = "/api/taxi/trip/report";
+  private static final String TAXI_ORDER_STATUS = "/api/taxi/trip/status";
+  private static final String TAXI_ORDER_INFO_DETAIL = "/api/taxi/trip/detail";
 
   /**
    * 获取司机位置
    */
-  private static final String TAXI_DRIVER_LOCATION = "/api/chariot/trip/driver/location";
+  private static final String TAXI_DRIVER_LOCATION = "/api/taxi/trip/driver/location";
 
-//  private val TAXI_PAY = "/api/chariot/trip/taxi/pay"
+//  private val TAXI_PAY = "/api/taxi/trip/taxi/pay"
 //  private val TAXI_BY_METER = "/api/chariot/trip/taxi/pay4pickup"
 //  private val TAXI_THX = "/api/chariot/trip/taxi/thanksfee"
 //  private val TAXI_FEEDBACK = "/api/chariot/config/taxi/feedback"
@@ -52,6 +53,10 @@ public class TaxiRequest {
    */
   public static void taxiEstimatePrice(Address start, Address end, String marks, long bookingTime,
       int tip, boolean isTick, IResponseListener<TaxiEstimatePrice> listener) {
+    if (start == null || end == null) {
+      listener.onFail(NetConstant.ADDRESS_EMPTY, null);
+      return;
+    }
     HashMap<String, Object> params = new HashMap<String, Object>();
     params.put("startAdrName", start.mAdrDisplayName);
     params.put("startAdrDetail", start.mAdrFullName);

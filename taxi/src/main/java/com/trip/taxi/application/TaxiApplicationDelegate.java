@@ -21,12 +21,11 @@ public class TaxiApplicationDelegate extends BaseApplicationDelegate {
   public void onCreate(Application application) {
     try {
       InputStream inputStream = application.getAssets().open("cert/taxi.bks");
-      INetworkConfig networkConfig = new NetworkConfig(application, new HeaderParams(application),inputStream,
+      INetworkConfig networkConfig = new NetworkConfig(application, new HeaderParams(application), inputStream,
           SafeUtil.getBKSString(), true);
       Api.initNetworkConfig(networkConfig);
     } catch (Exception e) {
       e.printStackTrace();
     }
-
   }
 }

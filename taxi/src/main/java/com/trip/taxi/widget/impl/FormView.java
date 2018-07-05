@@ -41,7 +41,7 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
 
   private IFormListener iFormView;
 
-  private int mFormType;
+  private int mFormType = IFormView.EASY_FORM;
 
   private int mDownX;
   private int mDownY;
@@ -146,17 +146,17 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
     // state == 1 now == 2 booking default now
     int state = mOptionsView.getState();
     mFullView.setFormType(state);
-//    translation(state);
-    mBookingTimeLayout.setVisibility(state == 1 ? View.GONE : View.VISIBLE);
+    translation(state);
+//    mBookingTimeLayout.setVisibility(state == 1 ? View.GONE : View.VISIBLE);
     if (type == EASY_FORM) {
       showEasyForm();
     } else if (type == FULL_FORM) {
       showFullForm();
     }
     mFormType = type;
-    if (mHeightChangeListener != null) {
-      mHeightChangeListener.onHeightChange(-1);
-    }
+//    if (mHeightChangeListener != null) {
+//      mHeightChangeListener.onHeightChange(-1);
+//    }
   }
 
   private void translation(final int state) {
@@ -171,7 +171,6 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
       public void onAnimationEnd(Animator animation) {
         super.onAnimationEnd(animation);
         mBookingTimeLayout.setVisibility(state == 1 ? View.GONE : View.VISIBLE);
-        Logger.e("ldx", "Animation  End ");
         if (mHeightChangeListener != null) {
           mHeightChangeListener.onHeightChange(-1);
         }
@@ -180,7 +179,6 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
       @Override
       public void onAnimationStart(Animator animation) {
         super.onAnimationStart(animation);
-        Logger.e("ldx", "Animation  Start ");
         mBookingTimeLayout.setVisibility(View.VISIBLE);
       }
 
@@ -191,7 +189,7 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
         mBookingTimeLayout.setTranslationY((Float) animation.getAnimatedValue());
       }
     });
-    translation.setDuration(300);
+    translation.setDuration(200);
     translation.start();
   }
 

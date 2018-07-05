@@ -26,7 +26,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="9dp"
       android:gravity="center_horizontal"
-      android:text="@string/ridehailing_ask_premier_price_error"
+      android:text="@string/taxi_estimate_price_error"
       android:textColor="#999ba1"
       android:textSize="12sp"/>
 
@@ -57,7 +57,7 @@
       android:layout_width="match_parent"
       android:layout_height="50dp"
       android:layout_gravity="center_horizontal"
-      android:text="@string/ridehailing_ask_premier_price_about"
+      android:text="@string/taxi_estimate_price_about"
       android:gravity="center"
       android:textColor="#191d21"
       android:textSize="19sp"/>
@@ -68,7 +68,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
       android:drawablePadding="4dp"
-      android:text="@string/ridehailing_ask_premier_price_total_msg"
+      android:text="@string/taxi_estimate_price_count"
       android:textColor="#999ba1"
       android:textSize="12sp"
       android:visibility="gone"/>

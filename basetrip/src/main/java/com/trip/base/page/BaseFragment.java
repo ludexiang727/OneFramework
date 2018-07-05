@@ -18,11 +18,15 @@ import android.widget.RelativeLayout;
 import com.one.framework.app.base.BizEntranceFragment;
 import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.log.Logger;
+import com.one.framework.provider.HomeDataProvider;
 import com.one.framework.utils.UIUtils;
 import com.one.map.IMap.IMarkerClickCallback;
+import com.one.map.location.LocationProvider;
 import com.one.map.map.element.IMarker;
+import com.one.map.model.Address;
 import com.one.map.model.BestViewModel;
 import com.trip.base.R;
+import com.trip.base.provider.FormDataProvider;
 import com.trip.base.widget.BottomViewLayout;
 
 /**
@@ -100,6 +104,8 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
     mRefreshMapView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        Address locationAddress = LocationProvider.getInstance().getLocation();
+        FormDataProvider.getInstance().saveStartAddress(locationAddress);
         toggleMapView();
       }
     });

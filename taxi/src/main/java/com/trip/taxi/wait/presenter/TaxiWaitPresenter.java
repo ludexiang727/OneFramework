@@ -12,6 +12,7 @@ import com.one.framework.app.common.Status.OrderStatus;
 import com.one.framework.app.login.UserProfile;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
+import com.one.framework.utils.ToastUtils;
 import com.one.framework.utils.UIThreadHandler;
 import com.trip.base.common.CommonParams;
 import com.trip.base.provider.FormDataProvider;
@@ -147,6 +148,7 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
 
   public int getTip(int selectPosition) {
     if (selectPosition == 0) {
+      FormDataProvider.getInstance().saveTip(0);
       return 0;
     }
     int tip = Integer.parseInt(mTipArray[selectPosition]);
@@ -155,13 +157,16 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
   }
 
   @Override
-  public void cancelOrder() {
+  public void cancelOrder(final boolean isShowFullForm) {
     // userid
     TaxiRequest.taxiCancelOrder(mTaxiOrder.getOrderId(), UserProfile.getInstance(mContext).getUserId(),
         "", new IResponseListener<TaxiOrderCancel>() {
       @Override
       public void onSuccess(TaxiOrderCancel taxiOrderCancel) {
-        FormDataProvider.getInstance().saveEndAddress(null);
+        if (!isShowFullForm) {
+          FormDataProvider.getInstance().saveEndAddress(null);
+          FormDataProvider.getInstance().clearData();
+        }
         TaxiService.stopService(mContext);
         iTaxiWaitView.cancelOrderSuccess(taxiOrderCancel);
       }
@@ -187,11 +192,12 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
       @Override
       public void onSuccess(BaseObject baseObject) {
         // 增加小费成功
+        ToastUtils.toast(mContext, mContext.getString(R.string.taxi_wait_add_tip_success));
       }
 
       @Override
       public void onFail(int errCode, BaseObject baseObject) {
-
+        ToastUtils.toast(mContext, mContext.getString(R.string.taxi_wait_error));
       }
 
       @Override
@@ -206,12 +212,12 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
     TaxiRequest.taxiWaitPay4PickUp(mTaxiOrder.getOrderId(), new IResponseListener<BaseObject>() {
       @Override
       public void onSuccess(BaseObject baseObject) {
-
+        ToastUtils.toast(mContext, mContext.getString(R.string.taxi_wait_pick_up));
       }
 
       @Override
       public void onFail(int errCode, BaseObject baseObject) {
-
+        ToastUtils.toast(mContext, mContext.getString(R.string.taxi_wait_error));
       }
 
       @Override

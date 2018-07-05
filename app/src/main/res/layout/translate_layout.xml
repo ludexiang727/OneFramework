@@ -7,14 +7,14 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"/>
 
-  <com.test.demo.widget.WaveView
+  <com.test.trip.widget.WaveView
     android:id="@+id/wave_view"
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:layout_alignParentBottom="true"
     android:clickable="true"/>
 
-  <com.test.demo.widget.GiftView
+  <com.test.trip.widget.GiftView
     android:id="@+id/gift"
     android:layout_width="match_parent"
     android:layout_height="50dp"

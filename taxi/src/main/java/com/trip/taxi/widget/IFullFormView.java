@@ -21,6 +21,8 @@ public interface IFullFormView {
 
   void updatePriceInfo(String price, String coupon, String discount);
 
+  void estimateFail();
+
   void setTime(long time, String showTime);
 
   void setPay4PickUp(boolean isPickUp);

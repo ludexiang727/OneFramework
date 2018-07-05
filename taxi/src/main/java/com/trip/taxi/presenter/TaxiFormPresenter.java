@@ -66,6 +66,7 @@ public class TaxiFormPresenter {
 
   public int getTip(int selectPosition) {
     if (selectPosition == 0) {
+      FormDataProvider.getInstance().saveTip(0);
       return 0;
     }
     int tip = Integer.parseInt(mTipArray[selectPosition]);

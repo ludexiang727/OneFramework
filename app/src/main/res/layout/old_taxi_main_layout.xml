@@ -8,7 +8,7 @@
     android:layout_gravity="bottom"
     android:clipChildren="false"
     android:background="@android:color/white">
-    <com.one.widget.ProgressView
+    <com.one.trip.widget.ProgressView
       android:id="@+id/taxi_progress_view"
       android:layout_width="180dp"
       android:layout_height="140dp"

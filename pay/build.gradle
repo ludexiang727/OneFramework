@@ -12,8 +12,13 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [
+                GETUI_APP_ID    : "Ai5QigOdI98efhkdDbONO9",
+                GETUI_APP_KEY   : "2wA0vOBuNy8AzzuVUutnK",
+                GETUI_APP_SECRET: "3NyrUdH3Kg6AVGxIOP5QoA"
+        ]
 
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -30,8 +35,5 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     compile project(':oneframework')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation files('libs/alipaySdk-20180601.jar')
 }

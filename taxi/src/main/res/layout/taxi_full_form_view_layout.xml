@@ -48,7 +48,7 @@
       app:disable_color="#ffffff"
       app:enable_color="#343d4a"
       app:radius="0.5dp"
-      app:text="@string/carpool_index_booking"/>
+      app:text="@string/taxi_confirm_booking"/>
 
     <com.one.framework.app.widget.LoadingView
       android:id="@+id/taxi_invoke_loading"

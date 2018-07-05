@@ -123,7 +123,7 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
           @Override
           public void onClick(View v) {
             mCancelDialog.dismiss();
-            mWaitPresenter.cancelOrder();
+            mWaitPresenter.cancelOrder(false);
           }
         })
         .setPositiveButtonTextColor(Color.parseColor("#A3D2E4"));
@@ -133,7 +133,6 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
 
   @Override
   public void cancelOrderSuccess(TaxiOrderCancel orderCancel) {
-    FormDataProvider.getInstance().clearData();
     mMap.stopRadarAnim();
     mWaitPresenter.stopCountDown();
     onBackHome();
@@ -146,6 +145,7 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
       mWaitSeconds.setText(waitTime);
       if (count == 0) {
         // 没有司机接单 回全表单页面 todo
+        mWaitPresenter.cancelOrder(true);
         finishSelf();
       }
     }

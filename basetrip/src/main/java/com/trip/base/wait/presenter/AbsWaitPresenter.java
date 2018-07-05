@@ -19,7 +19,7 @@ public abstract class AbsWaitPresenter {
 
   public abstract int getTip(int position);
 
-  public abstract void cancelOrder();
+  public abstract void cancelOrder(boolean isShowFullForm);
 
   public abstract void addTip(int tip);
 

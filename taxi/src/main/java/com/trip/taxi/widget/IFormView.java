@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 public interface IFormView {
 
   int EASY_FORM = 1;
-  int FULL_FORM = 1 << 1;
+  int FULL_FORM = 1 << 2;
 
   @Target({ElementType.PARAMETER, ElementType.LOCAL_VARIABLE, ElementType.METHOD})
   @Retention(RetentionPolicy.SOURCE)
