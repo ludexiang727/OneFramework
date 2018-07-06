@@ -85,10 +85,4 @@
   <color name="pager_bullet_active">#FC9153</color>
   <color name="pager_bullet_inactive">#EEEEEE</color>
   <color name="evaluate_color_2A2A2A">#2A2A2A</color>
-
-  <array name="progress_colors">
-    <item>#ff0000</item>
-    <item>#0000FF</item>
-    <!--<item>#80f05b48</item>-->
-  </array>
 </resources>

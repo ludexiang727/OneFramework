@@ -92,6 +92,7 @@ public class TaxiEndPresenter {
     if (mCurrentStatus == status) {
       return;
     }
+    loopOrderDetail(mOrder.getOrderId());
     mCurrentStatus = status;
     switch (mCurrentStatus) {
       case ARRIVED: {

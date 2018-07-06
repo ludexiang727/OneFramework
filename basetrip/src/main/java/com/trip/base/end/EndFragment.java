@@ -35,6 +35,7 @@ import com.one.pay.model.PayModel;
 import com.trip.base.R;
 import com.trip.base.common.CommonParams;
 import com.trip.base.net.BaseRequest;
+import com.trip.base.net.model.BasePay;
 import com.trip.base.net.model.BasePayList;
 import com.trip.base.net.model.PayTypeList;
 import com.trip.base.page.BaseFragment;
@@ -100,7 +101,34 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
 
   protected abstract String getOrderId();
 
-  protected void payList(final String oid, final float fee) {
+  /**
+   * 发起支付
+   */
+  protected void pay(final String oid, final int payFee) {
+    BaseRequest.basePayInfo(oid, payFee, new IResponseListener<BasePay>() {
+      @Override
+      public void onSuccess(BasePay basePay) {
+        payList(basePay.getPayId(), oid, payFee);
+      }
+
+      @Override
+      public void onFail(int errCod, BasePay basePay) {
+
+      }
+
+      @Override
+      public void onFinish(BasePay basePay) {
+
+      }
+    });
+  }
+
+  /**
+   * 获取支付列表
+   * @param oid
+   * @param fee
+   */
+  protected void payList(final String payId, final String oid, final int fee) {
     BaseRequest.basePayList(UserProfile.getInstance(getContext()).getUserId(), oid, new IResponseListener<BasePayList>() {
       @Override
       public void onSuccess(BasePayList taxiPayList) {
@@ -127,8 +155,12 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
 
       }
     });
-    }
+  }
 
+  /**
+   * 支付列表切换
+   * @param position
+   */
   @Override
   public void onPayListSelect(final int position) {
     BaseRequest.basePaySwitch(UserProfile.getInstance(getContext()).getUserId(), getOrderId(), new IResponseListener<BaseObject>() {

@@ -1,6 +1,5 @@
 <resources>
   <string name="app_name">TAXI</string>
-  <string name="wait_time">已经等待 %1$s</string>
 
   <string name="gps_deny_hint">关闭定位功能，应用将无法使用，建议您在设置中开启定位功能</string>
   <string name="gps_dialog_message">请打开gps开关,以便您更准确的找到自行车</string>
@@ -12,55 +11,4 @@
   <string name="action_settings">设置</string>
 
   <string name="location_errorcode_62">定位失败，请检查运营商网络或者WiFi网络是否正常开启，尝试重新请求定位。</string>
-
-  <string name="evaluate_title">评价本次服务</string>
-  <string name="evaluate_voice_start">%1$s星</string>
-  <string name="evaluate_place_holder">您的评价让我们做的更好!</string>
-
-  <!-- 评价 -->
-  <string name="evaluate_evaluate_hint">您对本次服务满意吗</string>
-  <string name="evaluate_evaluate_comment_hint">其他想说的（将匿名延迟告知司机）</string>
-  <string name="evaluate_evaluate_str">评价</string>
-  <string name="evaluate_evaluate_submit_failed">提交失败，请重试</string>
-  <string name="evaluate_evaluate_submit_success_1">感谢评价</string>
-  <string name="evaluate_evaluate_submit_success_2">感谢反馈</string>
-  <string name="evaluate_evaluate_title">评价</string>
-  <string name="evaluate_evaluate_info_not_complete">请选标签或写评论</string>
-  <string name="evaluate_evaluate_pop_message">您的评价将匿名并延迟告知司机，请放心评价</string>
-
-  <string name="evaluate_evaluate_submit">匿名提交</string>
-  <string name="evaluate_evaluate_submitting">提交中</string>
-  <string name="evaluate_evaluate_submitted">提交成功</string>
-  <string name="evaluate_evaluate_submit_retry">重试</string>
-
-  <string name="evaluate_evaluate_entrance_text">评价本次服务</string>
-  <string name="evaluate_question_goto_evaluate">星级评价</string>
-
-  <string name="evaluate_question_submitting">正在提交评价...</string>
-  <string name="evaluate_question_submit_fail">提交失败，请重试</string>
-  <string name="evaluate_question_submit_retry">重试</string>
-  <string name="evaluate_question_thanks">感谢回答</string>
-
-  <string name="evaluate_evaluate_star_description_1">非常不满意，各方面都很差</string>
-  <string name="evaluate_evaluate_star_description_2">不满意，比较差</string>
-  <string name="evaluate_evaluate_star_description_3">一般，还需改善</string>
-  <string name="evaluate_evaluate_star_description_4">比较满意，仍可改善</string>
-  <string name="evaluate_evaluate_star_description_5">非常满意，无可挑剔</string>
-
-  <string name="evaluate_evaluate_tag_description_5">夸夸司机吧</string>
-  <string name="evaluate_evaluate_tag_description_other">指出不足</string>
-  <string name="evaluate_evaluate_overtime">已经不能评价了</string>
-
-  <string name="evaluate_evaluate_voice_start">%1$s星</string>
-
-
-  <string name="cpb_default_sweep_speed">1</string>
-  <string name="cpb_default_rotation_speed">1</string>
-
-  <string name="day_tomorrow">明天</string>
-  <string name="day_today">今天</string>
-  <string name="day_today_after_tomorrow">后天</string>
-
-  <string name="mocha_empty_no_data">暂时没有订单</string>
-  <string name="price_unit">元</string>
 </resources>

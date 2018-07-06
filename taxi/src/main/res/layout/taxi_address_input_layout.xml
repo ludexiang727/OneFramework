@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.trip.base.widget.BaseLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:clickable="true"
   android:clipChildren="false"
   android:orientation="vertical"
-  android:transitionName="searchView">
+  android:transitionName="searchView"
+  app:outsideBackground="@drawable/base_common_round_rect">
 
   <include layout="@layout/taxi_extra_info_layout"/>
 
@@ -45,4 +47,4 @@
     android:hint="@string/taxi_end_address"
     android:textColor="#191d21"
     android:textSize="14sp"/>
-</LinearLayout>
+</com.trip.base.widget.BaseLinearLayout>

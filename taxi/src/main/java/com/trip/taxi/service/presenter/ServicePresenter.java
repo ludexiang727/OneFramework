@@ -6,14 +6,19 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import com.one.framework.app.common.Status.OrderStatus;
+import com.one.framework.app.login.UserProfile;
+import com.one.framework.net.response.IResponseListener;
 import com.one.map.map.BitmapDescriptorFactory;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
 import com.one.map.model.LatLng;
 import com.trip.base.common.CommonParams;
+import com.trip.base.provider.FormDataProvider;
 import com.trip.taxi.R;
 import com.trip.taxi.TaxiService;
+import com.trip.taxi.net.TaxiRequest;
 import com.trip.taxi.net.model.TaxiOrder;
+import com.trip.taxi.net.model.TaxiOrderCancel;
 import com.trip.taxi.net.model.TaxiOrderDriverLocation;
 import com.trip.taxi.net.model.TaxiOrderStatus;
 import com.trip.taxi.service.IServiceView;
@@ -135,6 +140,31 @@ public class ServicePresenter {
         break;
       }
     }
+  }
+
+  public void cancelOrder(final boolean isShowFullForm) {
+    // userid
+    TaxiRequest.taxiCancelOrder(mOrder.getOrderId(), UserProfile.getInstance(mContext).getUserId(),
+        "", new IResponseListener<TaxiOrderCancel>() {
+          @Override
+          public void onSuccess(TaxiOrderCancel taxiOrderCancel) {
+            if (!isShowFullForm) {
+              FormDataProvider.getInstance().saveEndAddress(null);
+              FormDataProvider.getInstance().clearData();
+            }
+            TaxiService.stopService(mContext);
+            mView.cancelOrderSuccess(taxiOrderCancel);
+          }
+
+          @Override
+          public void onFail(int errCode, TaxiOrderCancel taxiOrderCancel) {
+          }
+
+          @Override
+          public void onFinish(TaxiOrderCancel taxiOrderCancel) {
+
+          }
+        });
   }
 
   public void release() {

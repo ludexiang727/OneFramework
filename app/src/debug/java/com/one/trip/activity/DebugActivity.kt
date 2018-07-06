@@ -10,8 +10,8 @@ import android.widget.EditText
 import com.one.framework.utils.PreferenceUtil
 import com.one.map.model.Address
 import com.one.map.model.LatLng
-import com.one.trip.splash.SplashActivity
 import com.one.trip.R
+import com.one.trip.SplashActivity
 
 class DebugActivity : Activity() {
 

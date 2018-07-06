@@ -110,7 +110,7 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
     mMap.removeDriverLine();
     mMap.stopRadarAnim();
     mTopbarView.setTitle(R.string.taxi_service_driver_trip_ending);
-    mTopbarView.setLeft(isFromHistory ? R.drawable.one_top_bar_back_selector : 0);
+    mTopbarView.setLeft(R.drawable.one_top_bar_back_selector);
     mTopbarView.setTitleRight(0);
     mCurrentStatus = OrderStatus.ARRIVED;
     mWatcher = new EditWatch();
@@ -274,7 +274,8 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
     tripButton.setTripButtonText("");
     loading.setVisibility(View.VISIBLE);
     final String oid = mTaxiOrder.getOrderId();
-    payList(oid, feeInfo.getUnPayMoney() / 100);
+//    payList(oid, feeInfo.getUnPayMoney() / 100);
+    pay(oid, feeInfo.getUnPayMoney() / 100);
   }
 
   @Override

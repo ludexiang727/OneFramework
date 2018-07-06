@@ -11,7 +11,7 @@
     <shape
       android:shape="rectangle">
       <solid
-        android:color="@android:color/transparent"/>
+        android:color="@android:color/white"/>
     </shape>
   </item>
 </selector>

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/oc_arrow_icon_right_dark" android:state_pressed="false"/>
-</selector>

@@ -35,5 +35,6 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     compile project(':oneframework')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
     implementation files('libs/alipaySdk-20180601.jar')
 }

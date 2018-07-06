@@ -16,11 +16,12 @@ import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.TripButton;
 import com.one.framework.utils.UIUtils;
 import com.trip.base.provider.FormDataProvider;
+import com.trip.base.widget.BaseLinearLayout;
 import com.trip.taxi.R;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.presenter.TaxiFullFormPresenter;
 
-public class TaxiFullFormView extends LinearLayout implements IFullFormView, View.OnClickListener {
+public class TaxiFullFormView extends BaseLinearLayout implements IFullFormView, View.OnClickListener {
   private TripButton mSendOrder;
   private LoadingView mInvokeLoading;
   private LinearLayout mRetryEstimateLayout;
@@ -98,11 +99,12 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView, Vie
     mSendOrder = (TripButton) view.findViewById(R.id.taxi_invoke_driver);
     mInvokeLoading = (LoadingView) view.findViewById(R.id.taxi_invoke_loading);
 
+    sendEnable(false);
     mTipLayout.setOnClickListener(this);
     mMarkLayout.setOnClickListener(this);
     mTimeLayout.setOnClickListener(this);
     mSendOrder.setOnClickListener(this);
-
+    mRetryEstimateLayout.setOnClickListener(this);
     mCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
       @Override
       public void onCheckedChanged(CompoundButton buttonView, boolean isCheck) {
@@ -111,6 +113,15 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView, Vie
         showLoading(true);
       }
     });
+  }
+
+  private void sendEnable(boolean enable) {
+    mSendOrder.setEnabled(enable);
+    if (enable) {
+      mSendOrder.setRippleColor(Color.parseColor("#343d4a"), Color.parseColor("#ffffff"));
+    } else {
+      mSendOrder.setRippleColor(Color.parseColor("#f3f3f3"), Color.parseColor("#f3f3f3"));
+    }
   }
 
   @Override
@@ -157,12 +168,14 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView, Vie
     mRetryEstimateLayout.setVisibility(VISIBLE);
     mLoadingView.setVisibility(GONE);
     mPriceLayout.setVisibility(GONE);
+
   }
 
   @Override
   public void updatePriceInfo(String price, String coupon, String discount) {
     mRetryEstimateLayout.setVisibility(GONE);
     mPriceLayout.setVisibility(VISIBLE);
+    sendEnable(true);
     mEstimatePrice.setText(price);
     mEstimatePrice.setVisibility(TextUtils.isEmpty(price) ? View.GONE : View.VISIBLE);
     mEstimateDiscount.setText(coupon);
@@ -171,10 +184,14 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView, Vie
     mEstimateTicket.setVisibility(TextUtils.isEmpty(discount) ? View.GONE : View.VISIBLE);
   }
 
+  /**
+   * 预估失败
+   */
   @Override
   public void estimateFail() {
     mRetryEstimateLayout.setVisibility(VISIBLE);
     mPriceLayout.setVisibility(GONE);
+    sendEnable(false);
   }
 
   @Override
@@ -257,6 +274,8 @@ public class TaxiFullFormView extends LinearLayout implements IFullFormView, Vie
       mSendOrder.setTripButtonText("");
       mInvokeLoading.setVisibility(View.VISIBLE);
       mTaxiFullPresenter.taxiCreateOrder(mMarkMsg, isChecked, mFormType);
+    } else if (id == R.id.taxi_estimate_retry_layout) {
+      showLoading(true);
     } else {
       if (mClickListener != null) {
         mClickListener.onClick(view);

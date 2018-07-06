@@ -28,6 +28,7 @@ import com.one.framework.app.pop.PopUpService;
 import com.one.framework.app.widget.ShapeImageView;
 import com.one.framework.app.widget.StarView;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
+import com.one.framework.dialog.SupportDialogFragment;
 import com.one.framework.utils.SystemUtils;
 import com.one.framework.utils.TimeUtils;
 import com.one.framework.utils.UIUtils;
@@ -45,6 +46,7 @@ import com.trip.taxi.R;
 import com.trip.taxi.end.TaxiEndFragment;
 import com.trip.taxi.net.model.OrderDriver;
 import com.trip.taxi.net.model.TaxiOrder;
+import com.trip.taxi.net.model.TaxiOrderCancel;
 import com.trip.taxi.service.presenter.ServicePresenter;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +78,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   private long currentTime;
   private long backgroundSystemTime;// 后台系统时间
   private long interval;
+  private SupportDialogFragment mCancelDialog;
 
   private boolean isStartTrip;
 
@@ -113,7 +116,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
     mMap.stopRadarAnim();
     mMap.registerPlanCallback(this);
     mTopbarView.setTitle(R.string.taxi_service_wait_meet);
-    mTopbarView.setLeft(isFromHistory ? R.drawable.one_top_bar_back_selector : 0);
+    mTopbarView.setLeft(R.drawable.one_top_bar_back_selector);
     mTopbarView.setTitleRight(R.string.taxi_service_title_bar_right_more);
     mCurrentStatus = OrderStatus.RECEIVED;
   }
@@ -141,16 +144,18 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
       case RIGHT: {
         if (mPopService != null && mPopService.isShowing()) {
           mPopService.dismiss();
-          return;
+          mPopService = null;
+          break;
         }
         final List<PopTabItem> items = getTabItems();
-        mPopService = PopUpService.instance(getActivity(), PopType.WRAP);
+        mPopService = new PopUpService(getActivity(), PopType.WRAP);
         mPopService.setItems(items, new ITabItemClickListener() {
           @Override
           public void onTabClick(int position) {
             PopTabItem popTabItem = items.get(position);
             switch (popTabItem.itemType) {
               case CANCEL_ORDER: {
+                cancelOrder(false);
                 break;
               }
               case EMERGENCY_CONTACT: {
@@ -161,10 +166,37 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
               }
             }
           }
-        }).showAsDropDown(mTopbarView.getRightView());
+        });
+        mPopService.showAsDropDown(mTopbarView.getRightView());
         break;
       }
     }
+  }
+
+  /**
+   * 如果是司机取消订单则需要显示全表单
+   * @param isShowFullForm
+   */
+  private void cancelOrder(final boolean isShowFullForm) {
+    SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(
+        getActivity()).setTitle(getString(R.string.taxi_wait_cancel_order))
+        .setMessage(getString(R.string.taxi_cancel_confirm_msg))
+        .setNegativeButton(getString(R.string.one_cancel), new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            mCancelDialog.dismiss();
+          }
+        })
+        .setPositiveButton(getString(R.string.one_confirm), new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            mCancelDialog.dismiss();
+            mServicePresenter.cancelOrder(isShowFullForm);
+          }
+        })
+        .setPositiveButtonTextColor(Color.parseColor("#A3D2E4"));
+    mCancelDialog = builder.create();
+    mCancelDialog.show(getFragmentManager(), "");
   }
 
   @NonNull
@@ -187,9 +219,16 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   }
 
   @Override
-  public boolean onBackPressed() {
-    return true;
+  public void cancelOrderSuccess(TaxiOrderCancel taxiOrderCancel) {
+    mMap.removeDriverLine();
+    mTopbarView.popBackListener();
+    finishSelf();
   }
+
+//  @Override
+//  public boolean onBackPressed() {
+//    return true;
+//  }
 
 
   @Override
@@ -362,6 +401,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
 
   @Override
   protected void boundsLatlng(BestViewModel model) {
+    Logger.e("ldx", "toggle BestView auto");
     switch (mCurrentStatus) {
       case RECEIVED:
       case SETOFF: {
@@ -409,6 +449,18 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
       mDriverMarker.remove();
       mDriverMarker = null;
     }
+
+    if (mStartMarker != null) {
+      mStartMarker.remove();
+      mStartMarker = null;
+    }
+
+    if (mEndMarker != null) {
+      mEndMarker.remove();
+      mEndMarker = null;
+    }
+
+    mMap.removeDriverLine();
     mMap.unRegisterPlanCallback(this);
   }
 

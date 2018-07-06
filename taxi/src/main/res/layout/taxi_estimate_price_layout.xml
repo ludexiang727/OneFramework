@@ -7,8 +7,11 @@
   <LinearLayout
     android:id="@+id/taxi_estimate_retry_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_centerInParent="true"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:background="@drawable/taxi_time_selector"
     android:clickable="true"
     android:gravity="center"
     android:orientation="vertical"

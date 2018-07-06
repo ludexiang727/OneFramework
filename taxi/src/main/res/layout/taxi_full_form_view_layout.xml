@@ -8,7 +8,8 @@
   app:dividerBackgroundColor="@android:color/transparent"
   app:dividerColor="@android:color/transparent"
   app:dividerHeight="0px"
-  app:movable="true">
+  app:movable="true"
+  app:outsideBackground="@drawable/base_common_round_rect">
 
   <!-- 预估界面 -->
   <com.trip.base.widget.BaseLinearLayout

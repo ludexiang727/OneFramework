@@ -1,13 +1,15 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <LinearLayout
+  <com.trip.base.widget.BaseLinearLayout
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_alignParentBottom="true"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
-    android:background="#fff"
-    android:clickable="true">
+    android:clickable="true"
+    android:clipChildren="false"
+    app:outsideBackground="@drawable/base_common_round_rect">
     <LinearLayout
       android:id="@+id/taxi_wait_add_tip_layout"
       android:layout_width="0dp"
@@ -83,5 +85,5 @@
       android:text="@string/taxi_wait_cancel_order"
       android:textColor="#585c64"
       android:textSize="12sp"/>
-  </LinearLayout>
+  </com.trip.base.widget.BaseLinearLayout>
 </merge>

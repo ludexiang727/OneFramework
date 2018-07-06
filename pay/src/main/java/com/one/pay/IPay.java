@@ -18,10 +18,4 @@ public interface IPay {
   @Target({ElementType.FIELD, ElementType.LOCAL_VARIABLE, ElementType.PARAMETER})
   @Retention(RetentionPolicy.SOURCE)
   @interface PayType {}
-
-  void onWxPay();
-
-  void onAliPay();
-
-  void onZSBankPay();
 }
