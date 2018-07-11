@@ -4,7 +4,7 @@
     android:id="@+id/taxi_form_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
+    android:layout_marginBottom="6dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
     android:layout_alignParentBottom="true"/>

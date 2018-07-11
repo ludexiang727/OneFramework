@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.CheckBox;
@@ -31,7 +32,7 @@ import com.trip.taxi.R;
  * Created by ludexiang on 2018/6/13.
  */
 
-public class TaxiWaitView extends BaseLinearLayout implements IWaitView, View.OnClickListener {
+public class TaxiWaitView implements IWaitView, View.OnClickListener {
 
   private Context mContext;
 
@@ -41,19 +42,20 @@ public class TaxiWaitView extends BaseLinearLayout implements IWaitView, View.On
   private RelativeLayout mCancelOrder;
   private IClickListener mClickListener;
   private SupportDialogFragment dialogFragment;
+  private View mWaitView;
 
   public TaxiWaitView(Context context) {
-    this(context, null);
-  }
-
-  public TaxiWaitView(Context context, AttributeSet attrs) {
-    this(context, attrs, 0);
-  }
-
-  public TaxiWaitView(Context context, AttributeSet attrs, int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
     mContext = context;
-    View view = LayoutInflater.from(context).inflate(R.layout.taxi_wait_view_layout, this, true);
+  }
+
+  @Override
+  public View getWaitView(ViewGroup container) {
+    View view = LayoutInflater.from(mContext).inflate(R.layout.taxi_wait_view_layout, container);
+    initView(view);
+    return view;
+  }
+
+  private void initView(View view) {
     mTipLayout = (LinearLayout) view.findViewById(R.id.taxi_wait_add_tip_layout);
     mTip = (TextView) view.findViewById(R.id.taxi_wait_tip);
     mCheckBox = (CheckBox) view.findViewById(R.id.taxi_wait_pick_up_checkbox);
@@ -85,21 +87,10 @@ public class TaxiWaitView extends BaseLinearLayout implements IWaitView, View.On
         }
       }
     });
-    if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-      int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, context.getResources().getDisplayMetrics());
-      setClipChildren(false);
-      Drawable drawable = context.getDrawable(R.drawable.base_common_round_rect);
-      setOutsideBackground((NinePatchDrawable) drawable);
-      RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelOffset(R.dimen.taxi_wait_view_height));
-      params.leftMargin = params.rightMargin = margin;
-      setLayoutParams(params);
-    } else {
-      setBackgroundColor(getResources().getColor(android.R.color.white));
-    }
   }
 
   private void showTip() {
-    final SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(getContext())
+    final SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(mContext)
         .setTitle(mContext.getString(R.string.taxi_support_dlg_title))
         .setMessage(mContext.getString(R.string.taxi_tell_driver_pick_up))
         .setPositiveButton(mContext.getString(R.string.taxi_wait_checkbox_i_know),
@@ -131,14 +122,9 @@ public class TaxiWaitView extends BaseLinearLayout implements IWaitView, View.On
   @Override
   public void addTip(int fee) {
     if (fee == 0) {
-      mTip.setText(getContext().getString(R.string.taxi_thx_money));
+      mTip.setText(mContext.getString(R.string.taxi_thx_money));
     } else {
       mTip.setText(UIUtils.highlight(String.format(mContext.getString(R.string.taxi_thx_money_format), fee), Color.parseColor("#f05b48")));
     }
-  }
-
-  @Override
-  public View getWaitView() {
-    return this;
   }
 }

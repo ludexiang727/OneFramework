@@ -1,97 +1,95 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<com.trip.base.widget.BaseLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="50dp"
+  android:layout_marginBottom="6dp"
+  android:layout_marginLeft="10dp"
+  android:layout_marginRight="10dp"
+  android:clipChildren="false"
+  app:outsideBackground="@drawable/base_common_round_rect">
+  <LinearLayout
+    android:id="@+id/taxi_wait_add_tip_layout"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:layout_gravity="center"
+    android:background="@drawable/taxi_adr_selector"
+    android:clickable="true"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <ImageView
+      android:layout_width="12dp"
+      android:layout_height="12dp"
+      android:layout_marginRight="5dp"
+      android:layout_gravity="center"
+      android:src="@drawable/taxi_full_thank_tip"/>
+
+    <TextView
+      android:id="@+id/taxi_wait_tip"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:text="@string/taxi_thx_money"
+      android:textColor="#585c64"
+      android:textSize="12sp"/>
+  </LinearLayout>
+
+  <View
+    android:layout_width="0.5dp"
+    android:layout_height="20dp"
+    android:layout_gravity="center_vertical"
+    android:background="#f3f3f3"/>
 
   <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:layout_alignParentBottom="true"
-    android:layout_gravity="center_horizontal"
-    android:clickable="true"
-    android:clipChildren="false"
-    android:gravity="center_horizontal">
-    <LinearLayout
-      android:id="@+id/taxi_wait_add_tip_layout"
-      android:layout_width="0dp"
+    android:id="@+id/taxi_wait_pick_up"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <CheckBox
+      android:id="@+id/taxi_wait_pick_up_checkbox"
+      android:layout_width="wrap_content"
       android:layout_height="match_parent"
-      android:layout_weight="1"
       android:layout_gravity="center"
-      android:background="@drawable/taxi_adr_selector"
+      android:paddingLeft="5dp"
+      android:button="@drawable/taxi_checkbox_selector"
       android:clickable="true"
-      android:gravity="center"
-      android:orientation="horizontal">
+      android:text="@string/taxi_by_meter"
+      android:textColor="#585c64"
+      android:textSize="12sp"/>
 
-      <ImageView
-        android:layout_width="12dp"
-        android:layout_height="12dp"
-        android:layout_marginRight="5dp"
-        android:layout_gravity="center"
-        android:src="@drawable/taxi_full_thank_tip"/>
-
-      <TextView
-        android:id="@+id/taxi_wait_tip"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/taxi_thx_money"
-        android:textColor="#585c64"
-        android:textSize="12sp"/>
-    </LinearLayout>
-
-    <View
-      android:layout_width="0.5dp"
-      android:layout_height="20dp"
-      android:layout_gravity="center_vertical"
-      android:background="#f3f3f3"/>
-
-    <LinearLayout
-      android:id="@+id/taxi_wait_pick_up"
-      android:layout_width="0dp"
-      android:layout_height="match_parent"
-      android:layout_weight="1"
-      android:layout_gravity="center"
-      android:clickable="false"
-      android:gravity="center"
-      android:orientation="horizontal">
-
-      <CheckBox
-        android:id="@+id/taxi_wait_pick_up_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:paddingLeft="5dp"
-        android:button="@drawable/taxi_checkbox_selector"
-        android:text="@string/taxi_by_meter"
-        android:textColor="#585c64"
-        android:textSize="12sp"/>
-
-    </LinearLayout>
-
-    <View
-      android:layout_width="0.5dp"
-      android:layout_height="20dp"
-      android:layout_gravity="center_vertical"
-      android:background="#f3f3f3"/>
-
-    <RelativeLayout
-      android:id="@+id/taxi_wait_cancel_order"
-      android:layout_width="0dp"
-      android:layout_height="match_parent"
-      android:layout_weight="1"
-      android:layout_gravity="center"
-      android:background="@drawable/taxi_adr_selector"
-      android:clickable="true"
-      android:gravity="center"
-      android:orientation="horizontal">
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_centerInParent="true"
-        android:background="@drawable/taxi_adr_selector"
-        android:gravity="center"
-        android:text="@string/taxi_wait_cancel_order"
-        android:textColor="#585c64"
-        android:textSize="12sp"/>
-    </RelativeLayout>
   </LinearLayout>
-</merge>
+
+  <View
+    android:layout_width="0.5dp"
+    android:layout_height="20dp"
+    android:layout_gravity="center_vertical"
+    android:background="#f3f3f3"/>
+
+  <RelativeLayout
+    android:id="@+id/taxi_wait_cancel_order"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:layout_gravity="center"
+    android:background="@drawable/taxi_adr_selector"
+    android:clickable="true"
+    android:gravity="center"
+    android:orientation="horizontal">
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_centerInParent="true"
+      android:layout_gravity="center"
+      android:background="@drawable/taxi_adr_selector"
+      android:gravity="center"
+      android:text="@string/taxi_wait_cancel_order"
+      android:textColor="#585c64"
+      android:textSize="12sp"/>
+  </RelativeLayout>
+</com.trip.base.widget.BaseLinearLayout>

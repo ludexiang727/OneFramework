@@ -52,6 +52,8 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
     mMap.removeDriverLine();
   }
 
+
+
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);

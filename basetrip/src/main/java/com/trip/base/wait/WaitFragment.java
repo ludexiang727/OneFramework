@@ -25,7 +25,7 @@ public class WaitFragment extends AbsBaseFragment {
   @Override
   protected View onCreateViewImpl(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
     if (mWaitPresenter != null) {
-      return mWaitPresenter.getWaitView().getWaitView();
+      return mWaitPresenter.getWaitView().getWaitView(container);
     }
     return inflater.inflate(R.layout.base_wait_fragment_layout, container, true);
   }

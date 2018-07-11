@@ -358,12 +358,8 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
 
   @Override
   public void addMarks(MarkerOption start, MarkerOption end) {
-    if (mStartMarker == null && mCurrentStatus != OrderStatus.START && !isStartTrip) {
+    if (mStartMarker == null && mCurrentStatus != OrderStatus.START) {
       mStartMarker = mMap.addMarker(start);
-    } else {
-      if (mStartMarker != null) {
-        mStartMarker.remove();
-      }
     }
 
     if (mEndMarker == null) {
