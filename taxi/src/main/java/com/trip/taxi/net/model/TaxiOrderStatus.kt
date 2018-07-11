@@ -10,5 +10,9 @@ data class TaxiOrderStatus(
         @field:SerializedName("orderId")
         val orderId: String,
         @field:SerializedName("status")
-        val status: Int
+        val status: Int,
+        @field:SerializedName("finish")
+        val isFinish : Int = 0,
+        @field:SerializedName("payType")
+        val payType : Int
 ) : BaseObject()

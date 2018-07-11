@@ -152,7 +152,7 @@ public class ServicePresenter {
               FormDataProvider.getInstance().saveEndAddress(null);
               FormDataProvider.getInstance().clearData();
             }
-            TaxiService.stopService(mContext);
+            TaxiService.stopService();
             mView.cancelOrderSuccess(taxiOrderCancel);
           }
 
@@ -168,7 +168,7 @@ public class ServicePresenter {
   }
 
   public void release() {
-    TaxiService.stopService(mContext);
+    TaxiService.stopService();
     mBroadManager.unregisterReceiver(mReceiver);
   }
 }

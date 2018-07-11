@@ -15,6 +15,7 @@ import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
 import com.one.map.location.LocationProvider;
 import com.one.map.location.LocationProvider.OnLocationChangedListener;
+import com.one.map.log.Logger;
 import com.one.map.model.Address;
 import com.trip.base.common.CommonParams;
 import com.trip.taxi.net.TaxiRequest;
@@ -28,6 +29,8 @@ import com.trip.taxi.net.model.TaxiOrderStatus;
  */
 
 public class TaxiService extends Service {
+
+  private static final String TAG = TaxiService.class.getSimpleName();
 
   private static final String COMMAND_KEY = "_command"; // 启动该服务的时候传输的一些命令
   private static final String COMMAND_ISSTART = "start";
@@ -52,10 +55,8 @@ public class TaxiService extends Service {
 
 //  private Handler trackHandler = new Handler(Looper.getMainLooper());
 
-  public static void stopService(Context ctx) {
-    Intent serviceIntent = new Intent();
-    serviceIntent.setClass(ctx, TaxiService.class);
-    ctx.stopService(serviceIntent);
+  public static void stopService() {
+    Logger.e(TAG, "Service Handler >>>> " + isStopService);
     isStopService = true;
     isLooperOrderStatus = false;
   }
@@ -63,6 +64,7 @@ public class TaxiService extends Service {
   @Override
   public void onCreate() {
     super.onCreate();
+    Logger.e(TAG, "Service  onCreate ....");
     mBroadManager = LocalBroadcastManager.getInstance(getApplicationContext());
     mHandlerThread = new HandlerThread("SERVICE_THREAD");
     mHandlerThread.start();
@@ -70,9 +72,11 @@ public class TaxiService extends Service {
       @Override
       public void handleMessage(Message msg) {
         super.handleMessage(msg);
+        Logger.e(TAG, "Service Handler >>>> " + isStopService + " service " + this);
         if (isStopService) {
           mHandlerThread.quit();
           stopSelf();
+          return;
         }
         switch (msg.what) {
           case KEY_COMMAND_REPORT_LOCATION: {
@@ -113,6 +117,12 @@ public class TaxiService extends Service {
     start(intent, context, KEY_COMMAND_REPORT_TRACK, isStart);
   }
 
+  /**
+   * 轮询订单状态
+   * @param context
+   * @param isStart
+   * @param orderId
+   */
   public static void loopOrderStatus(Context context, boolean isStart, String orderId) {
     if (!isLooperOrderStatus) {
       Intent intent = new Intent();

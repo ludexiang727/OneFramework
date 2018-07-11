@@ -1,4 +1,4 @@
-<com.trip.base.widget.BaseRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:id="@+id/estimate_price_layout"
   android:layout_width="match_parent"
@@ -89,4 +89,4 @@
       android:visibility="gone"/>
   </LinearLayout>
 
-</com.trip.base.widget.BaseRelativeLayout>
+</FrameLayout>

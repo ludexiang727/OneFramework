@@ -13,7 +13,7 @@ import java.util.List;
 public interface IEndView {
   void addMarks(MarkerOption start, MarkerOption end);
   void handleArrived(OrderStatus status);
-  void handleFinish();
+  void handleFinish(int payType);
   void handlePayFail();
   void handlePay(OrderStatus status);
   void endRoutePlan(List<LatLng> driverLines);

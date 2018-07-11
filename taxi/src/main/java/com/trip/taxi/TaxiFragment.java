@@ -5,12 +5,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -58,6 +62,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   private TaxiFormPresenter mPresenter;
   private int mParamsMargin;
   private SupportDialogFragment mHaveTripDlg;
+  private String mUserCustomTag;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -121,7 +126,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
 
   @Override
   protected void handleReceiveRecovery(Intent intent) {
-    if (isAdded()) {
+    if (isAdded() && getActivity()!= null && !getActivity().isFinishing()) {
       OrderDetail orderDetail = (OrderDetail) intent.getSerializableExtra(CommonParams.COMMON_RECOVERY_DATA);
       OrderStatus orderStatus = OrderStatus.fromStateCode(orderDetail.getOrderStatus());
       showHaveTripDialog(orderDetail, orderStatus);
@@ -175,8 +180,20 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   @Override
   public void onMarkClick(View markView) {
     View view = LayoutInflater.from(getContext()).inflate(R.layout.taxi_mark_dialog_layout, null);
-    final LinearLayout markViewParent = (LinearLayout) view
-        .findViewById(R.id.taxi_mark_view_parent);
+    final LinearLayout markViewParent = (LinearLayout) view.findViewById(R.id.taxi_mark_view_parent);
+    final EditText customTag = (EditText) view.findViewById(R.id.taxi_mark_custom_tag);
+    customTag.setOnTouchListener(new OnTouchListener() {
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+        customTag.setFocusable(true);
+        customTag.setFocusableInTouchMode(true);
+        customTag.requestFocus();
+        return false;
+      }
+    });
+    if (!TextUtils.isEmpty(mUserCustomTag)) {
+      customTag.setText(mUserCustomTag);
+    }
     int rowIndex = -1;
     List<String> marks = mPresenter.getMarkItems();
     LinearLayout.LayoutParams params = new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -195,8 +212,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
         rowLayout = new LinearLayout(getContext());
         markViewParent.addView(rowLayout, rowIndex);
       }
-      final TextView itemView = (TextView) LayoutInflater.from(getContext())
-          .inflate(R.layout.taxi_mark_item_layout, null);
+      final TextView itemView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.taxi_mark_item_layout, null);
       Object marksStr = markView.getTag();
       if (marksStr != null && marksStr instanceof String) {
         for (String text : ((String) marksStr).split(",")) {
@@ -230,6 +246,11 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
           StringBuffer buffer = new StringBuffer();
           for (TextView textView : selectedView) {
             buffer.append(textView.getText()).append(",");
+          }
+          String customMarker = customTag.getText().toString();
+          if (!TextUtils.isEmpty(customMarker)) {
+            mUserCustomTag = customMarker;
+            buffer.append(customMarker).append(",");
           }
           mFormView.setMsg(buffer.substring(0, buffer.toString().length() - 1));
         } else {
@@ -391,6 +412,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
         break;
       }
       case COMPLAINT:
+      case AUTOPAYING:
       case CONFIRM:
       case ARRIVED: {
         pinViewHide(true);

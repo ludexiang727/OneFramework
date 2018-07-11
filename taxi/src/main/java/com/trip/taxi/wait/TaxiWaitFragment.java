@@ -49,6 +49,7 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
     mWaitView = mWaitPresenter.getWaitView();
     mTopbarView.setTitle(R.string.taxi_wait_page_title);
     mTopbarView.setLeft(isFromHistory ? R.drawable.one_top_bar_back_selector : 0);
+    mMap.removeDriverLine();
   }
 
   @Override
@@ -60,7 +61,6 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
     attachToTopContainer(mWaitTopView);
     mWaitPresenter.startCountDown();
   }
-
 
   @Override
   public void waitConfigTime(int waitTime) {
@@ -146,7 +146,6 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
           @Override
           public void onClick(View v) {
             mWaitPresenter.cancelOrder(true);
-            finishSelf();
           }
         })
         .setPositiveButton(getString(R.string.taxi_none_driver_wait), new OnClickListener() {
@@ -163,6 +162,15 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
 
   @Override
   public void cancelOrderSuccess(TaxiOrderCancel orderCancel) {
+//    mMap.stopRadarAnim();
+//    mWaitPresenter.stopCountDown();
+//    onBackHome();
+  }
+
+  @Override
+  public void cancelOrderFinish() {
+    finishSelf();
+
     mMap.stopRadarAnim();
     mWaitPresenter.stopCountDown();
     onBackHome();

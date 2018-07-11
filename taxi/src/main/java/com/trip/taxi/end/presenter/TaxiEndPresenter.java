@@ -62,7 +62,7 @@ public class TaxiEndPresenter {
       if (CommonParams.COMMON_LOOPER_ORDER_STATUS.equalsIgnoreCase(action)) {
         TaxiOrderStatus orderStatus = (TaxiOrderStatus) intent
             .getSerializableExtra(CommonParams.COMMON_LOOPER_ORDER);
-        handleOrderStatus(OrderStatus.fromStateCode(orderStatus.getStatus()));
+        handleOrderStatus(orderStatus);
       }
     }
   }
@@ -88,7 +88,8 @@ public class TaxiEndPresenter {
     mView.endRoutePlan(from, to);
   }
 
-  private void handleOrderStatus(OrderStatus status) {
+  private void handleOrderStatus(TaxiOrderStatus taxiOrderStatus) {
+    OrderStatus status = OrderStatus.fromStateCode(taxiOrderStatus.getStatus());
     if (mCurrentStatus == status) {
       return;
     }
@@ -99,14 +100,16 @@ public class TaxiEndPresenter {
         mView.handleArrived(mCurrentStatus);
         break;
       }
+      case AUTOPAYING:
       case COMPLAINT: {
         // 司机发起支付
         mView.handlePay(mCurrentStatus);
         break;
       }
+      case PAID:
       case CONFIRM: {
         // 已支付
-        mView.handleFinish();
+        mView.handleFinish(taxiOrderStatus.getPayType());
         break;
       }
     }
@@ -133,7 +136,7 @@ public class TaxiEndPresenter {
   }
 
   public void release() {
-    TaxiService.stopService(mContext);
+    TaxiService.stopService();
     mBroadManager.unregisterReceiver(mReceiver);
   }
 

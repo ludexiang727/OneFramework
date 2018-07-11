@@ -71,10 +71,12 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
   private LoadingView mPayLoading;
 
   private LinearLayout mFinishedLayout;
+  private LinearLayout mOnLineLayout;
   private TextView mEvaluateDriver;
   private TextView mPayMoney;
   private TextView mPayVoucher;
   private TextView mFeeCharge;
+  private TextView mCashier;
   private TextView mTickWipe;
 
   private AnimatorSet mRightOutSet;
@@ -148,8 +150,10 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
     mPayLoading = (LoadingView) view.findViewById(R.id.taxi_end_pay_loading_view);
 
     mFinishedLayout = (LinearLayout) view.findViewById(R.id.taxi_end_trip_finished_layout);
+    mOnLineLayout = (LinearLayout) view.findViewById(R.id.taxi_end_finish_pay_layout);
     mPayMoney = (TextView) view.findViewById(R.id.taxi_end_finish_trip_total_fee);
     mPayVoucher = (TextView) view.findViewById(R.id.taxi_end_finish_trip_voucher);
+    mCashier = (TextView) view.findViewById(R.id.taxi_end_finish_trip_by_cashier);
     mFeeCharge = (TextView) view.findViewById(R.id.taxi_end_options_charge);
     mTickWipe = (TextView) view.findViewById(R.id.taxi_end_options_wipe);
     mEvaluateDriver = (TextView) view.findViewById(R.id.taxi_end_options_evaluate);
@@ -182,6 +186,7 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
   @Override
   public void handlePay(OrderStatus status) {
     switch (status) {
+      case AUTOPAYING:
       case COMPLAINT: {
         // 司机发起支付
         mPayLayout.setVisibility(View.VISIBLE);
@@ -202,10 +207,19 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
   }
 
   @Override
-  public void handleFinish() {
+  public void handleFinish(int payType) {
     mPayLayout.setVisibility(View.GONE);
     // 已支付
     if (mRightOutSet != null && mLeftInSet != null) {
+      if (payType == 1) {
+        // 现金收款
+        mOnLineLayout.setVisibility(View.GONE);
+        mCashier.setVisibility(View.VISIBLE);
+      } else {
+        mOnLineLayout.setVisibility(View.VISIBLE);
+        mCashier.setVisibility(View.GONE);
+        mPayMoney.setText("0.01");
+      }
       mRightOutSet.setTarget(mConfirmLayout);
       mLeftInSet.setTarget(mFinishedLayout);
       mRightOutSet.start();
@@ -260,7 +274,7 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
   public void handlePayInfo(TaxiOrderDetail orderDetail) {
     feeInfo = orderDetail.getFeeInfo();
     if (feeInfo != null) {
-      mEndTotalFee.setText(String.format(getString(R.string.taxi_end_pay_money), feeInfo.getTotalMoney() / 100));
+      mEndTotalFee.setText(String.format(getString(R.string.taxi_end_pay_money), String.valueOf(feeInfo.getTotalMoney() / 100)));
       mNeedPayFee.setText(String.valueOf(feeInfo.getActualPayMoney() / 100));
     }
   }
@@ -275,7 +289,7 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
     loading.setVisibility(View.VISIBLE);
     final String oid = mTaxiOrder.getOrderId();
 //    payList(oid, feeInfo.getUnPayMoney() / 100);
-    pay(oid, feeInfo.getUnPayMoney() / 100);
+    payInfo(oid, feeInfo.getUnPayMoney() / 100);
   }
 
   @Override

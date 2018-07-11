@@ -197,7 +197,6 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
           FormDataProvider.getInstance().saveEndAddress(null);
           FormDataProvider.getInstance().clearData();
         }
-        TaxiService.stopService(mContext);
         iTaxiWaitView.cancelOrderSuccess(taxiOrderCancel);
       }
 
@@ -207,7 +206,9 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
 
       @Override
       public void onFinish(TaxiOrderCancel taxiOrderCancel) {
-
+        // 停止轮询服务
+        TaxiService.stopService();
+        iTaxiWaitView.cancelOrderFinish();
       }
     });
   }

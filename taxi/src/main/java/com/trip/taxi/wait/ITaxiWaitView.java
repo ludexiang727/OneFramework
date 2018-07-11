@@ -12,5 +12,6 @@ public interface ITaxiWaitView extends IClickListener{
   void waitConfigTime(int time);
   void countDown(int count);
   void cancelOrderSuccess(TaxiOrderCancel orderCancel);
+  void cancelOrderFinish(); // 取消订单可能没有成功，前段做容错处理
   void onTripping(TaxiOrder order);
 }

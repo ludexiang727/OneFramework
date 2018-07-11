@@ -1,0 +1,16 @@
+<com.trip.base.widget.BaseLinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  app:outsideBackground="@drawable/base_common_round_rect">
+
+  <com.one.framework.app.widget.ShapeImageView
+    android:id="@+id/taxi_banner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scaleType="fitXY"
+    android:adjustViewBounds="true"
+    android:layout_margin="5dp"/>
+
+</com.trip.base.widget.BaseLinearLayout>

@@ -14,11 +14,12 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 import com.one.framework.app.common.Status.OrderStatus;
 import com.one.framework.app.pop.ITabItemClickListener;
@@ -29,7 +30,6 @@ import com.one.framework.app.widget.ShapeImageView;
 import com.one.framework.app.widget.StarView;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.dialog.SupportDialogFragment;
-import com.one.framework.utils.SystemUtils;
 import com.one.framework.utils.TimeUtils;
 import com.one.framework.utils.UIUtils;
 import com.one.map.IMap.IRoutePlanMsgCallback;
@@ -68,10 +68,8 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   private TextView mDriverCompany;
   private StarView mDriverStarView;
   private TaxiOrder mTaxiOrder;
-  private PopUpService mPopService;
   private OrderStatus mCurrentStatus;
   private Marker mDriverMarker;
-  private boolean isAddedMark = false;
   private Marker mStartMarker;
   private Marker mEndMarker;
   private boolean infoWindowShowing;
@@ -79,8 +77,11 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   private long backgroundSystemTime;// 后台系统时间
   private long interval;
   private SupportDialogFragment mCancelDialog;
+  private View mBannerView;
+  private PopUpService mPopService;
 
   private boolean isStartTrip;
+  private int mBestViewMargin;
 
   private Handler mHandler = new Handler(Looper.getMainLooper()) {
     @Override
@@ -119,6 +120,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
     mTopbarView.setLeft(R.drawable.one_top_bar_back_selector);
     mTopbarView.setTitleRight(R.string.taxi_service_title_bar_right_more);
     mCurrentStatus = OrderStatus.RECEIVED;
+    mBestViewMargin = getResources().getDimensionPixelOffset(R.dimen.taxi_service_best_view_margin);
   }
 
   @Override
@@ -144,7 +146,6 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
       case RIGHT: {
         if (mPopService != null && mPopService.isShowing()) {
           mPopService.dismiss();
-          mPopService = null;
           break;
         }
         final List<PopTabItem> items = getTabItems();
@@ -162,6 +163,8 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
                 break;
               }
               case CONNECT_SERVICE: {
+                // 联系客服
+                connectService();
                 break;
               }
             }
@@ -199,6 +202,15 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
     mCancelDialog.show(getFragmentManager(), "");
   }
 
+  /**
+   * 联系客服
+   * @return
+   */
+  private void connectService() {
+    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:15010844540"));
+    startActivity(intent);
+  }
+
   @NonNull
   private List<PopTabItem> getTabItems() {
     List<PopTabItem> items = new ArrayList<PopTabItem>();
@@ -214,7 +226,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
     }
     PopTabItem im = new PopTabItem(getString(R.string.taxi_service_connect_service));
     im.itemType = PopTabItem.CONNECT_SERVICE;
-    items.add(new PopTabItem(getString(R.string.taxi_service_connect_service)));
+    items.add(im);
     return items;
   }
 
@@ -224,12 +236,6 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
     mTopbarView.popBackListener();
     finishSelf();
   }
-
-//  @Override
-//  public boolean onBackPressed() {
-//    return true;
-//  }
-
 
   @Override
   public void routePlanPoints(List<LatLng> points) {
@@ -322,10 +328,13 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   }
 
   private void topBanner() {
-    ImageView imageView = new ImageView(getContext());
-    imageView.setImageResource(R.drawable.taxi_service_banner);
-    imageView.setScaleType(ScaleType.FIT_XY);
-    attachToTopContainer(imageView);
+    mBannerView = LayoutInflater.from(getContext()).inflate(R.layout.taxi_service_banner_layout, null);
+    ShapeImageView banner = mBannerView.findViewById(R.id.taxi_banner);
+    banner.loadImageByUrl(null, "http://img12.360buyimg.com/cms/jfs/t799/76/717269560/247006/7915acb9/5540ad7dNe9b60017.jpg", "default");
+    banner.setAdjustViewBounds(true);
+    banner.setMaxWidth(UIUtils.getScreenWidth(getContext()));
+    banner.setMaxHeight(UIUtils.getScreenWidth(getContext()) / 3);
+    attachToTopContainer(mBannerView);
   }
 
   private void updateDriverCard() {
@@ -349,8 +358,12 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
 
   @Override
   public void addMarks(MarkerOption start, MarkerOption end) {
-    if (mStartMarker == null && mCurrentStatus != OrderStatus.START) {
+    if (mStartMarker == null && mCurrentStatus != OrderStatus.START && !isStartTrip) {
       mStartMarker = mMap.addMarker(start);
+    } else {
+      if (mStartMarker != null) {
+        mStartMarker.remove();
+      }
     }
 
     if (mEndMarker == null) {
@@ -382,6 +395,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
       mStartMarker.remove();
     }
     isStartTrip = true;
+    detachFromTopContainer(mBannerView);
     serviceCommon(status);
   }
 
@@ -401,7 +415,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
 
   @Override
   protected void boundsLatlng(BestViewModel model) {
-    Logger.e("ldx", "toggle BestView auto");
+    model.padding.left = model.padding.right = mBestViewMargin;
     switch (mCurrentStatus) {
       case RECEIVED:
       case SETOFF: {

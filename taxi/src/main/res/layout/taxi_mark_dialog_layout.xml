@@ -1,6 +1,28 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/taxi_mark_view_parent"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:orientation="vertical"/>
+  android:orientation="vertical">
+  <LinearLayout
+    android:id="@+id/taxi_mark_view_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"/>
+
+  <EditText
+    android:id="@+id/taxi_mark_custom_tag"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="10dp"
+    android:minHeight="40dp"
+    android:padding="5dp"
+    android:singleLine="true"
+    android:hint="@string/taxi_custom_tag"
+    android:focusable="false"
+    android:focusableInTouchMode="true"
+    android:textColorHint="#e8e8e8"
+    android:textSize="14sp"
+    android:background="@drawable/taxi_custom_mark_bg"/>
+</LinearLayout>

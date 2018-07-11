@@ -1,12 +1,12 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.trip.base.widget.BaseRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_marginBottom="10dp"
   android:layout_marginLeft="10dp"
   android:layout_marginRight="10dp"
-  android:background="@android:color/white"
-  android:clickable="true">
+  android:clickable="true"
+  app:outsideBackground="@drawable/base_common_round_rect">
 
   <com.one.framework.app.widget.ShapeImageView
     android:id="@+id/taxi_service_driver_icon"
@@ -96,4 +96,4 @@
       app:starViewHeight="10dp"
       app:starViewRightMargin="5dp"/>
   </RelativeLayout>
-</RelativeLayout>
+</com.trip.base.widget.BaseRelativeLayout>

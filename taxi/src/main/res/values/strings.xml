@@ -57,7 +57,8 @@
   <string name="taxi_tell_driver_pick_up">不能取消啦!已告知司机打表来接</string>
   <string name="taxi_wait_checkbox_i_know">我知道了</string>
   <string name="taxi_service_driver_wait_time">已等待%1$s</string>
-  <string name="taxi_end_pay_money">%1d元</string>
+  <string name="taxi_end_pay_money">%1$s元</string>
+  <string name="taxi_end_finish_cashier">已现金收款</string>
 
   <string name="taxi_estimate_price_about">约%s</string>
   <string name="taxi_estimate_price_count">折扣已减 %s</string>
@@ -69,4 +70,5 @@
   </string-array>
 
   <string name="taxi_confirm_booking">确认预约</string>
+  <string name="taxi_custom_tag">自定义标签</string>
 </resources>

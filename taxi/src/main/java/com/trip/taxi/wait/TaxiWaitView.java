@@ -2,10 +2,17 @@ package com.trip.taxi.wait;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.NinePatchDrawable;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -16,6 +23,7 @@ import com.one.framework.dialog.SupportDialogFragment;
 import com.one.framework.utils.UIUtils;
 import com.trip.base.provider.FormDataProvider;
 import com.trip.base.wait.IWaitView;
+import com.trip.base.widget.BaseLinearLayout;
 import com.trip.base.widget.BaseRelativeLayout;
 import com.trip.taxi.R;
 
@@ -23,14 +31,14 @@ import com.trip.taxi.R;
  * Created by ludexiang on 2018/6/13.
  */
 
-public class TaxiWaitView extends RelativeLayout implements IWaitView, View.OnClickListener {
+public class TaxiWaitView extends BaseLinearLayout implements IWaitView, View.OnClickListener {
 
   private Context mContext;
 
   private LinearLayout mTipLayout;
   private TextView mTip;
   private CheckBox mCheckBox;
-  private TextView mCancelOrder;
+  private RelativeLayout mCancelOrder;
   private IClickListener mClickListener;
   private SupportDialogFragment dialogFragment;
 
@@ -49,7 +57,7 @@ public class TaxiWaitView extends RelativeLayout implements IWaitView, View.OnCl
     mTipLayout = (LinearLayout) view.findViewById(R.id.taxi_wait_add_tip_layout);
     mTip = (TextView) view.findViewById(R.id.taxi_wait_tip);
     mCheckBox = (CheckBox) view.findViewById(R.id.taxi_wait_pick_up_checkbox);
-    mCancelOrder = (TextView) view.findViewById(R.id.taxi_wait_cancel_order);
+    mCancelOrder = (RelativeLayout) view.findViewById(R.id.taxi_wait_cancel_order);
 
     addTip(FormDataProvider.getInstance().obtainTip());
 
@@ -77,6 +85,17 @@ public class TaxiWaitView extends RelativeLayout implements IWaitView, View.OnCl
         }
       }
     });
+    if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+      int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, context.getResources().getDisplayMetrics());
+      setClipChildren(false);
+      Drawable drawable = context.getDrawable(R.drawable.base_common_round_rect);
+      setOutsideBackground((NinePatchDrawable) drawable);
+      RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelOffset(R.dimen.taxi_wait_view_height));
+      params.leftMargin = params.rightMargin = margin;
+      setLayoutParams(params);
+    } else {
+      setBackgroundColor(getResources().getColor(android.R.color.white));
+    }
   }
 
   private void showTip() {

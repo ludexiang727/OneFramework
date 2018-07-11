@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.one.framework.app.widget.LoadingView;
@@ -52,6 +53,7 @@ public class TaxiFullFormView extends BaseLinearLayout implements IFullFormView,
   private boolean isChecked;
   private String mMarkMsg = "";
   private TaxiFullFormPresenter mTaxiFullPresenter;
+  private FrameLayout mEstimateLayout;
 
   public TaxiFullFormView(Context context) {
     this(context, null);
@@ -89,6 +91,7 @@ public class TaxiFullFormView extends BaseLinearLayout implements IFullFormView,
     mMark = (TextView) view.findViewById(R.id.taxi_full_form_mark);
     mMarkSelect = (TextView) view.findViewById(R.id.taxi_full_form_mark_select);
 
+    mEstimateLayout = view.findViewById(R.id.estimate_price_layout);
     mRetryEstimateLayout = (LinearLayout) view.findViewById(R.id.taxi_estimate_retry_layout);
     mLoadingView = (LoadingView) view.findViewById(R.id.taxi_estimate_price_loading);
     mPriceLayout = (LinearLayout) view.findViewById(R.id.taxi_estimate_price_layout);

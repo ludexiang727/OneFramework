@@ -4,8 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.NinePatchDrawable;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -24,7 +26,6 @@ import android.widget.RelativeLayout;
 import com.one.framework.app.base.BizEntranceFragment;
 import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.log.Logger;
-import com.one.framework.provider.HomeDataProvider;
 import com.one.framework.utils.UIUtils;
 import com.one.map.IMap.IMarkerClickCallback;
 import com.one.map.location.LocationProvider;
@@ -33,6 +34,7 @@ import com.one.map.model.Address;
 import com.one.map.model.BestViewModel;
 import com.trip.base.R;
 import com.trip.base.provider.FormDataProvider;
+import com.trip.base.widget.BaseLinearLayout;
 import com.trip.base.widget.BottomViewLayout;
 
 /**
@@ -44,7 +46,7 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
   /**
    * 之所以加入Base Parent 为了计算高度已实现地图最佳view
    */
-  private LinearLayout mTopContainer;
+  private BaseLinearLayout mTopContainer;
   private BottomViewLayout mBottomContainer;
   private boolean isAttached = true;
   private static final int REFRESH_MAP = 0X101;
@@ -176,18 +178,18 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
     params.topMargin = UIUtils.dip2pxInt(getContext(), 6);
     mTopContainer.setVisibility(View.VISIBLE);
     mTopContainer.addView(view, mTopContainer.getChildCount(), params);
-    reCalculateHeight();
+    topContainerViewAnim(view, false);
   }
 
   protected final void detachFromTopContainer(final View view) {
-    if (mTopContainer.getVisibility() == View.GONE || mTopContainer.getChildCount() <= 0) {
+    if (mTopContainer.getVisibility() == View.GONE || mTopContainer.getChildCount() <= 0 || view == null) {
       return;
     }
     if (mTopContainer.getChildCount() > 0) {
       for (int i = 0; i < mTopContainer.getChildCount(); i++) {
         View childView = mTopContainer.getChildAt(i);
         if (childView == view) {
-          topContainerRemoveView(childView);
+          topContainerViewAnim(childView, true);
         } else {
           continue;
         }
@@ -195,33 +197,30 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
     }
   }
 
-  private void topContainerRemoveView(final View view) {
+  private void topContainerViewAnim(final View view, final boolean isRemove) {
     AnimatorSet set = new AnimatorSet();
-    ValueAnimator height = ValueAnimator.ofInt(view.getMeasuredHeight(), 0);
-    ObjectAnimator alpha = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f);
-    height.addUpdateListener(new AnimatorUpdateListener() {
-      @Override
-      public void onAnimationUpdate(ValueAnimator animation) {
-        int height = (int) animation.getAnimatedValue();
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
-        params.height = height;
-        view.setLayoutParams(params);
-      }
-    });
+    float alphaFrom = isRemove ? 1f : 0f;
+    float alphaTo = isRemove ? 0f : 1f;
+    float transFrom = isRemove ? 0f : -UIUtils.getViewHeight(view);
+    float transTo = isRemove ? -UIUtils.getViewHeight(view) : 0f;
+    ObjectAnimator alpha = ObjectAnimator.ofFloat(view, "alpha", alphaFrom, alphaTo);
+    ObjectAnimator transY = ObjectAnimator.ofFloat(view, "translationY", transFrom, transTo);
     set.addListener(new AnimatorListenerAdapter() {
       @Override
       public void onAnimationEnd(Animator animation) {
         super.onAnimationEnd(animation);
-        mTopContainer.removeView(view);
+        if (isRemove) {
+          mTopContainer.removeView(view);
 
-        if (mTopContainer.getChildCount() == 0) {
-          mTopContainer.setVisibility(View.GONE);
+          if (mTopContainer.getChildCount() == 0) {
+            mTopContainer.setVisibility(View.GONE);
+          }
         }
         reCalculateHeight();
       }
     });
-    set.setDuration(300);
-    set.playTogether(height, alpha);
+    set.setDuration(500);
+    set.playTogether(transY, alpha);
     set.start();
   }
 
@@ -229,28 +228,28 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
    * 重新测量子view高度
    */
   protected void reCalculateHeight() {
-    int width = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-    int height = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-
     if (mTopContainer.getChildCount() > 0) {
-      mTopContainer.measure(width, height);
-      mTopRect[0] = mTopContainer.getMeasuredWidth();
-      mTopRect[1] = mBusContext.getTopbar().getTopbarHeight() + mTopContainer.getMeasuredHeight();
+      int viewWidth = UIUtils.getViewWidth(mBottomContainer);
+      int viewHeight = UIUtils.getViewHeight(mBottomContainer);
+      mTopRect[0] = viewWidth;
+      mTopRect[1] = mBusContext.getTopbar().getTopbarHeight() + viewHeight;
     } else {
       mTopRect[0] = UIUtils.getScreenWidth(getActivity());
       mTopRect[1] = mBusContext.getTopbar().getTopbarHeight();
     }
 
     if (isAttached) {
-      mBottomContainer.measure(width, height);
-      mBottomRect[0] = mBottomContainer.getWidth(); // mBottomContainer 宽度 由于是match_parent 故获得的宽度为屏幕宽度
-      mBottomRect[1] = mBottomContainer.getMeasuredHeight(); // 包含View margin
+      int viewWidth = UIUtils.getViewWidth(mBottomContainer);
+      int viewHeight = UIUtils.getViewHeight(mBottomContainer);
+      mBottomRect[0] = viewWidth; // mBottomContainer 宽度 由于是match_parent 故获得的宽度为屏幕宽度
+      mBottomRect[1] = viewHeight; // 包含View margin
     } else {
       if (mBottomContainer.getChildCount() > 0) {
         View view = mBottomContainer.getChildAt(0);
-        view.measure(width, height);
-        mBottomRect[0] = view.getWidth();
-        mBottomRect[1] = view.getHeight();
+        int viewWidth = UIUtils.getViewWidth(view);
+        int viewHeight = UIUtils.getViewHeight(view);
+        mBottomRect[0] = viewWidth;
+        mBottomRect[1] = viewHeight;
       }
     }
     Logger.e("ldx", "top " + mTopRect[1] + " bottom  " + mBottomRect[1]);

@@ -15,6 +15,7 @@
     android:layout_marginBottom="27dp"
     android:orientation="vertical">
     <LinearLayout
+      android:id="@+id/taxi_end_finish_pay_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:gravity="center"
@@ -49,6 +50,15 @@
       android:textSize="10sp"
       android:visibility="gone"
       android:text="@string/taxi_end_fee_voucher"/>
+
+    <TextView
+      android:id="@+id/taxi_end_finish_trip_by_cashier"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="20sp"
+      android:padding="5dp"
+      android:visibility="gone"
+      android:text="@string/taxi_end_finish_cashier"/>
   </LinearLayout>
 
   <View

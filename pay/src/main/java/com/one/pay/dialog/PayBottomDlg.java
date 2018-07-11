@@ -25,6 +25,7 @@ import com.one.framework.utils.UIThreadHandler;
 import com.one.pay.IPay;
 import com.one.pay.R;
 import com.one.pay.adapter.PayDlgListAdapter;
+import com.one.pay.model.PayInfo;
 import com.one.pay.model.PayList;
 import com.one.pay.model.PayModel;
 import com.one.pay.util.OrderInfoUtil2_0;
@@ -53,7 +54,7 @@ public class PayBottomDlg extends BottomSheetDialog implements OnClickListener, 
   private HandlerThread mPayThread;
   private Handler mPayHandler;
   private Activity mActivity;
-
+  private PayInfo mPayInfo;
 
   public PayBottomDlg(@NonNull final Activity activity, IPayCallback listener, PayModel model) {
     super(activity);
@@ -72,7 +73,39 @@ public class PayBottomDlg extends BottomSheetDialog implements OnClickListener, 
         switch (msg.what) {
           case PAY_WX: {
             WxPay wxPay = new WxPay(activity);
-            wxPay.wxPay();
+            wxPay.wxPay(mPayInfo);
+            break;
+          }
+          case PAY_ZFB: {
+            AliPay aliPay = new AliPay(mActivity);
+            aliPay.aliPay(PayBottomDlg.this, mPayListener);
+            break;
+          }
+          case PAY_ZSBANK: {
+            break;
+          }
+        }
+      }
+    };
+  }
+
+  public PayBottomDlg(@NonNull final Activity activity, IPayCallback listener, final PayInfo info) {
+    super(activity);
+    mActivity = activity;
+
+    mPayListener = listener;
+    initView(activity, listener);
+    setCanceledOnTouchOutside(false);
+    mPayThread = new HandlerThread("PAY_THREAD");
+    mPayThread.start();
+    mPayHandler = new Handler(mPayThread.getLooper()) {
+      @Override
+      public void handleMessage(Message msg) {
+        super.handleMessage(msg);
+        switch (msg.what) {
+          case PAY_WX: {
+            WxPay wxPay = new WxPay(activity);
+            wxPay.wxPay(info);
             break;
           }
           case PAY_ZFB: {
@@ -99,8 +132,13 @@ public class PayBottomDlg extends BottomSheetDialog implements OnClickListener, 
     mPayTypeList = (ListView) view.findViewById(R.id.pay_type_list);
     mPay = (TripButton) view.findViewById(R.id.pay);
 
-    mAdapter.setListData(mModel.getPayList());
-    mAdapter.setListener(listener);
+    if (mModel != null) {
+      mAdapter.setListData(mModel.getPayList());
+      mAdapter.setListener(listener);
+
+      mTotalFee.setText(String.valueOf(mModel.getTotalFee()));
+      mPay.setTripButtonText(String.format(getContext().getString(R.string.pay_dlg_pay_fee_confirm), String.valueOf(mModel.getTotalFee())));
+    }
     mPayTypeList.setAdapter(mAdapter);
     mClose.setOnClickListener(this);
     mFeeDetail.setOnClickListener(this);
@@ -108,8 +146,7 @@ public class PayBottomDlg extends BottomSheetDialog implements OnClickListener, 
     mPay.setOnClickListener(this);
     setContentView(view);
 
-    mTotalFee.setText(String.valueOf(mModel.getTotalFee()));
-    mPay.setTripButtonText(String.format(getContext().getString(R.string.pay_dlg_pay_fee_confirm), String.valueOf(mModel.getTotalFee())));
+
   }
 
   public void updatePayList(int position) {
@@ -151,10 +188,12 @@ public class PayBottomDlg extends BottomSheetDialog implements OnClickListener, 
     }
   }
 
+  @Override
   public void onWxPay() {
     mPayHandler.sendEmptyMessage(PAY_WX);
   }
 
+  @Override
   public void onAliPay() {
     EnvUtils.setEnv(EnvEnum.SANDBOX); // 测试环境
     mPayHandler.sendEmptyMessage(PAY_ZFB);

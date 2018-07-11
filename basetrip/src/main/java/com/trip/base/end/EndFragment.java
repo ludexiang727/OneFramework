@@ -30,15 +30,19 @@ import com.one.map.model.Address;
 import com.one.map.model.LatLng;
 import com.one.pay.Pay;
 import com.one.pay.dialog.PayBottomDlg.IPayCallback;
+import com.one.pay.model.PayInfo;
 import com.one.pay.model.PayList;
 import com.one.pay.model.PayModel;
 import com.trip.base.R;
 import com.trip.base.common.CommonParams;
 import com.trip.base.net.BaseRequest;
 import com.trip.base.net.model.BasePay;
+import com.trip.base.net.model.BasePayInfo;
 import com.trip.base.net.model.BasePayList;
 import com.trip.base.net.model.PayTypeList;
+import com.trip.base.net.model.Sign;
 import com.trip.base.page.BaseFragment;
+import com.trip.base.provider.FormDataProvider;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +82,7 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
   @Override
   public boolean onBackPressed() {
     if (!isFromHistory) {
+      FormDataProvider.getInstance().clearData();
       onBackHome();
       return true;
     }
@@ -102,22 +107,24 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
   protected abstract String getOrderId();
 
   /**
-   * 发起支付
+   * 支付 获取 tradeNo
    */
-  protected void pay(final String oid, final int payFee) {
-    BaseRequest.basePayInfo(oid, payFee, new IResponseListener<BasePay>() {
+  protected void payInfo(final String oid, final int payFee) {
+    BaseRequest.basePayInfo(oid, payFee, new IResponseListener<BasePayInfo>() {
       @Override
-      public void onSuccess(BasePay basePay) {
-        payList(basePay.getPayId(), oid, payFee);
+      public void onSuccess(BasePayInfo basePayInfo) {
+        // TODO: 2018/7/7 此处应该获取支付列表 暂时不用 默认走微信支付
+//        payList(basePayInfo.getPayId(), oid, payFee);
+        pay(basePayInfo.getPayId());
       }
 
       @Override
-      public void onFail(int errCod, BasePay basePay) {
+      public void onFail(int errCod, BasePayInfo basePayInfo) {
 
       }
 
       @Override
-      public void onFinish(BasePay basePay) {
+      public void onFinish(BasePayInfo basePayInfo) {
 
       }
     });
@@ -180,6 +187,34 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
     });
   }
 
+  /**
+   * 发起支付 直接支付
+   */
+  protected void pay(String payId) {
+    BaseRequest.basePay(UserProfile.getInstance(getContext()).getUserId(), payId, 2, new IResponseListener<BasePay>() {
+      @Override
+      public void onSuccess(BasePay basePay) {
+        if (basePay != null && basePay.getSign() != null) {
+          Sign sign = basePay.getSign();
+          PayInfo info = new PayInfo(sign.getType(), sign.getMchid(), sign.getPackageName(),
+              sign.getAppId(), sign.getSign(), sign.getPartnerId(), sign.getPrePayId(),
+              sign.getDeviceInfo(), sign.getPayUrl(), sign.getNoncestr(), sign.getTimeStamp(), 2);
+          Pay.getInstance(getActivity()).pay(info, EndFragment.this);
+        }
+      }
+
+      @Override
+      public void onFail(int errCod, BasePay basePay) {
+        handlePayFail();
+      }
+
+      @Override
+      public void onFinish(BasePay basePay) {
+
+      }
+    });
+  }
+
   @Override
   public void onDestroyView() {
     super.onDestroyView();
@@ -197,7 +232,7 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
 
   @Override
   public void onPaySuccess() {
-    handleFinish();
+    handleFinish(0);
   }
 
   @Override
