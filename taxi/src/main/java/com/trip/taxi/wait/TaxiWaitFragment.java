@@ -52,8 +52,6 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
     mMap.removeDriverLine();
   }
 
-
-
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
@@ -104,6 +102,11 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
     Bundle bundle = new Bundle();
     bundle.putSerializable(Service.ORDER, order);
     forwardWithPop(ServiceFragment.class, bundle);
+  }
+
+  @Override
+  protected boolean isAddLeftClick() {
+    return false;
   }
 
   /**
