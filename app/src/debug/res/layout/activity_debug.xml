@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:hint="input env url"
-        android:text="https://furion-app.mobike.com"/>
+        android:text="furion"/>
       <Button
         android:id="@+id/debug_env_save"
         android:layout_width="wrap_content"

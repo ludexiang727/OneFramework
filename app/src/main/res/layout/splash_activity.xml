@@ -25,7 +25,7 @@
 
   </LinearLayout>
 
-  <ImageView
+  <com.one.framework.app.widget.ShapeImageView
     android:id="@+id/splash_ad"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -41,8 +41,9 @@
     android:layout_alignParentTop="true"
     android:layout_marginTop="30dp"
     android:layout_marginRight="10dp"
+    android:clickable="true"
     android:textSize="12sp"
-    android:text="跳过 10s"
+    android:text="@string/splash_skip_second"
     android:background="@drawable/splash_count_down"/>
 
 </RelativeLayout>

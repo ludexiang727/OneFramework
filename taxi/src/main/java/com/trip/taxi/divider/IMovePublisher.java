@@ -1,7 +1,9 @@
 package com.trip.taxi.divider;
 
+import android.support.annotation.Keep;
 import android.view.MotionEvent;
 
+@Keep
 public interface IMovePublisher {
 
     /**
@@ -34,6 +36,7 @@ public interface IMovePublisher {
      */
     void setOnMoveListener(OnMoveListener l);
 
+    @Keep
     interface OnMoveListener {
         /**
          * 触摸事件与起始点之间的距离信息

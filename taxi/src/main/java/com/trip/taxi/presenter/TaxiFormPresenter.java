@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.one.framework.db.DBTables.AddressTable;
 import com.one.framework.db.DBTables.AddressTable.AddressType;
+import com.one.framework.net.model.Evaluate;
 import com.one.framework.net.model.OrderDetail;
 import com.one.map.map.BitmapDescriptorFactory;
 import com.one.map.map.MarkerOption;
@@ -14,6 +15,7 @@ import com.trip.taxi.ITaxiView;
 import com.trip.taxi.R;
 import com.trip.taxi.net.model.FeeInfo;
 import com.trip.taxi.net.model.OrderDriver;
+import com.trip.taxi.net.model.TaxiEvaluate;
 import com.trip.taxi.net.model.TaxiInfo;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.net.model.TaxiOrderDetail;
@@ -161,12 +163,19 @@ public class TaxiFormPresenter {
           driverStar, driverPhone, driverCar, driverCarColor, driverCompany);
     }
     TaxiInfo taxiInfo = null;
-    if (orderDetail.getTaxiInfo() != null) {
-      int pay4PickUp = orderDetail.getTaxiInfo().getPay4PickUp();
-      List<String> marks = orderDetail.getTaxiInfo().getTaxiMarks();
-      int dispatchFee = orderDetail.getTaxiInfo().getTaxiTip();
-      int fedBack = orderDetail.getTaxiInfo().getTaxiFeedBack();
-      taxiInfo = new TaxiInfo(pay4PickUp, marks, dispatchFee, fedBack);
+    if (orderDetail.getCarInfo() != null) {
+      int pay4PickUp = orderDetail.getCarInfo().getPay4PickUp();
+      List<String> marks = orderDetail.getCarInfo().getMarks();
+      int dispatchFee = orderDetail.getCarInfo().getTip();
+      int fedBack = orderDetail.getCarInfo().getFeedback();
+      Evaluate orderEvaluate = orderDetail.getCarInfo().getEvaluate();
+      TaxiEvaluate evaluate = null;
+      if (orderEvaluate != null) {
+        evaluate = new TaxiEvaluate(orderEvaluate.getUserId(), orderEvaluate.getBizType(),
+            orderEvaluate.getDriverId(), orderEvaluate.getOrderId(), orderEvaluate.getContent(),
+            orderEvaluate.getTags(), orderEvaluate.getStar());
+      }
+      taxiInfo = new TaxiInfo(pay4PickUp, marks, dispatchFee, fedBack, evaluate);
       FormDataProvider.getInstance().savePick4Up(pay4PickUp == 1 ? true : false);
       FormDataProvider.getInstance().saveTip(dispatchFee);
       FormDataProvider.getInstance().saveMarks(marks);
@@ -195,7 +204,6 @@ public class TaxiFormPresenter {
     if (!isFromHistory) {
       FormDataProvider.getInstance().saveStartAddress(start);
       FormDataProvider.getInstance().saveEndAddress(end);
-      mView.addMarks(addMarks(FormDataProvider.getInstance()));
     }
 
     TaxiOrder taxiOrder = new TaxiOrder(oid, orderCreateTime, currentServerTime, waitConfigTime);

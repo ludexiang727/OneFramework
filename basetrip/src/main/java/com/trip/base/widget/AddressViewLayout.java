@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.one.framework.app.login.UserProfile;
 import com.one.framework.app.widget.PullListView;
 import com.one.framework.app.widget.PullScrollRelativeLayout;
 import com.one.framework.app.widget.base.IItemClickListener;
@@ -107,6 +108,9 @@ public class AddressViewLayout extends LinearLayout implements IAddressView, OnC
   }
 
   private void initViewStub() {
+    if (!UserProfile.getInstance(getContext()).isLogin()) {
+      return;
+    }
     View view = mViewStub.inflate();
     mNormalAddressLayout = (LinearLayout) view.findViewById(R.id.address_normal_address_set_layout);
 //    mNormalAddressLayout.setVisibility();

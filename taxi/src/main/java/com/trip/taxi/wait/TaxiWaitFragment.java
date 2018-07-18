@@ -20,6 +20,7 @@ import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.net.model.TaxiOrderCancel;
 import com.trip.taxi.service.ServiceFragment;
 import com.trip.taxi.wait.presenter.TaxiWaitPresenter;
+import java.util.Locale;
 
 /**
  * Created by ludexiang on 2018/6/13.
@@ -147,17 +148,17 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
     SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(
         getActivity()).setTitle(getString(R.string.taxi_support_dlg_title))
         .setMessage(getString(R.string.taxi_none_driver_receive))
-        .setNegativeButton(getString(R.string.taxi_none_driver_no), new OnClickListener() {
+        .setNegativeButton(getString(R.string.taxi_wait_cancel_order), new OnClickListener() {
           @Override
           public void onClick(View v) {
-            mWaitPresenter.cancelOrder(true);
+            mWaitPresenter.cancelOrder(false);
           }
         })
-        .setPositiveButton(getString(R.string.taxi_none_driver_wait), new OnClickListener() {
+        .setPositiveButton(getString(R.string.taxi_none_driver_reorder), new OnClickListener() {
           @Override
           public void onClick(View v) {
             mNoneDriverDlg.dismiss();
-
+            mWaitPresenter.cancelOrder(true);
           }
         })
         .setPositiveButtonTextColor(Color.parseColor("#A3D2E4"));
@@ -167,26 +168,26 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
 
   @Override
   public void cancelOrderSuccess(TaxiOrderCancel orderCancel) {
-//    mMap.stopRadarAnim();
-//    mWaitPresenter.stopCountDown();
-//    onBackHome();
+    mMap.stopRadarAnim();
+    mWaitPresenter.stopCountDown();
+    finishSelf();
   }
 
   @Override
   public void cancelOrderFinish() {
-    finishSelf();
-
     mMap.stopRadarAnim();
     mWaitPresenter.stopCountDown();
-    onBackHome();
+    finishSelf();
   }
 
   @Override
-  public void countDown(int count) {
+  public void countDown(int totalTime, int count) {
     if (isAdded()) {
-      String waitTime = String.format(getString(R.string.taxi_wait_driver_time), count);
+      int min = count / 60;
+      int second = count % 60;
+      String waitTime = String.format(Locale.CHINA, "%02d:%02d", min, second);
       mWaitSeconds.setText(waitTime);
-      if (count == 0) {
+      if (count == totalTime) {
         if (mTipDlg != null && mTipDlg.isShowing()) {
           mTipDlg.dismiss();
         }

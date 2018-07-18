@@ -86,7 +86,8 @@ public class TaxiFullFormPresenter {
           @Override
           public void onFail(int errCode, TaxiOrder taxiOrder) {
             mFullFormView.setFormType(type);
-
+            // unFinished order
+            mFullFormView.createOrderFail();
           }
 
           @Override

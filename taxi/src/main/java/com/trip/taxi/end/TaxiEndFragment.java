@@ -11,8 +11,10 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.ShapeImageView;
 import com.one.framework.app.widget.StarView;
 import com.one.framework.app.widget.TripButton;
+import com.one.framework.provider.HomeDataProvider;
 import com.one.map.model.BestViewModel;
 import com.one.map.model.LatLng;
 import com.trip.base.common.CommonParams.Service;
@@ -35,8 +38,11 @@ import com.trip.taxi.R;
 import com.trip.taxi.end.presenter.TaxiEndPresenter;
 import com.trip.taxi.net.model.FeeInfo;
 import com.trip.taxi.net.model.OrderDriver;
+import com.trip.taxi.net.model.TaxiEvaluate;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.net.model.TaxiOrderDetail;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ludexiang on 2018/6/24.
@@ -88,22 +94,35 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
   private HandlerThread mPayInfoHandler = new HandlerThread("PAY_INFO");
   private PayHandler mPayHandler;
   private FeeInfo feeInfo;
-
-  private Handler mHandler = new Handler(Looper.getMainLooper()) {
-    @Override
-    public void handleMessage(Message msg) {
-      super.handleMessage(msg);
-    }
-  };
+  // 是否已评价
+  private boolean isEvaluated = false;
+  private int star;
+  private String content;
+  private List<String> evaluateTag = new ArrayList<>();
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Bundle bundle = getArguments();
-    boolean isFromHistory = false;
     if (bundle != null) {
       mTaxiOrder = (TaxiOrder) bundle.getSerializable(Service.ORDER);
       isFromHistory = bundle.getBoolean(Service.FROM_HISITORY);
+      TaxiOrderDetail taxiOrderDetail = mTaxiOrder.getOrderInfo();
+      if (taxiOrderDetail != null && taxiOrderDetail.getTaxiInfo() != null)
+      isEvaluated = taxiOrderDetail.getTaxiInfo().getTaxiFeedBack() == 1;
+      if (isEvaluated) {
+        TaxiEvaluate taxiEvaluate = taxiOrderDetail.getTaxiInfo().getTaxiEvaluate();
+        if (taxiEvaluate != null ) {
+          if (!TextUtils.isEmpty(taxiEvaluate.getTags())) {
+            String[] tags = taxiEvaluate.getTags().split("\\|");
+            for (String tag : tags) {
+              evaluateTag.add(tag);
+            }
+          }
+          star = taxiEvaluate.getStar();
+          content = taxiEvaluate.getContent();
+        }
+      }
     }
     mEndPresenter = new TaxiEndPresenter(getContext(), mTaxiOrder, this);
     mPayInfoHandler.start();
@@ -117,6 +136,7 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
     mCurrentStatus = OrderStatus.ARRIVED;
     mWatcher = new EditWatch();
     mEndPresenter.addMarks(mTaxiOrder);
+    loadEvaluateTags();
   }
 
   @Override
@@ -166,6 +186,9 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
     mEndPay.setOnClickListener(this);
     mDriverPhone.setOnClickListener(this);
     mInputMoney.addTextChangedListener(mWatcher);
+    if (isEvaluated) {
+      evaluateSuccess();
+    }
     updateDriverCard();
     addAnimators();
     setCameraDistance();
@@ -186,8 +209,9 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
   @Override
   public void handlePay(OrderStatus status) {
     switch (status) {
-      case AUTOPAYING:
-      case COMPLAINT: {
+      case AUTO_PAID: //
+      case AUTO_PAYING:
+      case CONFIRMED_PRICE: {
         // 司机发起支付
         mPayLayout.setVisibility(View.VISIBLE);
         break;
@@ -208,6 +232,7 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
 
   @Override
   public void handleFinish(int payType) {
+    HomeDataProvider.getInstance().saveOrderDetail(null);
     mPayLayout.setVisibility(View.GONE);
     // 已支付
     if (mRightOutSet != null && mLeftInSet != null) {
@@ -218,13 +243,28 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
       } else {
         mOnLineLayout.setVisibility(View.VISIBLE);
         mCashier.setVisibility(View.GONE);
-        mPayMoney.setText("0.01");
+        mPayMoney.setText(feeInfo.getActualPayMoney() / 100);
       }
       mRightOutSet.setTarget(mConfirmLayout);
       mLeftInSet.setTarget(mFinishedLayout);
       mRightOutSet.start();
       mLeftInSet.start();
     }
+  }
+
+  @Override
+  protected void loadEvaluateTags() {
+    mEndPresenter.loadEvaluateTags();
+  }
+
+  @Override
+  public void evaluateSuccess() {
+    mEvaluateDriver.setText(R.string.taxi_end_evaluated);
+  }
+
+  @Override
+  protected void submitEvaluate(int rate, @Nullable List<String> tags, @NonNull String comment) {
+    mEndPresenter.submitEvaluate(rate, tags, comment);
   }
 
   // 设置动画
@@ -240,7 +280,9 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
 
       @Override
       public void onAnimationEnd(Animator animation, boolean isReverse) {
-        mEvaluate.onEvaluate();
+        if (!isEvaluated) {
+          mEvaluate.onEvaluate();
+        }
       }
     });
   }
@@ -260,7 +302,11 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
       Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mTaxiOrder.getOrderInfo().getDriver().getDriverTel()));
       startActivity(intent);
     } else if (id == R.id.taxi_end_options_evaluate) {
-      mEvaluate.onEvaluate();
+      if (!isEvaluated) {
+        mEvaluate.onEvaluate();
+      } else {
+        mEvaluate.onEvaluated(star, evaluateTag, content);
+      }
     } else if (id == R.id.taxi_end_pay) {
       isSelfPay = true;
       pay(mEndPay, mEndLoading);
@@ -336,11 +382,6 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
         }
       }
     }
-  }
-
-  @Override
-  protected void mapClearElement() {
-    mMap.removeDriverLine();
   }
 
   @Override

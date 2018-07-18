@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.TripButton;
+import com.one.framework.utils.ToastUtils;
 import com.one.framework.utils.UIUtils;
 import com.trip.base.provider.FormDataProvider;
 import com.trip.base.widget.BaseLinearLayout;
@@ -274,6 +275,10 @@ public class TaxiFullFormView extends BaseLinearLayout implements IFullFormView,
     }
     int id = view.getId();
     if (id == R.id.taxi_invoke_driver) {
+      if (mFormType == BOOK && FormDataProvider.getInstance().obtainBookingTime() <= 0) {
+        ToastUtils.toast(mContext, mContext.getString(R.string.taxi_book_time_empty));
+        return;
+      }
       mSendOrder.setTripButtonText("");
       mInvokeLoading.setVisibility(View.VISIBLE);
       mTaxiFullPresenter.taxiCreateOrder(mMarkMsg, isChecked, mFormType);
@@ -291,6 +296,14 @@ public class TaxiFullFormView extends BaseLinearLayout implements IFullFormView,
     mInvokeLoading.setVisibility(View.GONE);
     if (mClickListener != null) {
       mSendOrder.setTag(order);
+      mClickListener.onClick(mSendOrder);
+    }
+  }
+
+  @Override
+  public void createOrderFail() {
+    if (mClickListener != null) {
+      mSendOrder.setTag(null);
       mClickListener.onClick(mSendOrder);
     }
   }

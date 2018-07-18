@@ -10,7 +10,7 @@ import com.trip.taxi.net.model.TaxiOrderCancel;
 
 public interface ITaxiWaitView extends IClickListener{
   void waitConfigTime(int time);
-  void countDown(int count);
+  void countDown(int totalTime, int count);
   void cancelOrderSuccess(TaxiOrderCancel orderCancel);
   void cancelOrderFinish(); // 取消订单可能没有成功，前段做容错处理
   void onTripping(TaxiOrder order);

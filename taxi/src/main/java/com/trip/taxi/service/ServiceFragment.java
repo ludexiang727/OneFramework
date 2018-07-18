@@ -14,10 +14,8 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,7 +32,6 @@ import com.one.framework.utils.TimeUtils;
 import com.one.framework.utils.UIUtils;
 import com.one.map.IMap.IRoutePlanMsgCallback;
 import com.one.map.location.LocationProvider;
-import com.one.map.log.Logger;
 import com.one.map.map.MarkerOption;
 import com.one.map.map.element.Marker;
 import com.one.map.model.Address;
@@ -42,6 +39,7 @@ import com.one.map.model.BestViewModel;
 import com.one.map.model.LatLng;
 import com.trip.base.common.CommonParams.Service;
 import com.trip.base.page.BaseFragment;
+import com.trip.base.provider.FormDataProvider;
 import com.trip.taxi.R;
 import com.trip.taxi.end.TaxiEndFragment;
 import com.trip.taxi.net.model.OrderDriver;
@@ -78,10 +76,11 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   private long interval;
   private SupportDialogFragment mCancelDialog;
   private View mBannerView;
-  private PopUpService mPopService;
 
   private boolean isStartTrip;
   private int mBestViewMargin;
+  private boolean isFromHistory = false;
+  private PopUpService mPopService;
 
   private Handler mHandler = new Handler(Looper.getMainLooper()) {
     @Override
@@ -108,7 +107,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Bundle bundle = getArguments();
-    boolean isFromHistory = false;
+
     if (bundle != null) {
       mTaxiOrder = (TaxiOrder) bundle.getSerializable(Service.ORDER);
       isFromHistory = bundle.getBoolean(Service.FROM_HISITORY);
@@ -140,14 +139,10 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   public void onTitleItemClick(ClickPosition position) {
     switch (position) {
       case LEFT: {
-        super.onTitleItemClick(position);
+        onBackPressed();
         break;
       }
       case RIGHT: {
-        if (mPopService != null && mPopService.isShowing()) {
-          mPopService.dismiss();
-          break;
-        }
         final List<PopTabItem> items = getTabItems();
         mPopService = new PopUpService(getActivity(), PopType.WRAP);
         mPopService.setItems(items, new ITabItemClickListener() {
@@ -173,6 +168,19 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
         mPopService.showAsDropDown(mTopbarView.getRightView());
         break;
       }
+    }
+  }
+
+  @Override
+  public boolean onBackPressed() {
+    mapClearElement();
+    if (!isFromHistory) {
+      FormDataProvider.getInstance().clearData();
+      onBackInvoke();
+      return true;
+    } else {
+      finishSelf();
+      return true;
     }
   }
 
@@ -214,7 +222,8 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   @NonNull
   private List<PopTabItem> getTabItems() {
     List<PopTabItem> items = new ArrayList<PopTabItem>();
-    if (mCurrentStatus == OrderStatus.RECEIVED || mCurrentStatus == OrderStatus.SETOFF || mCurrentStatus == OrderStatus.READY) {
+    if (mCurrentStatus == OrderStatus.RECEIVED || mCurrentStatus == OrderStatus.SET_OFF
+        || mCurrentStatus == OrderStatus.READY) {
       PopTabItem cancelOrder = new PopTabItem(getString(R.string.taxi_service_cancel_order));
       cancelOrder.itemType = CANCEL_ORDER;
       items.add(cancelOrder);
@@ -246,7 +255,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   public void routePlanMsg(String msg, List<LatLng> points) {
     switch (mCurrentStatus) {
       case RECEIVED:
-      case SETOFF: {
+      case SET_OFF: {
         CharSequence infoMsg = UIUtils.highlight(msg, FORMAT_COLOR);
         // 在起始点上展示info window
         if (!infoWindowShowing) {
@@ -403,6 +412,9 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   }
 
   private void serviceCommon(OrderStatus status) {
+    if (mPopService != null && mPopService.isShowing()) {
+      mPopService.dismiss();
+    }
     mCurrentStatus = status;
     // 起终点 marker
     mServicePresenter.addMarks(mTaxiOrder);
@@ -414,7 +426,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
     model.padding.left = model.padding.right = mBestViewMargin;
     switch (mCurrentStatus) {
       case RECEIVED:
-      case SETOFF: {
+      case SET_OFF: {
         model.bounds.add(new LatLng(mTaxiOrder.getOrderInfo().getStartLat(), mTaxiOrder.getOrderInfo().getStartLng()));
         model.bounds.add( new LatLng(LocationProvider.getInstance().getLocation().mAdrLatLng.latitude,
                 LocationProvider.getInstance().getLocation().mAdrLatLng.longitude));
@@ -471,6 +483,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
     }
 
     mMap.removeDriverLine();
+    mMap.clearElements();
     mMap.unRegisterPlanCallback(this);
   }
 

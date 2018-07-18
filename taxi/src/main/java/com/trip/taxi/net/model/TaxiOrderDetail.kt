@@ -86,5 +86,24 @@ data class TaxiInfo(
         @field:SerializedName("dispatchFee")
         val taxiTip : Int,
         @field:SerializedName("feedback")
-        val taxiFeedBack: Int
+        val taxiFeedBack: Int,
+        @field:SerializedName("driverComment")
+        val taxiEvaluate: TaxiEvaluate? = null
+)
+
+data class TaxiEvaluate(
+        @field:SerializedName("userId")
+        val userId : String,
+        @field:SerializedName("bizType")
+        val bizType : Int,
+        @field:SerializedName("driverId")
+        val driverId : String,
+        @field:SerializedName("orderId")
+        val orderId: String,
+        @field:SerializedName("content")
+        val content: String? = "",
+        @field:SerializedName("tags")
+        val tags: String?,
+        @field:SerializedName("star")
+        val star : Int
 )

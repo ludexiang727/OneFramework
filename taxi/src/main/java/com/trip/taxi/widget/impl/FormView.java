@@ -16,7 +16,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.one.map.log.Logger;
+import com.one.framework.utils.UIUtils;
 import com.trip.taxi.R;
 import com.trip.taxi.divider.DividerViewLayout;
 import com.trip.taxi.net.model.TaxiOrder;
@@ -147,16 +147,12 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
     int state = mOptionsView.getState();
     mFullView.setFormType(state);
     translation(state);
-//    mBookingTimeLayout.setVisibility(state == 1 ? View.GONE : View.VISIBLE);
     if (type == EASY_FORM) {
       showEasyForm();
     } else if (type == FULL_FORM) {
       showFullForm();
     }
     mFormType = type;
-//    if (mHeightChangeListener != null) {
-//      mHeightChangeListener.onHeightChange(-1);
-//    }
   }
 
   private void translation(final int state) {
@@ -274,6 +270,9 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
     if (iFormView == null) {
       return;
     }
+    if (UIUtils.isFastDoubleClick()) {
+      return;
+    }
     final int id = view.getId();
     if (id == R.id.taxi_start_address) {
       iFormView.onStartClick();
@@ -286,8 +285,12 @@ public class FormView extends DividerViewLayout implements IFormView, View.OnCli
     } else if (id == R.id.taxi_full_form_mark_layout) {
       iFormView.onMarkClick(view);
     } else if (id == R.id.taxi_invoke_driver) {
-      TaxiOrder order = (TaxiOrder) view.getTag();
-      iFormView.forward(order);
+      if (view.getTag() != null) {
+        TaxiOrder order = (TaxiOrder) view.getTag();
+        iFormView.onForwardNext(order);
+      } else {
+        iFormView.onOrderCreateFail();
+      }
     }
   }
 

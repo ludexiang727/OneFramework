@@ -1,7 +1,9 @@
 package com.trip.taxi.widget;
 
+import android.support.annotation.Keep;
 import android.view.View;
 
+@Keep
 public interface IOptionView {
   int NOW = 1;
   int BOOKING = 2;
@@ -11,6 +13,7 @@ public interface IOptionView {
 
   void setState(int state);
 
+  @Keep
   interface IOptionChange {
     void onChange();
   }

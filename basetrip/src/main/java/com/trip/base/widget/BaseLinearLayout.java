@@ -59,6 +59,11 @@ public class BaseLinearLayout extends LinearLayout {
   }
 
   @Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+  }
+
+  @Override
   public void draw(Canvas canvas) {
     if (outsideBackground != null) {
       DrawOutside.drawOutside(this, canvas, outsideBackground, outsideBackgroundPadding, 255);

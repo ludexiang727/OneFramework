@@ -4,6 +4,7 @@ import com.one.framework.app.common.Status.OrderStatus;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
 import com.one.map.model.LatLng;
+import com.trip.base.net.model.EvaluateTags;
 import java.util.List;
 
 /**
@@ -16,6 +17,8 @@ public interface IEndView {
   void handleFinish(int payType);
   void handlePayFail();
   void handlePay(OrderStatus status);
+  void evaluateTags(EvaluateTags tags);
+  void evaluateSuccess();
   void endRoutePlan(List<LatLng> driverLines);
   void endRoutePlan(Address from, Address to);
 }

@@ -1,11 +1,14 @@
 package com.trip.taxi.net;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import com.one.framework.net.Api;
 import com.one.framework.net.NetConstant;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
 import com.one.map.model.Address;
+import com.trip.base.net.model.EvaluateTags;
 import com.trip.taxi.net.model.TaxiEstimatePrice;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.net.model.TaxiOrderCancel;
@@ -13,6 +16,7 @@ import com.trip.taxi.net.model.TaxiOrderDetail;
 import com.trip.taxi.net.model.TaxiOrderDriverLocation;
 import com.trip.taxi.net.model.TaxiOrderStatus;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by ludexiang on 2018/6/8.
@@ -34,11 +38,8 @@ public class TaxiRequest {
    */
   private static final String TAXI_DRIVER_LOCATION = "/api/taxi/trip/driver/location";
 
-//  private val TAXI_PAY = "/api/taxi/trip/taxi/pay"
-//  private val TAXI_BY_METER = "/api/chariot/trip/taxi/pay4pickup"
-//  private val TAXI_THX = "/api/chariot/trip/taxi/thanksfee"
-//  private val TAXI_FEEDBACK = "/api/chariot/config/taxi/feedback"
-//  private val TAXI_SUBMIT_FEED = "/api/chariot/trip/taxi/feedback"
+  private static final String TAXI_EVALUATE_TAGS = "/api/taxi/config/taxi/feedback";
+  private static final String TAXI_SUBMIT_EVALUATE = "/api/taxi/trip/taxi/feedback";
 
   private static int requestCode;
 
@@ -210,5 +211,31 @@ public class TaxiRequest {
     requestCode = Api.request(TAXI_DRIVER_LOCATION, params, listener, TaxiOrderDriverLocation.class);
   }
 
+  /**
+   * 评价司机
+   */
+  public static void taxiSubmitEvaluate(String oid, int rate, @Nullable List<String> tags, @NonNull String comment, IResponseListener<BaseObject> listener) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("orderId", oid);
+    params.put("rate", rate);
+    StringBuilder builder = new StringBuilder();
+    if (tags != null && !tags.isEmpty()) {
+      for (String tag : tags) {
+        builder.append(tag).append(",");
+      }
+    }
+    params.put("comment", builder.toString());
+    params.put("content", comment);
+    requestCode = Api.request(TAXI_SUBMIT_EVALUATE, params, listener, BaseObject.class);
+  }
 
+  /**
+   * load EvaluateTags tags
+   */
+  public static void taxiLoadEvaluateTags(String cityCode, IResponseListener<EvaluateTags> listener) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("cityCode", cityCode);
+    params.put("platform", "android");
+    requestCode = Api.request(TAXI_EVALUATE_TAGS, params, listener, EvaluateTags.class);
+  }
 }

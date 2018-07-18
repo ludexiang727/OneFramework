@@ -1,6 +1,5 @@
 package com.trip.base.net;
 
-import com.one.framework.app.login.UserProfile;
 import com.one.framework.net.Api;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
@@ -17,7 +16,7 @@ public class BaseRequest {
   private static final String BASE_PAY_LIST = "/api/taxi/trip/paylist";
   private static final String BASE_PAY_LIST_SWITCH = "/api/taxi/trip/paylist/switch";
   private static final String BASE_PAY_INFO = "/api/taxi/trip/taxi/pay";
-  private static final String BASE_PAY = "/api/v2/payment/signTicket.do";
+  private static final String BASE_PAY = "/api/taxi/trip/taxi/sign";
 
   private static int requestCode;
   /**
@@ -40,7 +39,7 @@ public class BaseRequest {
   public static void basePayInfo(String orderId, int payFee, IResponseListener<BasePayInfo> listener) {
     HashMap<String, Object> params = new HashMap<String, Object>();
     params.put("orderId", orderId);
-    params.put("fee", payFee);
+    params.put("feedback", payFee);
     requestCode = Api.request(BASE_PAY_INFO, params, listener, BasePayInfo.class);
   }
 

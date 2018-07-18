@@ -8,6 +8,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.one.framework.app.common.Status.OrderStatus;
 import com.one.framework.app.login.UserProfile;
 import com.one.framework.net.response.IResponseListener;
+import com.one.framework.provider.HomeDataProvider;
 import com.one.map.map.BitmapDescriptorFactory;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
@@ -93,7 +94,7 @@ public class ServicePresenter {
       Address to;
       switch (mCurrentStatus) {
         case RECEIVED:
-        case SETOFF: {
+        case SET_OFF: {
           to = new Address();
           to.mAdrLatLng = new LatLng(mOrder.getOrderInfo().getStartLat(), mOrder.getOrderInfo().getStartLng());
           to.mAdrDisplayName = mOrder.getOrderInfo().getStartPlaceName();
@@ -119,7 +120,7 @@ public class ServicePresenter {
         mView.driverReceive(mCurrentStatus);
         break;
       }
-      case SETOFF: {
+      case SET_OFF: {
         // 司机已出发
         mView.driverSetOff(mCurrentStatus);
         break;
@@ -152,6 +153,7 @@ public class ServicePresenter {
               FormDataProvider.getInstance().saveEndAddress(null);
               FormDataProvider.getInstance().clearData();
             }
+            HomeDataProvider.getInstance().saveOrderDetail(null);
             TaxiService.stopService();
             mView.cancelOrderSuccess(taxiOrderCancel);
           }

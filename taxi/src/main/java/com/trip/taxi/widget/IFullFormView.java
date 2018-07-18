@@ -1,8 +1,10 @@
 package com.trip.taxi.widget;
 
+import android.support.annotation.Keep;
 import android.view.View;
 import com.trip.taxi.net.model.TaxiOrder;
 
+@Keep
 public interface IFullFormView {
 
   View getView();
@@ -33,6 +35,9 @@ public interface IFullFormView {
 
   void createOrderSuccess(TaxiOrder order);
 
+  void createOrderFail();
+
+  @Keep
   interface IFullFormListener {
     void onClick(View view);
   }

@@ -93,10 +93,16 @@ public class FormDataProvider {
     return  mBookingTime;
   }
 
+  /**
+   * ServiceFragment EndFragment 点击返回首页时会清空
+   * @return
+   */
   public void clearData() {
     mStartAddress = null;
     mEndAddress = null;
     mBookingTime = 0;
     mTip = 0;
+    mPay4PickUp = false;
+    mMarks.clear();
   }
 }

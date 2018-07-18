@@ -39,7 +39,8 @@ class DebugApplication : OneApplication() {
 
         } else {
 //            taxi must be fix mo/
-            val apiUrl: String = env/*"https://" + env + "-app.taxi.com"*/
+
+            val apiUrl: String = "https://" + env.trim().toLowerCase() + "-app.com"
             H5Page.initEnv(env)
             Api.apiUrl(apiUrl)
         }

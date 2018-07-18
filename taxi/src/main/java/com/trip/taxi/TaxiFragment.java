@@ -20,6 +20,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import com.one.framework.api.annotation.ServiceProvider;
 import com.one.framework.app.common.Status.OrderStatus;
+import com.one.framework.app.login.UserProfile;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
 import com.one.framework.app.widget.wheelview.WheelView;
@@ -63,6 +64,8 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   private int mParamsMargin;
   private SupportDialogFragment mHaveTripDlg;
   private String mUserCustomTag;
+  private boolean isHaveUnFinishedOrder = false;
+  private View unFinishedView;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,6 +87,11 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     mFormView = (FormView) view.findViewById(R.id.taxi_form_view);
     mFormView.setOnHeightChange(this);
     mFormView.setFormListener(this);
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
     mMap.showMyLocation();
   }
 
@@ -261,7 +269,19 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   }
 
   @Override
-  public void forward(TaxiOrder order) {
+  public void onOrderCreateFail() {
+    if (isHaveUnFinishedOrder && unFinishedView == null) {
+      showGlide();
+      return;
+    }
+    sharkTopView();
+  }
+
+  @Override
+  public void onForwardNext(TaxiOrder order) {
+    if (unFinishedView != null) {
+      unFinishedView.performClick();
+    }
     gotoWaitFragment(order, false);
   }
 
@@ -294,6 +314,9 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   @Override
   public void onHiddenChanged(boolean hidden) {
     super.onHiddenChanged(hidden);
+    if (HomeDataProvider.getInstance().obtainOrderDetail() != null) {
+      showGlide();
+    }
     mPresenter.checkAddress();
   }
 
@@ -307,10 +330,14 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
         model.bounds.addAll(mMap.getLinePoints());
       }
     } else {
-      Address location = LocationProvider.getInstance().getLocation();
-      Address startAdr = FormDataProvider.getInstance().obtainStartAddress();
-      model.zoomCenter = startAdr != null ? startAdr.mAdrLatLng : location.mAdrLatLng;
-      model.zoomLevel = 16.788f;
+      try {
+        Address location = LocationProvider.getInstance().getLocation();
+        Address startAdr = FormDataProvider.getInstance().obtainStartAddress();
+        model.zoomCenter = startAdr != null ? startAdr.mAdrLatLng : location.mAdrLatLng;
+        model.zoomLevel = 16.788f;
+      } catch (Exception e) {
+
+      }
     }
   }
 
@@ -355,6 +382,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   }
 
   private void showHaveTripDialog(final OrderDetail orderDetail, final OrderStatus orderStatus) {
+    isHaveUnFinishedOrder = true;
     final SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(getContext())
         .setTitle(getString(R.string.taxi_support_dlg_title))
         .setMessage(getString(R.string.taxi_have_unfinish_order_message))
@@ -370,26 +398,30 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
           @Override
           public void onClick(View v) {
             mHaveTripDlg.dismiss();
-            final View view = LayoutInflater.from(getContext()).inflate(R.layout.taxi_have_trip_unfinish_layout, null, false);
-            TextView topInfo = view.findViewById(R.id.top_info_layout);
-            topInfo.setText(UIUtils.highlight(getString(R.string.taxi_have_trip_click_forward)));
-            view.setOnClickListener(new OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                detachFromTopContainer(view);
-                // jump
-                OrderDetail detail = HomeDataProvider.getInstance().obtainOrderDetail();
-                if (detail != null) {
-                  handleRecoveryData(detail, OrderStatus.fromStateCode(detail.getOrderStatus()), false);
-                }
-                HomeDataProvider.getInstance().saveOrderDetail(null);
-              }
-            });
-            attachToTopContainer(view);
+            showGlide();
           }
         });
     mHaveTripDlg = builder.create();
     mHaveTripDlg.show(getFragmentManager(), "");
+  }
+
+  private void showGlide() {
+    unFinishedView = LayoutInflater.from(getContext()).inflate(R.layout.taxi_have_trip_unfinish_layout, null);
+    TextView topInfo = unFinishedView.findViewById(R.id.top_info_layout);
+    topInfo.setText(UIUtils.highlight(getString(R.string.taxi_have_trip_click_forward)));
+    unFinishedView.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        detachFromTopContainer(unFinishedView);
+        // jump
+        OrderDetail detail = HomeDataProvider.getInstance().obtainOrderDetail();
+        if (detail != null) {
+          handleRecoveryData(detail, OrderStatus.fromStateCode(detail.getOrderStatus()), false);
+        }
+        unFinishedView = null;
+      }
+    });
+    attachToTopContainer(unFinishedView);
   }
 
   private void handleRecoveryData(OrderDetail order, OrderStatus status, boolean isFromHistory) {
@@ -400,7 +432,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
         break;
       }
       case RECEIVED:
-      case SETOFF:
+      case SET_OFF:
       case READY:
       case START: {
         pinViewHide(true);
@@ -411,9 +443,11 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
         forward(ServiceFragment.class, bundle);
         break;
       }
-      case COMPLAINT:
-      case AUTOPAYING:
+      case CONFIRMED_PRICE:
+      case AUTO_PAYING:
+      case AUTO_PAID:
       case CONFIRM:
+      case PAID:
       case ARRIVED: {
         pinViewHide(true);
         TaxiOrder taxiOrder = mPresenter.copyOrderDetailToTaxiOrder(order, isFromHistory);

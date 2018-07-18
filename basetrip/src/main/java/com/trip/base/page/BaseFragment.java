@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build.VERSION;
@@ -20,6 +22,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.CycleInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -197,6 +201,28 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
     }
   }
 
+  protected final void sharkTopView() {
+    ObjectAnimator transX = ObjectAnimator.ofFloat(mTopContainer, "translationX", -10f, 10f);
+//    transX.addUpdateListener(new AnimatorUpdateListener() {
+//      @Override
+//      public void onAnimationUpdate(ValueAnimator animation) {
+//        float translationX = (Float) animation.getAnimatedValue();
+//        mBottomContainer.setTranslationX(translationX);
+//      }
+//    });
+    transX.addListener(new AnimatorListenerAdapter() {
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        super.onAnimationEnd(animation);
+        mTopContainer.setTranslationX(0);
+//        mBottomContainer.setTranslationX(0);
+      }
+    });
+    transX.setInterpolator(new CycleInterpolator(2));
+    transX.setDuration(300);
+    transX.start();
+  }
+
   private void topContainerViewAnim(final View view, final boolean isRemove) {
     AnimatorSet set = new AnimatorSet();
     float alphaFrom = isRemove ? 1f : 0f;
@@ -229,8 +255,8 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
    */
   protected void reCalculateHeight() {
     if (mTopContainer.getChildCount() > 0) {
-      int viewWidth = UIUtils.getViewWidth(mBottomContainer);
-      int viewHeight = UIUtils.getViewHeight(mBottomContainer);
+      int viewWidth = UIUtils.getViewWidth(mTopContainer);
+      int viewHeight = UIUtils.getViewHeight(mTopContainer);
       mTopRect[0] = viewWidth;
       mTopRect[1] = mBusContext.getTopbar().getTopbarHeight() + viewHeight;
     } else {

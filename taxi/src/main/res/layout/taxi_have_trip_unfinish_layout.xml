@@ -1,7 +1,15 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/top_info_layout"
+<com.trip.base.widget.BaseLinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:clickable="true"
-  android:padding="10dp"
-  android:text="14sp"/>
+  app:outsideBackground="@drawable/base_common_round_rect">
+  <TextView
+    android:id="@+id/top_info_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:text="14sp"
+    android:textColor="#666666"/>
+</com.trip.base.widget.BaseLinearLayout>

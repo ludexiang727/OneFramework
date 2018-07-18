@@ -15,6 +15,7 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import com.one.map.log.Logger;
 import com.trip.taxi.R;
 import com.trip.taxi.widget.IOptionView;
 import java.util.ArrayList;
@@ -104,6 +105,11 @@ public class OptionsView extends View implements IOptionView {
   }
 
   @Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+  }
+
+  @Override
   public void onDraw(Canvas canvas) {
     super.onDraw(canvas);
     Paint bgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -145,8 +151,7 @@ public class OptionsView extends View implements IOptionView {
         mTxtPaint.setColor(mDefaultTxtColor);
       }
       float baseline = (getMeasuredHeight() - metrics.bottom + metrics.top) / 2 - metrics.top;
-      canvas
-          .drawText(mOptions.get(i), i * mMinWidth + mTxtRect[i].width() / 2, baseline, mTxtPaint);
+      canvas.drawText(mOptions.get(i), i * mMinWidth + mTxtRect[i].width() / 2, baseline, mTxtPaint);
     }
   }
 

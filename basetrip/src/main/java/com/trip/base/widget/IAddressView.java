@@ -1,5 +1,6 @@
 package com.trip.base.widget;
 
+import android.support.annotation.Keep;
 import android.view.View;
 import com.one.framework.db.DBTables.AddressTable.AddressType;
 import com.one.map.IMap.IPoiSearchListener;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Created by ludexiang on 2018/6/7.
  */
-
+@Keep
 public interface IAddressView {
 
   void setCurrentLocationCity(String city);
@@ -24,6 +25,7 @@ public interface IAddressView {
 
   void setAddressItemClick(IAddressListener clickListener);
 
+  @Keep
   interface IAddressListener {
 
     void onAddressItemClick(Address address, @AddressType int type);

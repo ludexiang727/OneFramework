@@ -13,17 +13,23 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.one.framework.MainActivity;
 import com.one.framework.app.base.AbsBaseActivity;
+import com.one.framework.app.widget.ShapeImageView;
+import com.one.framework.utils.UIThreadHandler;
 import com.one.map.location.LocationProvider;
 import com.one.map.location.LocationProvider.OnLocationChangedListener;
 import com.one.map.log.Logger;
@@ -37,6 +43,8 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class SplashActivity extends AbsBaseActivity {
+
+  private int DOWN_TIME = 10;
 
   private RelativeLayout mRootLayout;
 
@@ -55,8 +63,12 @@ public class SplashActivity extends AbsBaseActivity {
   private boolean haveDoNext = false;
 
   private ImageView mLogo;
-  private ImageView mAd;
+  private ShapeImageView mAd;
   private TextView mCountDown;
+
+  private HandlerThread mDownHandler;
+  private Handler mHandler;
+  private byte[] lock = new byte[0];
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,8 +79,48 @@ public class SplashActivity extends AbsBaseActivity {
     mRootLayout = findViewById(R.id.splash_root_layout);
 
     mLogo = (ImageView) findViewById(R.id.splash_logo);
-    mAd = (ImageView) findViewById(R.id.splash_ad);
+    mAd = (ShapeImageView) findViewById(R.id.splash_ad);
     mCountDown = (TextView) findViewById(R.id.splash_count_down);
+    mCountDown.setText(String.format(getString(R.string.splash_skip_second), DOWN_TIME));
+    mDownHandler = new HandlerThread("COUNT_DOWN");
+    mDownHandler.start();
+    mHandler = new Handler(mDownHandler.getLooper()) {
+      @Override
+      public void handleMessage(Message msg) {
+        super.handleMessage(msg);
+        switch (msg.what) {
+          case 0: {
+            UIThreadHandler.post(new Runnable() {
+              @Override
+              public void run() {
+                if (DOWN_TIME > 0) {
+                  mCountDown.setText(String.format(getString(R.string.splash_skip_second), DOWN_TIME));
+                }
+                if (DOWN_TIME == 0) {
+                  finishActivity();
+                }
+              }
+            });
+            break;
+          }
+          case 1: {
+            countDown();
+            break;
+          }
+        }
+      }
+    };
+    mCountDown.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        DOWN_TIME = -1;
+        if (mDownHandler != null) {
+          mDownHandler.quit();
+        }
+        startMainActivity();
+        finish();
+      }
+    });
   }
 
   @OnPermissionDenied({Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -99,7 +151,6 @@ public class SplashActivity extends AbsBaseActivity {
     SplashActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
   }
 
-
   @Override
   protected void onResume() {
     super.onResume();
@@ -107,6 +158,7 @@ public class SplashActivity extends AbsBaseActivity {
       isNeedResumePermission = false;
       SplashActivityPermissionsDispatcher.startLocationWithPermissionCheck(this);
     }
+    mHandler.sendEmptyMessage(1);
   }
 
   private void showHintDialog(int message) {
@@ -143,7 +195,7 @@ public class SplashActivity extends AbsBaseActivity {
       return;
     }
     haveDoNext = true;
-    finishActivity();
+//    finishActivity();
   }
 
   private void onLocationFail() {
@@ -221,21 +273,6 @@ public class SplashActivity extends AbsBaseActivity {
 
   private void startAnim() {
     AnimatorSet animator = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.splash_scale_anim);
-//    AnimatorSet animator = new AnimatorSet();
-//    ObjectAnimator alpha = ObjectAnimator.ofFloat(mRootLayout, "alpha", 1f, 0f);
-//    ObjectAnimator scaleX = ObjectAnimator.ofFloat(mRootLayout, "scaleX", 1f, 2f);
-//    ObjectAnimator scaleY = ObjectAnimator.ofFloat(mRootLayout, "scaleY", 1f, 2f);
-//    animator.setDuration(3000);
-//    alpha.addUpdateListener(new AnimatorUpdateListener() {
-//      @Override
-//      public void onAnimationUpdate(ValueAnimator animation) {
-//        float percent = (float) animation.getAnimatedFraction();
-//        Logger.e("ldx", "percent " + percent);
-//        if (percent >= 0.30f) {
-//          startMainActivity();
-//        }
-//      }
-//    });
     animator.setTarget(mRootLayout);
     animator.setInterpolator(new LinearInterpolator());
     animator.addListener(new AnimatorListenerAdapter() {
@@ -257,6 +294,25 @@ public class SplashActivity extends AbsBaseActivity {
   private void startMainActivity() {
     Intent intent = new Intent(this, MainActivity.class);
     startActivity(intent);
+  }
+
+  private void countDown() {
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+        while (DOWN_TIME > 0) {
+          synchronized (lock) {
+            try {
+              lock.wait(1000); // lock的是new Thread 而不是 mDownHandler的线程
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            }
+          }
+          mHandler.sendEmptyMessage(0);
+          DOWN_TIME--;
+        }
+      }
+    }).start();
   }
 
   @Override

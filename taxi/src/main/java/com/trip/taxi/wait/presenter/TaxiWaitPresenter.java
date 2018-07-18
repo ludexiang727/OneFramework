@@ -12,6 +12,7 @@ import com.one.framework.app.common.Status.OrderStatus;
 import com.one.framework.app.login.UserProfile;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
+import com.one.framework.provider.HomeDataProvider;
 import com.one.framework.utils.ToastUtils;
 import com.one.framework.utils.UIThreadHandler;
 import com.trip.base.common.CommonParams;
@@ -78,7 +79,7 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
               UIThreadHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                  iTaxiWaitView.countDown(mWaitTime - mCurrentTime);
+                  iTaxiWaitView.countDown(mWaitTime, mCurrentTime);
                 }
               });
               synchronized (lock) {
@@ -194,9 +195,9 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
       @Override
       public void onSuccess(TaxiOrderCancel taxiOrderCancel) {
         if (!isShowFullForm) {
-          FormDataProvider.getInstance().saveEndAddress(null);
           FormDataProvider.getInstance().clearData();
         }
+        HomeDataProvider.getInstance().saveOrderDetail(null);
         iTaxiWaitView.cancelOrderSuccess(taxiOrderCancel);
       }
 

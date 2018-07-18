@@ -4,17 +4,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.View;
 import com.one.framework.app.common.Status.OrderStatus;
 import com.one.framework.app.login.UserProfile;
+import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
+import com.one.map.location.LocationProvider;
 import com.one.map.map.BitmapDescriptorFactory;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
 import com.one.map.model.LatLng;
 import com.trip.base.common.CommonParams;
-import com.trip.base.end.IEndView;
+import com.trip.base.net.model.EvaluateTags;
 import com.trip.taxi.R;
 import com.trip.taxi.TaxiService;
 import com.trip.taxi.end.ITaxiEndView;
@@ -22,6 +25,7 @@ import com.trip.taxi.net.TaxiRequest;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.net.model.TaxiOrderDetail;
 import com.trip.taxi.net.model.TaxiOrderStatus;
+import java.util.List;
 
 /**
  * Created by ludexiang on 2018/6/21.
@@ -60,8 +64,7 @@ public class TaxiEndPresenter {
     public void onReceive(Context context, Intent intent) {
       String action = intent.getAction();
       if (CommonParams.COMMON_LOOPER_ORDER_STATUS.equalsIgnoreCase(action)) {
-        TaxiOrderStatus orderStatus = (TaxiOrderStatus) intent
-            .getSerializableExtra(CommonParams.COMMON_LOOPER_ORDER);
+        TaxiOrderStatus orderStatus = (TaxiOrderStatus) intent.getSerializableExtra(CommonParams.COMMON_LOOPER_ORDER);
         handleOrderStatus(orderStatus);
       }
     }
@@ -93,20 +96,21 @@ public class TaxiEndPresenter {
     if (mCurrentStatus == status) {
       return;
     }
-    loopOrderDetail(mOrder.getOrderId());
     mCurrentStatus = status;
     switch (mCurrentStatus) {
       case ARRIVED: {
         mView.handleArrived(mCurrentStatus);
         break;
       }
-      case AUTOPAYING:
-      case COMPLAINT: {
+      case AUTO_PAID:
+      case AUTO_PAYING:
+      case CONFIRMED_PRICE: {
         // 司机发起支付
         mView.handlePay(mCurrentStatus);
         break;
       }
       case PAID:
+      case FINISH:
       case CONFIRM: {
         // 已支付
         mView.handleFinish(taxiOrderStatus.getPayType());
@@ -130,6 +134,49 @@ public class TaxiEndPresenter {
 
           @Override
           public void onFinish(TaxiOrderDetail taxiOrderDetail) {
+
+          }
+        });
+  }
+
+  /**
+   * 获取Evaluate tags
+   */
+  public void loadEvaluateTags() {
+    TaxiRequest.taxiLoadEvaluateTags(LocationProvider.getInstance().getCityCode(),
+        new IResponseListener<EvaluateTags>() {
+          @Override
+          public void onSuccess(EvaluateTags evaluateTags) {
+            mView.evaluateTags(evaluateTags);
+          }
+
+          @Override
+          public void onFail(int errCod, EvaluateTags evaluateTags) {
+
+          }
+
+          @Override
+          public void onFinish(EvaluateTags evaluateTags) {
+
+          }
+        });
+  }
+
+  public void submitEvaluate(int rate, @Nullable List<String> tags, @NonNull String comment) {
+    TaxiRequest.taxiSubmitEvaluate(mOrder.getOrderId(), rate, tags, comment,
+        new IResponseListener<BaseObject>() {
+          @Override
+          public void onSuccess(BaseObject baseObject) {
+            mView.evaluateSuccess();
+          }
+
+          @Override
+          public void onFail(int errCod, BaseObject baseObject) {
+
+          }
+
+          @Override
+          public void onFinish(BaseObject baseObject) {
 
           }
         });

@@ -1,6 +1,7 @@
 package com.trip.taxi.widget;
 
 import android.support.annotation.IntDef;
+import android.support.annotation.Keep;
 import android.view.View;
 import com.trip.taxi.net.model.TaxiOrder;
 import java.lang.annotation.ElementType;
@@ -36,6 +37,7 @@ public interface IFormView {
 
   void setFormListener(IFormListener listener);
 
+  @Keep
   interface IOnHeightChange {
 
     /**
@@ -47,6 +49,7 @@ public interface IFormView {
 
   void setOnHeightChange(IOnHeightChange onChangeListener);
 
+  @Keep
   interface IFormListener {
 
     void onStartClick();
@@ -59,7 +62,9 @@ public interface IFormView {
 
     void onMarkClick(View view);
 
-    void forward(TaxiOrder order);
+    void onForwardNext(TaxiOrder order);
+
+    void onOrderCreateFail();
   }
 
   void showLoading(boolean isLoading);

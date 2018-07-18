@@ -6,6 +6,7 @@
   <string name="taxi_confirm_page_title">确认呼叫</string>
 
   <string name="taxi_book_time">预约时间</string>
+  <string name="taxi_book_time_empty">请选择预约时间</string>
   <string name="taxi_thx_money">调度费</string>
   <string name="taxi_thx_money_format">调度费{%1d}元</string>
   <string name="taxi_by_meter">打表来接</string>
@@ -14,7 +15,6 @@
   <string name="taxi_money_title">选择调度费</string>
   <string name="taxi_call_now_taxi">呼叫出租车</string>
   <string name="taxi_call_booking_taxi">预约出租车</string>
-  <string name="taxi_wait_driver_time">%1ds</string>
   <string name="taxi_wait_page_title">等待应答</string>
   <string name="taxi_wait_cancel_order">取消订单</string>
   <string name="taxi_wait_add_tip_success">增加小费成功</string>
@@ -24,9 +24,8 @@
   <string name="taxi_cancel_confirm_msg">确认取消订单吗？</string>
 
   <string name="taxi_support_dlg_title">提示</string>
-  <string name="taxi_none_driver_receive">暂无司机接单,是否继续等待</string>
-  <string name="taxi_none_driver_no">不</string>
-  <string name="taxi_none_driver_wait">等待</string>
+  <string name="taxi_none_driver_receive">附近暂无司机接单</string>
+  <string name="taxi_none_driver_reorder">重新发单</string>
   <string name="taxi_have_unfinish_order_message">您有一个未完成的订单，是否前往?</string>
   <string name="taxi_have_unfinish_order_go">前往</string>
   <string name="taxi_have_unfinish_order_no">不</string>
@@ -53,6 +52,7 @@
   <string name="taxi_end_charge_distant">费用疑问?</string>
   <string name="taxi_end_ticket_wipe">发票与报销</string>
   <string name="taxi_end_evaluate_service">评价本次服务</string>
+  <string name="taxi_end_evaluated">查看评价</string>
   <string name="taxi_end_fee_voucher">已优惠{%$s}元</string>
   <string name="taxi_tell_driver_pick_up">不能取消啦!已告知司机打表来接</string>
   <string name="taxi_wait_checkbox_i_know">我知道了</string>

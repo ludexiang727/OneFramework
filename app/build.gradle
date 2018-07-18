@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'maven'
+apply plugin: 'AndResGuard'
 
 android {
     compileSdkVersion 26
@@ -12,26 +13,15 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0.0"
-
         multiDexEnabled true
+        renderscriptTargetApi 26
+        renderscriptSupportModeEnabled true
 
         manifestPlaceholders = [
                 GETUI_APP_ID    : "Ai5QigOdI98efhkdDbONO9",
                 GETUI_APP_KEY   : "2wA0vOBuNy8AzzuVUutnK",
                 GETUI_APP_SECRET: "3NyrUdH3Kg6AVGxIOP5QoA"
         ]
-
-//        signingConfigs {
-//            oneTrip {
-//                storeFile file(System.properties['keyStore'])
-//                storePassword System.properties['keyStorePWd']
-//                keyAlias System.properties['keyAlias']
-//                keyPassword System.properties['keyAliasPassword']
-//            }
-//            debug {
-//                storeFile file("key/debug.keystore")
-//            }
-//        }
 
         applicationVariants.all { variant ->
             variant.outputs.all { output ->
@@ -45,33 +35,81 @@ android {
 
         ndk {
             //设置支持的SO库架构
-            abiFilters 'armeabi'
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
+
+        signingConfigs {
+            release {
+                keyAlias 'oneTrip.jks'
+                keyPassword 'Ldx475793122.'
+                storeFile file('key/oneTrip.jks')
+                storePassword 'Ldx475793122.'
+            }
+            debug {
+                storeFile file('key/debug.keystore')
+            }
         }
     }
 
-    signingConfigs {
-//        debug {
-//            storeFile file("key/debug.keystore")
-//        }
-    }
 
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'rules_android.pro', '3rd-rules.pro'
+            shrinkResources false
+            debuggable true
+        }
+
+        release {
+            minifyEnabled true
+            shrinkResources true
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'rules-android.pro', 'rules-3rd.pro', 'rules-onetrip.pro'
         }
     }
-
     packagingOptions {
         exclude 'assets/infowindow_bg.9.png'
+        exclude 'assets/map_assets/icons_6_14_1510107235.data'
     }
-
     sourceSets {
         main {
             jniLibs.srcDirs "libs"
             jni.srcDirs = []
         }
     }
+}
+
+andResGuard {
+     mappingFile = file("./resource_mapping.txt")
+//    mappingFile = null
+    use7zip = true
+    useSign = true
+    // 打开这个开关，会keep住所有资源的原始路径，只混淆资源的名字
+    keepRoot = false
+    whiteList = [
+            // for your icon
+            "R.drawable.ic_launcher"
+    ]
+    compressFilePattern = [
+            "*.png",
+            "*.jpg",
+            "*.jpeg",
+            "*.gif",
+    ]
+    sevenzip {
+        artifact = 'com.tencent.mm:SevenZip:1.2.13'
+        //path = "/usr/local/bin/7za"
+    }
+
+    /**
+     * 可选： 如果不设置则会默认覆盖assemble输出的apk
+     **/
+    // finalApkBackupPath = "${project.rootDir}/final.apk"
+
+    /**
+     * 可选: 指定v1签名时生成jar文件的摘要算法
+     * 默认值为“SHA-1”
+     **/
+    // digestalg = "SHA-256"
 }
 
 repositories {
@@ -84,15 +122,13 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
-
-    compile("com.github.hotchemi:permissionsdispatcher:3.1.0") {
+    compile('com.github.hotchemi:permissionsdispatcher:3.1.0') {
         // if you don't use android.app.Fragment you can exclude support for them
         exclude module: "support-v13"
     }
     kapt "com.github.hotchemi:permissionsdispatcher-processor:3.1.0"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.android.support:multidex:1.0.2'
-
     compile project(':taxi')
     compile project(':basetrip')
 }
