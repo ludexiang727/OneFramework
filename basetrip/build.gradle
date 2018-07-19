@@ -43,7 +43,6 @@ dependencies {
     compile project(':onemap')
     compile project(':evaluate')
     compile project(':pay')
-    compile project(':onecore')
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 

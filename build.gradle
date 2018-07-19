@@ -45,11 +45,11 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
-//        maven { url 'https://maven.google.com' }
-//        maven { url "https://github.com/artifac/OneFramework/raw/master"}
-//        maven { url "https://github.com/artifac/onemap/raw/master" }
-//        maven { url "http://mvn.gt.igexin.com/nexus/content/repositories/releases/" }
         google()
+        maven { url 'https://maven.google.com' }
+        maven { url "https://github.com/artifac/OneFramework/raw/master"}
+        maven { url "https://github.com/artifac/onemap/raw/master" }
+        maven { url "http://mvn.gt.igexin.com/nexus/content/repositories/releases/" }
     }
 }
 

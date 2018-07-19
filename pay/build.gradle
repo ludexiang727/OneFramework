@@ -4,8 +4,6 @@ apply plugin: 'kotlin-android'
 android {
     compileSdkVersion 26
 
-
-
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 26
@@ -31,10 +29,10 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:26.1.0'
     compile project(':oneframework')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
-    implementation files('libs/alipaySdk-20180601.jar')
+    compile files('libs/alipaySdk-20180601.jar')
 }
