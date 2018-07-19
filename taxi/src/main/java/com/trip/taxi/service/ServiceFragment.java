@@ -28,6 +28,7 @@ import com.one.framework.app.widget.ShapeImageView;
 import com.one.framework.app.widget.StarView;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.dialog.SupportDialogFragment;
+import com.one.framework.provider.HomeDataProvider;
 import com.one.framework.utils.TimeUtils;
 import com.one.framework.utils.UIUtils;
 import com.one.map.IMap.IRoutePlanMsgCallback;
@@ -57,6 +58,8 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   private static final int FORMAT_COLOR = Color.parseColor("#f05b48");
   private static final int UPDATE_INFO_WINDOW = 0x110;
   private static final int ONE_HOUR = 60 * 60 * 1000;
+  private static final int SELF_CANCELED = 1;
+  private static final int DRIVER_CANCELED = SELF_CANCELED << 1;
   private ServicePresenter mServicePresenter;
   private ShapeImageView mDriverHeaderIcon;
   private ImageView mDriverIM;
@@ -151,7 +154,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
             PopTabItem popTabItem = items.get(position);
             switch (popTabItem.itemType) {
               case CANCEL_ORDER: {
-                cancelOrder(false);
+                cancelOrder(SELF_CANCELED,false, getString(R.string.taxi_cancel_confirm_msg));
                 break;
               }
               case EMERGENCY_CONTACT: {
@@ -188,21 +191,31 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
    * 如果是司机取消订单则需要显示全表单
    * @param isShowFullForm
    */
-  private void cancelOrder(final boolean isShowFullForm) {
+  private void cancelOrder(final int cancelType, final boolean isShowFullForm, String message) {
     SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(
         getActivity()).setTitle(getString(R.string.taxi_wait_cancel_order))
-        .setMessage(getString(R.string.taxi_cancel_confirm_msg))
+        .setMessage(message)
         .setNegativeButton(getString(R.string.one_cancel), new OnClickListener() {
           @Override
           public void onClick(View v) {
             mCancelDialog.dismiss();
+            if (cancelType == DRIVER_CANCELED) { // 司机取消
+              FormDataProvider.getInstance().clearData();
+              HomeDataProvider.getInstance().saveOrderDetail(null);
+              finishSelf();
+            }
           }
         })
         .setPositiveButton(getString(R.string.one_confirm), new OnClickListener() {
           @Override
           public void onClick(View v) {
-            mCancelDialog.dismiss();
-            mServicePresenter.cancelOrder(isShowFullForm);
+            if (cancelType == SELF_CANCELED) {
+              mCancelDialog.dismiss();
+              mServicePresenter.cancelOrder(isShowFullForm);
+            } else {
+              HomeDataProvider.getInstance().saveOrderDetail(null);
+              finishSelf();
+            }
           }
         })
         .setPositiveButtonTextColor(Color.parseColor("#A3D2E4"));
@@ -374,6 +387,15 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
     if (mEndMarker == null) {
       mEndMarker = mMap.addMarker(end);
     }
+  }
+
+  /**
+   * 司机取消订单
+   * @param status
+   */
+  @Override
+  public void driverCancel(OrderStatus status) {
+    cancelOrder(DRIVER_CANCELED, true, getString(R.string.taxi_driver_cancel_order));
   }
 
   @Override

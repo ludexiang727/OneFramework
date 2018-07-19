@@ -116,6 +116,10 @@ public class ServicePresenter {
     }
     mCurrentStatus = state;
     switch (state) {
+      case CANCELED: {
+        mView.driverCancel(mCurrentStatus);
+        break;
+      }
       case RECEIVED: {
         mView.driverReceive(mCurrentStatus);
         break;

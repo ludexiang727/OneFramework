@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface IServiceView {
   void addDriverMarker(Address driverAdr, Address to, MarkerOption driverMarker);
+  void driverCancel(OrderStatus status);
   void driverReceive(OrderStatus status);
   void driverSetOff(OrderStatus status);
   void driverReady(OrderStatus status);
