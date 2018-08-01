@@ -218,7 +218,7 @@ public class TaxiFormPresenter {
     if (orderDetail.getCarInfo() != null) {
       int pay4PickUp = orderDetail.getCarInfo().getPay4PickUp();
       List<String> marks = orderDetail.getCarInfo().getMarks();
-      int dispatchFee = orderDetail.getCarInfo().getTip();
+      int dispatchFee = orderDetail.getCarInfo().getTip() / 100;
       int fedBack = orderDetail.getCarInfo().getFeedback();
       Evaluate orderEvaluate = orderDetail.getCarInfo().getEvaluate();
       TaxiEvaluate evaluate = null;
