@@ -17,8 +17,10 @@ public class CommonParams {
   public static final String COMMON_RECOVERY_ACTION = "INTENT_FROM_RECOVERY_ACTION";
   public static final String COMMON_RECOVERY_DATA = "recovery_data";
 
+  public static final String COMMON_CRASH_RECOVERY = "from_crash_recovery";
+
   public static class Service {
     public static final String ORDER = "order";
-    public static final String FROM_HISITORY = "form_history";
+    public static final String FROM_HISTORY = "form_history";
   }
 }

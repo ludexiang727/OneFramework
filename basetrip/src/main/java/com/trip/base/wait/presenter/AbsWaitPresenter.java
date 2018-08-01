@@ -10,6 +10,8 @@ import java.util.List;
 public abstract class AbsWaitPresenter {
   public abstract IWaitView getWaitView();
 
+  public abstract void addStartMarker();
+
   public void startCountDown() {
   }
 

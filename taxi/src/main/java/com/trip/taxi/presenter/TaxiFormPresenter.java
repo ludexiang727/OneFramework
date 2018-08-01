@@ -4,8 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.one.framework.db.DBTables.AddressTable;
 import com.one.framework.db.DBTables.AddressTable.AddressType;
+import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.model.Evaluate;
 import com.one.framework.net.model.OrderDetail;
+import com.one.framework.net.response.IResponseListener;
 import com.one.map.map.BitmapDescriptorFactory;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
@@ -13,12 +15,16 @@ import com.one.map.model.LatLng;
 import com.trip.base.provider.FormDataProvider;
 import com.trip.taxi.ITaxiView;
 import com.trip.taxi.R;
+import com.trip.taxi.net.TaxiRequest;
 import com.trip.taxi.net.model.FeeInfo;
+import com.trip.taxi.net.model.NearbyDriver;
 import com.trip.taxi.net.model.OrderDriver;
 import com.trip.taxi.net.model.TaxiEvaluate;
 import com.trip.taxi.net.model.TaxiInfo;
+import com.trip.taxi.net.model.TaxiNearbyDrivers;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.net.model.TaxiOrderDetail;
+import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,6 +66,32 @@ public class TaxiFormPresenter {
       }
     }
     return items;
+  }
+
+  /**
+   * 周边司机
+   */
+  public void taxiNearBy() {
+    Address startAdr = FormDataProvider.getInstance().obtainStartAddress();
+    if (startAdr != null) {
+      TaxiRequest.taxiNearby(startAdr.mAdrLatLng, 3,
+          new IResponseListener<TaxiNearbyDrivers>() {
+            @Override
+            public void onSuccess(TaxiNearbyDrivers drivers) {
+              mView.addNearbyMarks(addMarks(drivers));
+            }
+
+            @Override
+            public void onFail(int errCod, String message) {
+
+            }
+
+            @Override
+            public void onFinish(TaxiNearbyDrivers baseObject) {
+
+            }
+          });
+    }
   }
 
   public List<String> getMarkItems() {
@@ -131,6 +163,25 @@ public class TaxiFormPresenter {
     return markers;
   }
 
+  private List<MarkerOption> addMarks(TaxiNearbyDrivers drivers) {
+    if (drivers != null) {
+      List<NearbyDriver> nearbyDrivers = drivers.getNearbyDrivers();
+      if (nearbyDrivers != null) {
+        List<MarkerOption> options = new ArrayList<>();
+        for (NearbyDriver driver : nearbyDrivers) {
+          MarkerOption driverOption = new MarkerOption();
+          driverOption.position = new LatLng(driver.getLatitude(), driver.getLongitude());
+          driverOption.rotate = driver.getBearing();
+          driverOption.descriptor = BitmapDescriptorFactory.fromResources(mContext.getResources(), R.drawable.taxi_driver);
+          options.add(driverOption);
+        }
+        return options;
+      }
+    }
+    return null;
+
+  }
+
   public TaxiOrder copyOrderDetailToTaxiOrder(OrderDetail orderDetail, boolean isFromHistory) {
     String oid = orderDetail.getOrderId();
     long orderCreateTime = orderDetail.getOrderCreateTime();
@@ -153,14 +204,15 @@ public class TaxiFormPresenter {
       String driverId = orderDetail.getDriver().getDriverId();
       String driverName = orderDetail.getDriver().getDriverName();
       String driverIcon = orderDetail.getDriver().getDriverIcon();
-      long driverReceiverCount = orderDetail.getDriver().getDriverReceiveOrderCount();
-      float driverStar = orderDetail.getDriver().getDriverStar() != null ? orderDetail.getDriver().getDriverStar() : 4f;
+      long driverReceiverCount = orderDetail.getDriver().getDriverReceiveOrderCount() == null ? 0 : orderDetail.getDriver().getDriverReceiveOrderCount();
+      float driverStar =  orderDetail.getDriver().getDriverStar();
       String driverPhone = orderDetail.getDriver().getDriverTel();
       String driverCar = orderDetail.getDriver().getDriverCar();
       String driverCarColor = orderDetail.getDriver().getDriverCarColor();
       String driverCompany = orderDetail.getDriver().getDriverCompany();
+      String driverCarNo = orderDetail.getDriver().getDriverCarNo();
       driver = new OrderDriver(driverId, driverName, driverIcon, driverReceiverCount,
-          driverStar, driverPhone, driverCar, driverCarColor, driverCompany);
+          driverStar, driverPhone, driverCar, driverCarColor, driverCompany, driverCarNo);
     }
     TaxiInfo taxiInfo = null;
     if (orderDetail.getCarInfo() != null) {

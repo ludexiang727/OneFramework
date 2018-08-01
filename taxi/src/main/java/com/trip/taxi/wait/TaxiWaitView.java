@@ -61,8 +61,6 @@ public class TaxiWaitView implements IWaitView, View.OnClickListener {
     mCheckBox = (CheckBox) view.findViewById(R.id.taxi_wait_pick_up_checkbox);
     mCancelOrder = (RelativeLayout) view.findViewById(R.id.taxi_wait_cancel_order);
 
-    addTip(FormDataProvider.getInstance().obtainTip());
-
     mCheckBox.setChecked(FormDataProvider.getInstance().isPay4PickUp());
     addTip(FormDataProvider.getInstance().obtainTip());
     mCancelOrder.setOnClickListener(this);

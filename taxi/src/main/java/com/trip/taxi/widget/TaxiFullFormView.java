@@ -13,6 +13,11 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import com.one.framework.app.login.ILogin;
+import com.one.framework.app.login.ILogin.ILoginListener;
+import com.one.framework.app.login.Login;
+import com.one.framework.app.login.UserProfile;
 import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.TripButton;
 import com.one.framework.utils.ToastUtils;
@@ -22,6 +27,7 @@ import com.trip.base.widget.BaseLinearLayout;
 import com.trip.taxi.R;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.presenter.TaxiFullFormPresenter;
+import org.greenrobot.eventbus.EventBus;
 
 public class TaxiFullFormView extends BaseLinearLayout implements IFullFormView, View.OnClickListener {
   private TripButton mSendOrder;
@@ -275,8 +281,29 @@ public class TaxiFullFormView extends BaseLinearLayout implements IFullFormView,
     }
     int id = view.getId();
     if (id == R.id.taxi_invoke_driver) {
+      ILogin login = new Login(mContext);
+      if (!login.isLogin()) {
+        login.showLogin(ILogin.DIALOG);
+        login.setLoginListener(new ILoginListener() {
+          @Override
+          public void onLoginSuccess() {
+            EventBus.getDefault().post(true);
+            mSendOrder.performClick();
+          }
+
+          @Override
+          public void onLoginFail() {
+
+          }
+        });
+        return;
+      }
       if (mFormType == BOOK && FormDataProvider.getInstance().obtainBookingTime() <= 0) {
-        ToastUtils.toast(mContext, mContext.getString(R.string.taxi_book_time_empty));
+//        try {
+//          ToastUtils.toast(mContext, mContext.getString(R.string.taxi_book_time_empty));
+//        } catch (Exception e) {
+//        }
+        Toast.makeText(mContext, mContext.getString(R.string.taxi_book_time_empty), Toast.LENGTH_SHORT).show();
         return;
       }
       mSendOrder.setTripButtonText("");

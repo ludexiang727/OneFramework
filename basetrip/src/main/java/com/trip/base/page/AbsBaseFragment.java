@@ -12,12 +12,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow.OnDismissListener;
+import com.one.framework.app.login.UserProfile;
 import com.one.framework.app.widget.PopWindow;
 import com.one.framework.db.DBTables.AddressTable;
 import com.one.framework.db.DBTables.AddressTable.AddressType;
@@ -26,16 +26,22 @@ import com.one.framework.dialog.BottomSheetDialog.Builder;
 import com.one.framework.dialog.DataPickerDialog;
 import com.one.framework.dialog.DataPickerDialog.ISelectResultListener;
 import com.one.framework.log.Logger;
+import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.model.OrderDetail;
+import com.one.framework.net.response.IResponseListener;
 import com.one.framework.provider.HomeDataProvider;
 import com.one.framework.utils.DBUtil;
 import com.one.framework.utils.UIUtils;
 import com.one.map.IMap.IPoiSearchListener;
 import com.one.map.IMap.IRoutePlanMsgCallback;
+import com.one.map.location.LocationProvider;
 import com.one.map.model.Address;
 import com.one.map.model.LatLng;
 import com.trip.base.R;
 import com.trip.base.common.CommonParams;
+import com.trip.base.net.BaseRequest;
+import com.trip.base.net.model.NormalAddress;
+import com.trip.base.net.model.NormalAdr;
 import com.trip.base.widget.AddressViewLayout;
 import com.trip.base.widget.IAddressView;
 import com.trip.base.widget.IAddressView.IAddressListener;
@@ -93,9 +99,50 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN)
-  public void event(OrderDetail orderDetail) {
-    handleReceiveHistory(orderDetail);
+  public void event(Object obj) { // 历史行程 和 登录成功的时候会 toggle EventBus
+    Logger.e("ldx", "event bus >>> obj " + obj);
+    if (obj instanceof  OrderDetail) {
+      OrderDetail orderDetail = (OrderDetail) obj;
+      handleReceiveHistory(orderDetail);
+    } else if (obj instanceof Boolean) {
+      String token = UserProfile.getInstance(getContext()).getTokenValue();
+      String cityCode = LocationProvider.getInstance().getCityCode();
+      if (!TextUtils.isEmpty(token)) {
+        BaseRequest.baseNormalQuery(token, cityCode, new IResponseListener<NormalAddress>() {
+          @Override
+          public void onSuccess(NormalAddress normalAddress) {
+            if (normalAddress != null) {
+              List<NormalAdr> normalAdrs = normalAddress.getAddress();
+              for (NormalAdr normalAdr : normalAdrs) {
+                Address address = new Address();
+                address.mCityCode = normalAdr.getCityCode();
+                address.mAdrDisplayName = normalAdr.getPoiName();
+                address.mAdrFullName = normalAdr.getAddressDetail();
+                address.mAdrLatLng = new LatLng(Double.parseDouble(normalAdr.getLatitude()),
+                    Double.parseDouble(normalAdr.getLongitude()));
+                if (normalAdr.getTag() == 1) {
+                  onAddressItemClick(address, AddressTable.HOME, false);
+                } else if (normalAdr.getTag() == 2) {
+                  onAddressItemClick(address, AddressTable.COMPANY, false);
+                }
+              }
+            }
+          }
+
+          @Override
+          public void onFail(int errCod, String message) {
+
+          }
+
+          @Override
+          public void onFinish(NormalAddress normalAddress) {
+
+          }
+        });
+      }
+    }
   }
+
 
   protected void handleReceiveLocAddress(Intent intent) {
     // do noting
@@ -183,8 +230,7 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
     mPopStack.push(popWindow);
   }
 
-  @Override
-  public void onAddressItemClick(Address address, int type) {
+  public void onAddressItemClick(Address address, int type, boolean isUpdate) {
     if (mPopStack != null && !mPopStack.isEmpty()) {
       mPopStack.pop().dissmiss();
     }
@@ -195,6 +241,30 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
       }
     }
     if (type == HOME || type == AddressTable.COMPANY) {
+      String token = UserProfile.getInstance(getContext()).getTokenValue();
+      String cityCode = LocationProvider.getInstance().getCityCode();
+
+      if (isUpdate) {
+        BaseRequest.baseNormalUpdate(token, cityCode, address.mAdrLatLng.latitude,
+            address.mAdrLatLng.longitude, type == HOME ? 1 : 2, address.mAdrDisplayName,
+            address.mAdrFullName,
+            new IResponseListener<BaseObject>() {
+              @Override
+              public void onSuccess(BaseObject baseObject) {
+                Logger.e("ldx", "update Normal Address Success ");
+              }
+
+              @Override
+              public void onFail(int errCod, String message) {
+                Logger.e("ldx", "update Normal Address Fail ");
+              }
+
+              @Override
+              public void onFinish(BaseObject baseObject) {
+
+              }
+            });
+      }
       List<Address> homeOrCompanyLists = DBUtil.queryDataFromAddress(getContext(), type);
       if (homeOrCompanyLists != null && !homeOrCompanyLists.isEmpty()) {
         int updateRow = DBUtil.updateDataToAddress(getContext(), address, type);
@@ -202,6 +272,11 @@ public abstract class AbsBaseFragment extends BaseFragment implements IRoutePlan
       }
     }
     DBUtil.insertDataToAddress(getContext(), address, type);
+  }
+
+  @Override
+  public void onAddressItemClick(Address address, int type) {
+    onAddressItemClick(address, type, true);
   }
 
   @Override

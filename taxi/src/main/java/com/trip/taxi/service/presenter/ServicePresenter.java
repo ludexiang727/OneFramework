@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.widget.Toast;
 import com.one.framework.app.common.Status.OrderStatus;
 import com.one.framework.app.login.UserProfile;
 import com.one.framework.net.response.IResponseListener;
 import com.one.framework.provider.HomeDataProvider;
+import com.one.framework.utils.ToastUtils;
 import com.one.map.map.BitmapDescriptorFactory;
 import com.one.map.map.MarkerOption;
 import com.one.map.model.Address;
@@ -59,7 +61,7 @@ public class ServicePresenter {
       String action = intent.getAction();
       if (CommonParams.COMMON_LOOPER_ORDER_STATUS.equalsIgnoreCase(action)) {
         TaxiOrderStatus orderStatus = (TaxiOrderStatus) intent.getSerializableExtra(CommonParams.COMMON_LOOPER_ORDER);
-        handleOrderStatus(OrderStatus.fromStateCode(orderStatus.getStatus()));
+        handleOrderStatus(orderStatus);
       } else if (CommonParams.COMMON_LOOPER_DRIVER_LOCATION.equals(action)) {
         TaxiOrderDriverLocation driverLocation = (TaxiOrderDriverLocation) intent.getSerializableExtra(
             CommonParams.COMMON_LOOPER_DRIVER);
@@ -110,7 +112,8 @@ public class ServicePresenter {
     }
   }
 
-  private void handleOrderStatus(OrderStatus state) {
+  private void handleOrderStatus(TaxiOrderStatus orderStatus) {
+    OrderStatus state = OrderStatus.fromStateCode(orderStatus.getStatus());
     if (mCurrentStatus == state) {
       return;
     }
@@ -131,7 +134,7 @@ public class ServicePresenter {
       }
       case READY: {
         // 司机已到达
-        mView.driverReady(mCurrentStatus);
+        mView.driverReady(mCurrentStatus, orderStatus.getDriverReadyTime());
         break;
       }
       case START: {
@@ -163,7 +166,12 @@ public class ServicePresenter {
           }
 
           @Override
-          public void onFail(int errCode, TaxiOrderCancel taxiOrderCancel) {
+          public void onFail(int errCode, String message) {
+//            try {
+//              ToastUtils.toast(mContext, message);
+//            } catch (Exception e) {
+//            }
+            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
           }
 
           @Override

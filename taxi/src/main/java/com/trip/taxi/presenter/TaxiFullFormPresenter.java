@@ -1,12 +1,15 @@
 package com.trip.taxi.presenter;
 
 import android.content.Context;
+import android.widget.Toast;
 import com.one.framework.app.login.ILogin;
 import com.one.framework.app.login.ILogin.LoginType;
 import com.one.framework.app.login.UserProfile;
 import com.one.framework.app.login.UserProfile.User;
 import com.one.framework.net.NetConstant;
 import com.one.framework.net.response.IResponseListener;
+import com.one.framework.utils.OneBaseToast;
+import com.one.framework.utils.ToastUtils;
 import com.one.map.log.Logger;
 import com.one.map.model.Address;
 import com.trip.base.provider.FormDataProvider;
@@ -46,7 +49,7 @@ public class TaxiFullFormPresenter {
           }
 
           @Override
-          public void onFail(int errCode, TaxiEstimatePrice taxiEstimatePrice) {
+          public void onFail(int errCode, String message) {
             mFullFormView.showLoading(false);
             if (errCode == NetConstant.ADDRESS_EMPTY) {
 
@@ -67,11 +70,6 @@ public class TaxiFullFormPresenter {
    * @param isTick 是否达标来接
    */
   public void taxiCreateOrder(String marks, boolean isTick, final int type) {
-    if (!UserProfile.getInstance(mContext).isLogin()) {
-      UserProfile.getInstance(mContext).getLoginInterface().showLogin(ILogin.DIALOG);
-      return;
-    }
-
     Address start = FormDataProvider.getInstance().obtainStartAddress();
     Address end = FormDataProvider.getInstance().obtainEndAddress();
     long bookingTime = FormDataProvider.getInstance().obtainBookingTime();
@@ -84,10 +82,17 @@ public class TaxiFullFormPresenter {
           }
 
           @Override
-          public void onFail(int errCode, TaxiOrder taxiOrder) {
+          public void onFail(int errCode, String message) {
             mFullFormView.setFormType(type);
-            // unFinished order
-            mFullFormView.createOrderFail();
+            if (errCode == 200013) {
+              // unFinished order
+              mFullFormView.createOrderFail();
+            }
+//            try {
+//              ToastUtils.toast(mContext, message);
+//            } catch (Exception e) {
+//            }
+            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
           }
 
           @Override

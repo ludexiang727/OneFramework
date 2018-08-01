@@ -61,7 +61,7 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
   protected int[] mTopRect = new int[2];
   protected int[] mBottomRect = new int[2];
 
-  private static boolean isFirstLayoutDone = false;
+  protected static boolean isFirstLayoutDone = false;
 
   private ImageView mRefreshMapView;
 
@@ -144,8 +144,8 @@ public abstract class BaseFragment extends BizEntranceFragment implements IMarke
         switch (msg.what) {
           case REFRESH_MAP: {
             if (!isFirstLayoutDone) {
-              isFirstLayoutDone = true;
               toggleMapView();
+              isFirstLayoutDone = true;
             }
             reCalculateHeight();
             thread.quit();

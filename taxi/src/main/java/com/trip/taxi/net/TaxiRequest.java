@@ -8,8 +8,10 @@ import com.one.framework.net.NetConstant;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
 import com.one.map.model.Address;
+import com.one.map.model.LatLng;
 import com.trip.base.net.model.EvaluateTags;
 import com.trip.taxi.net.model.TaxiEstimatePrice;
+import com.trip.taxi.net.model.TaxiNearbyDrivers;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.net.model.TaxiOrderCancel;
 import com.trip.taxi.net.model.TaxiOrderDetail;
@@ -32,6 +34,10 @@ public class TaxiRequest {
   private static final String TAXI_REPORT_LOCATION = "/api/taxi/trip/report";
   private static final String TAXI_ORDER_STATUS = "/api/taxi/trip/status";
   private static final String TAXI_ORDER_INFO_DETAIL = "/api/taxi/trip/detail";
+  /**
+   * 获取周边司机
+   */
+  private static final String TAXI_NEARBY_OF_DRIVER = "/api/taxi/nearby/drivers";
 
   /**
    * 获取司机位置
@@ -42,6 +48,17 @@ public class TaxiRequest {
   private static final String TAXI_SUBMIT_EVALUATE = "/api/taxi/trip/taxi/feedback";
 
   private static int requestCode;
+
+  /**
+   * 获取周边司机
+   */
+  public static void taxiNearby(LatLng center, int bizType, IResponseListener<TaxiNearbyDrivers> listener) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("longitude", center.longitude);
+    params.put("latitude", center.latitude);
+    params.put("bizType", bizType);
+    requestCode = Api.request(TAXI_NEARBY_OF_DRIVER, params, listener, TaxiNearbyDrivers.class);
+  }
 
   /**
    *
@@ -79,7 +96,7 @@ public class TaxiRequest {
     }
 
     if (tip > 0) {
-      params.put("tip", tip);
+      params.put("tip", tip * 100);
     }
 
     params.put("isTick", isTick);
@@ -120,7 +137,7 @@ public class TaxiRequest {
     params.put("payForPickUp", isTick ? 1 : 0);
 
     params.put("riderTags", marks);
-    params.put("thanksFee", tip);
+    params.put("thanksFee", tip * 100);
     params.put("type", type);
 
     requestCode = Api.request(TAXI_ORDER_CREATE_URL, params, listener, TaxiOrder.class);
@@ -135,7 +152,7 @@ public class TaxiRequest {
   public static void taxiAddTip(String oid, int tip, IResponseListener<BaseObject> listener) {
     HashMap<String, Object> params = new HashMap<String, Object>();
     params.put("orderId", oid);
-    params.put("thanksFee", tip);
+    params.put("thanksFee", tip * 100);
     requestCode = Api.request(TAXI_WAIT_ADD_TIP, params, listener, BaseObject.class);
   }
 

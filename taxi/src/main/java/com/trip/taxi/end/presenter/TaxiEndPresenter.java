@@ -7,10 +7,12 @@ import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.widget.Toast;
 import com.one.framework.app.common.Status.OrderStatus;
 import com.one.framework.app.login.UserProfile;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
+import com.one.framework.utils.ToastUtils;
 import com.one.map.location.LocationProvider;
 import com.one.map.map.BitmapDescriptorFactory;
 import com.one.map.map.MarkerOption;
@@ -128,13 +130,17 @@ public class TaxiEndPresenter {
           }
 
           @Override
-          public void onFail(int errCode, TaxiOrderDetail taxiOrderDetail) {
-
+          public void onFail(int errCode, String errMsg) {
+//            try {
+//              ToastUtils.toast(mContext, errMsg);
+//            } catch (Exception e) {
+//            }
+            Toast.makeText(mContext, errMsg, Toast.LENGTH_SHORT).show();
           }
 
           @Override
           public void onFinish(TaxiOrderDetail taxiOrderDetail) {
-
+            mView.orderDetailFail();
           }
         });
   }
@@ -151,8 +157,12 @@ public class TaxiEndPresenter {
           }
 
           @Override
-          public void onFail(int errCod, EvaluateTags evaluateTags) {
-
+          public void onFail(int errCod, String message) {
+//            try {
+//              ToastUtils.toast(mContext, message);
+//            } catch (Exception e) {
+//            }
+            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
           }
 
           @Override
@@ -171,8 +181,12 @@ public class TaxiEndPresenter {
           }
 
           @Override
-          public void onFail(int errCod, BaseObject baseObject) {
-
+          public void onFail(int errCod, String errMsg) {
+//            try {
+//              ToastUtils.toast(mContext, errMsg);
+//            } catch (Exception e) {
+//            }
+            Toast.makeText(mContext, errMsg, Toast.LENGTH_SHORT).show();
           }
 
           @Override

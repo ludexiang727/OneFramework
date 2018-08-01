@@ -22,6 +22,15 @@
 -keep public class com.android.vending.licensing.ILicensingService
 -dontnote com.android.vending.licensing.ILicensingService
 
+-dontwarn android.support.v4.**
+-dontwarn **CompatHoneycomb
+-dontwarn **CompatHoneycombMR2
+-dontwarn **CompatCreatorHoneycombMR2
+-keep interface android.support.v4.app.** { *; }
+-keep class android.support.v4.** { *; }
+-keep public class * extends android.support.v4.**
+-keep public class * extends android.app.Fragment
+
 -keepclasseswithmembernames class * {
     native <methods>;
 }
@@ -101,6 +110,7 @@
 -dontwarn android.support.**
 -keep class android.support.** { *; }
 -keep interface android.support.** { *; }
+-keep class android.** { *; }
 
 # Android
 -dontwarn com.android.**

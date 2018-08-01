@@ -35,6 +35,7 @@
       android:background="@drawable/taxi_service_driver_options_selector"
       android:clickable="true"
       android:scaleType="center"
+      android:visibility="invisible"
       android:src="@drawable/taxi_service_driver_im"/>
 
     <ImageView

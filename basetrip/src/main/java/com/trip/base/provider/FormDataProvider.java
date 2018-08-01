@@ -1,5 +1,6 @@
 package com.trip.base.provider;
 
+import com.one.framework.dialog.DataPickerDialog;
 import com.one.map.log.Logger;
 import com.one.map.model.Address;
 import java.util.ArrayList;
@@ -56,6 +57,10 @@ public class FormDataProvider {
     return mTip;
   }
 
+  /**
+   * @param tip 前端小费单位是元
+   * 传给后端是分
+   */
   public void saveTip(int tip) {
     mTip = tip;
   }
@@ -103,6 +108,7 @@ public class FormDataProvider {
     mBookingTime = 0;
     mTip = 0;
     mPay4PickUp = false;
+    DataPickerDialog.reset();
     mMarks.clear();
   }
 }

@@ -5,6 +5,7 @@ import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,18 +19,23 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.one.framework.app.common.Status.OrderStatus;
 import com.one.framework.app.pop.PopUpService;
 import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.ShapeImageView;
 import com.one.framework.app.widget.StarView;
 import com.one.framework.app.widget.TripButton;
+import com.one.framework.dialog.SupportDialogFragment;
 import com.one.framework.provider.HomeDataProvider;
+import com.one.framework.utils.SystemUtils;
+import com.one.map.log.Logger;
 import com.one.map.model.BestViewModel;
 import com.one.map.model.LatLng;
 import com.trip.base.common.CommonParams.Service;
@@ -41,6 +47,7 @@ import com.trip.taxi.net.model.OrderDriver;
 import com.trip.taxi.net.model.TaxiEvaluate;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.net.model.TaxiOrderDetail;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +69,7 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
   private PopUpService mPopService;
   private OrderStatus mCurrentStatus;
   private boolean isAddedMark = false;
+
 
   private EditText mInputMoney;
   private TripButton mEndPay;
@@ -106,7 +114,7 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
     Bundle bundle = getArguments();
     if (bundle != null) {
       mTaxiOrder = (TaxiOrder) bundle.getSerializable(Service.ORDER);
-      isFromHistory = bundle.getBoolean(Service.FROM_HISITORY);
+      isFromHistory = bundle.getBoolean(Service.FROM_HISTORY);
       TaxiOrderDetail taxiOrderDetail = mTaxiOrder.getOrderInfo();
       if (taxiOrderDetail != null && taxiOrderDetail.getTaxiInfo() != null)
       isEvaluated = taxiOrderDetail.getTaxiInfo().getTaxiFeedBack() == 1;
@@ -196,9 +204,13 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
 
   private void updateDriverCard() {
     OrderDriver driver = mTaxiOrder.getOrderInfo().getDriver();
-    mDriverHeaderIcon.loadImageByUrl(null, driver.getDriverIcon(), "");
-    mDriverName.setText(driver.getDriverName());
-    mDriverStarView.setLevel((int) driver.getDriverStar());
+    if (driver != null) {
+      mDriverHeaderIcon.loadImageByUrl(null, driver.getDriverIcon(), "default");
+      mDriverName.setText(driver.getDriverName());
+      mDriverCompany.setText(driver.getDriverCompany());
+      mDriverCarNo.setText(driver.getDriverCarNo());
+      mDriverStarView.setLevel((int) driver.getDriverStar());
+    }
   }
 
   @Override
@@ -207,13 +219,25 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
   }
 
   @Override
+  public void onResume() {
+    super.onResume();
+    if (!isSelfPay) {
+      mPayLoading.setVisibility(View.GONE);
+      mGoPay.setTripButtonText(R.string.taxi_end_fee_go_pay);
+    }
+  }
+
+  @Override
   public void handlePay(OrderStatus status) {
+    toggleMapView();
     switch (status) {
       case AUTO_PAID: //
       case AUTO_PAYING:
       case CONFIRMED_PRICE: {
         // 司机发起支付
         mPayLayout.setVisibility(View.VISIBLE);
+        mLoading.showDlg();
+        mPayHandler.sendEmptyMessage(PAY_INFO_STATUS);
         break;
       }
     }
@@ -243,7 +267,7 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
       } else {
         mOnLineLayout.setVisibility(View.VISIBLE);
         mCashier.setVisibility(View.GONE);
-        mPayMoney.setText(feeInfo.getActualPayMoney() / 100);
+        mPayMoney.setText(String.format("%.2f", feeInfo.getActualPayMoney() * 1f / 100));
       }
       mRightOutSet.setTarget(mConfirmLayout);
       mLeftInSet.setTarget(mFinishedLayout);
@@ -308,9 +332,19 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
         mEvaluate.onEvaluated(star, evaluateTag, content);
       }
     } else if (id == R.id.taxi_end_pay) {
-      isSelfPay = true;
-      pay(mEndPay, mEndLoading);
-    } else if (id == R.id.taxi_end_go_pay) {
+      String money = mInputMoney.getText().toString();
+      if (TextUtils.isEmpty(money)) {
+        Toast.makeText(getContext(), getString(R.string.taxi_input_money_empty), Toast.LENGTH_SHORT).show();
+        return;
+      }
+      float input = Float.parseFloat(money);
+      if (input > 0) {
+        isSelfPay = true;
+        pay(mEndPay, mEndLoading);
+      } else {
+        Toast.makeText(getContext(), getString(R.string.taxi_input_money_small_zero), Toast.LENGTH_SHORT).show();
+      }
+    } else if (id == R.id.taxi_end_go_pay) { // 司机发起支付
       isSelfPay = false;
       pay(mGoPay, mPayLoading);
     }
@@ -318,10 +352,23 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
 
   @Override
   public void handlePayInfo(TaxiOrderDetail orderDetail) {
-    feeInfo = orderDetail.getFeeInfo();
-    if (feeInfo != null) {
-      mEndTotalFee.setText(String.format(getString(R.string.taxi_end_pay_money), String.valueOf(feeInfo.getTotalMoney() / 100)));
-      mNeedPayFee.setText(String.valueOf(feeInfo.getActualPayMoney() / 100));
+    mLoading.dismissDlg();
+    if (isAdded()) {
+      feeInfo = orderDetail.getFeeInfo();
+      Logger.e("ldx", "feeInfo >>>> " + feeInfo);
+      if (feeInfo != null) {
+        float payMoney = feeInfo.getTotalMoney() * 1f / 100;
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        mEndTotalFee.setText(String.format(getString(R.string.taxi_end_pay_money), decimalFormat.format(payMoney)));
+        mNeedPayFee.setText(decimalFormat.format(payMoney));
+      }
+    }
+  }
+
+  @Override
+  public void orderDetailFail() {
+    if (mLoading != null && mLoading.isShowing()) {
+      mLoading.dismissDlg();
     }
   }
 
@@ -331,11 +378,47 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
    * @param loading
    */
   private void pay(TripButton tripButton, LoadingView loading) {
-    tripButton.setTripButtonText("");
-    loading.setVisibility(View.VISIBLE);
-    final String oid = mTaxiOrder.getOrderId();
+    // 目前只有微信支付
+    boolean wxInstall = true;
+    if (!SystemUtils.isAppInstalled(getContext(), "com.tencent.mm")) { // 校验微信是否支付
+      wxInstall = false;
+    }
+
+    boolean zfbInstall = true;
+    if (!SystemUtils.checkAliPayInstalled(getContext()) || true) { // 暂时先屏蔽支付宝
+      zfbInstall = false;
+    }
+
+    boolean flag = wxInstall | zfbInstall;
+
+    if (flag) {
+      tripButton.setTripButtonText("");
+      loading.setVisibility(View.VISIBLE);
+      final String oid = mTaxiOrder.getOrderId();
 //    payList(oid, feeInfo.getUnPayMoney() / 100);
-    payInfo(oid, feeInfo.getUnPayMoney() / 100);
+      payInfo(oid, feeInfo.getUnPayMoney() / 100);
+    } else {
+      if (!wxInstall) {
+        showUnInstallDlg(getString(R.string.taxi_payment_wechat));
+      } else {
+        showUnInstallDlg(getString(R.string.taxi_payment_zfb));
+      }
+    }
+  }
+
+  private void showUnInstallDlg(String payApp) {
+    final SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(getContext())
+        .setTitle(getString(R.string.taxi_support_dlg_title))
+        .setMessage(String.format(getString(R.string.taxi_uninstall_pay_app), payApp, payApp))
+        .setPositiveButton(getString(R.string.taxi_wait_checkbox_i_know), new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            mPayDlg.dismiss();
+          }
+        })
+        .setPositiveButtonTextColor(Color.parseColor("#A3D2E4"));
+    mPayDlg = builder.create();
+    mPayDlg.show(getFragmentManager(), "");
   }
 
   @Override
@@ -348,6 +431,12 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
   }
 
   class EditWatch implements TextWatcher {
+    private int digits = 2;
+
+    public EditWatch setDigits(int d) {
+      digits = d;
+      return this;
+    }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -356,7 +445,38 @@ public class TaxiEndFragment extends EndFragment implements View.OnClickListener
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-      mConfirmPayFee = String.format(getString(R.string.taxi_end_pay_confirm), s);
+
+      //删除“.”后面超过2位后的数据
+      if (s.toString().contains(".")) {
+        if (s.length() - 1 - s.toString().indexOf(".") > digits) {
+          s = s.toString().subSequence(0,
+              s.toString().indexOf(".") + digits+  1);
+          mInputMoney.setText(s);
+          mInputMoney.setSelection(s.length()); //光标移到最后
+        }
+      }
+      //如果"."在起始位置,则起始位置自动补0
+      if (s.toString().trim().substring(0).equals(".")) {
+        s = "0" + s;
+        mInputMoney.setText(s);
+        mInputMoney.setSelection(2);
+      }
+
+      //如果起始位置为0,且第二位跟的不是".",则无法后续输入
+      if (s.toString().startsWith("0")
+          && s.toString().trim().length() > 1) {
+        if (!s.toString().substring(1, 2).equals(".")) {
+          mInputMoney.setText(s.subSequence(0, 1));
+          mInputMoney.setSelection(1);
+          return;
+        }
+      }
+
+      if (!TextUtils.isEmpty(mInputMoney.getText())) {
+        mConfirmPayFee = String.format(getString(R.string.taxi_end_pay_confirm), mInputMoney.getText());
+      } else {
+        mConfirmPayFee = getString(R.string.taxi_end_pay_options);
+      }
       mEndPay.setTripButtonText(mConfirmPayFee);
     }
 

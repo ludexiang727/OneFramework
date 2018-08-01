@@ -11,6 +11,7 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 import com.one.framework.MainActivity;
 import com.one.framework.app.base.AbsBaseActivity;
 import com.one.framework.app.widget.ShapeImageView;
+import com.one.framework.dialog.SupportDialogFragment;
 import com.one.framework.utils.UIThreadHandler;
 import com.one.map.location.LocationProvider;
 import com.one.map.location.LocationProvider.OnLocationChangedListener;
@@ -57,7 +59,8 @@ public class SplashActivity extends AbsBaseActivity {
 
   private boolean isNeedResumePermission;
   private boolean requestGettingOperationConfig = false;
-  private AlertDialog mAlertDialog, mPermissionDialog, errorCodeDialog;
+  private AlertDialog mAlertDialog, errorCodeDialog;
+  private SupportDialogFragment mPermissionDialog;
   private final int showErrorTimes = 5;
   private volatile int errorCount = 0;
   private boolean haveDoNext = false;
@@ -162,7 +165,7 @@ public class SplashActivity extends AbsBaseActivity {
   }
 
   private void showHintDialog(int message) {
-    if (mPermissionDialog == null || !mPermissionDialog.isShowing()) {
+    if (mPermissionDialog == null || !mPermissionDialog.isHidden()) {
       showHintDialog(message, new DialogClickListener() {
         @Override
         public void onClickOk() {
@@ -244,26 +247,27 @@ public class SplashActivity extends AbsBaseActivity {
     LocationProvider.getInstance().removeLocationChangedListener(locationChangedListener);
     LocationProvider.getInstance().stop();
 
-    AlertDialog.Builder builder = new AlertDialog.Builder(this,
-        R.style.Theme_AppCompat_Light_Dialog_Alert);
-    mPermissionDialog = builder.setMessage(message)
-        .setPositiveButton(android.R.string.ok, new OnClickListener() {
+    SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(this)
+        .setTitle("")
+        .setMessage(getString(message))
+        .setPositiveButton(getString(android.R.string.cancel), new View.OnClickListener() {
           @Override
-          public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
-            dialogClickListener.onClickOk();
-          }
-        }).setNegativeButton(android.R.string.cancel, new OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
+          public void onClick(View v) {
+            mPermissionDialog.dismiss();
             dialogClickListener.onClickCancel();
           }
-
-        }).create();
-    mPermissionDialog.setCanceledOnTouchOutside(false);
+        })
+        .setPositiveButtonTextColor(Color.parseColor("#A3D2E4"))
+        .setNegativeButton(getString(android.R.string.ok), new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            mPermissionDialog.dismiss();
+            dialogClickListener.onClickOk();
+          }
+        });
+    mPermissionDialog = builder.create();
     mPermissionDialog.setCancelable(false);
-    mPermissionDialog.show();
+    mPermissionDialog.show(getSupportFragmentManager(), "");
     requestGettingOperationConfig = false;
   }
 

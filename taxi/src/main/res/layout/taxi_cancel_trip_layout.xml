@@ -1,0 +1,32 @@
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginBottom="6dp"
+  android:layout_marginLeft="10dp"
+  android:layout_marginRight="10dp"
+  android:layout_gravity="bottom"
+  android:orientation="vertical">
+
+  <include
+    android:id="@+id/taxi_cancel_driver_card"
+    layout="@layout/taxi_driver_view_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="0.5dp"
+    android:background="#e3e3e3"/>
+
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:textSize="16sp"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    android:background="#fff"
+    android:text="@string/taxi_cancel_trip"/>
+
+</LinearLayout>

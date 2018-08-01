@@ -15,7 +15,7 @@ public interface IServiceView {
   void driverCancel(OrderStatus status);
   void driverReceive(OrderStatus status);
   void driverSetOff(OrderStatus status);
-  void driverReady(OrderStatus status);
+  void driverReady(OrderStatus status, long driveReadyTime);
   void driverStart(OrderStatus status);
   void driverEnd(OrderStatus status);
   void addMarks(MarkerOption start, MarkerOption end);

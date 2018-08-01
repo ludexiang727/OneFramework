@@ -11,5 +11,6 @@ import java.util.List;
 public interface ITaxiView {
   void moveMapToStartAddress(Address address);
   void addMarks(List<MarkerOption> options);
+  void addNearbyMarks(List<MarkerOption> options);
   void showFullForm();
 }

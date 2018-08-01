@@ -75,7 +75,6 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   private Marker mEndMarker;
   private boolean infoWindowShowing;
   private long currentTime;
-  private long backgroundSystemTime;// 后台系统时间
   private long interval;
   private SupportDialogFragment mCancelDialog;
   private View mBannerView;
@@ -84,6 +83,8 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   private int mBestViewMargin;
   private boolean isFromHistory = false;
   private PopUpService mPopService;
+
+  private long mDriverReadyTime;
 
   private Handler mHandler = new Handler(Looper.getMainLooper()) {
     @Override
@@ -113,7 +114,7 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
 
     if (bundle != null) {
       mTaxiOrder = (TaxiOrder) bundle.getSerializable(Service.ORDER);
-      isFromHistory = bundle.getBoolean(Service.FROM_HISITORY);
+      isFromHistory = bundle.getBoolean(Service.FROM_HISTORY);
     }
     mMap.removeDriverLine();
     mMap.stopRadarAnim();
@@ -311,15 +312,17 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
     mHandler.sendMessageDelayed(message, currentTime == 0 ? 0 : 1000);
   }
 
+  /**
+   * 司机等待时间
+   * @return
+   */
   private CharSequence createInfoWindowTime() {
     if (currentTime == 0) {
       currentTime = System.currentTimeMillis();
-      // 后台系统时间
-      backgroundSystemTime = mTaxiOrder.getCurrentServerTime();
     } else {
       interval += 1000;
     }
-    long waitTime = backgroundSystemTime - currentTime + interval;
+    long waitTime = currentTime - mDriverReadyTime + interval;
     String formatTime = TimeUtils.longToString(waitTime, waitTime > ONE_HOUR ? "HH:mm:ss" : "mm:ss");
     String time = String.format(getContext().getString(R.string.taxi_service_driver_wait_time), formatTime);
     return UIUtils.highlight(time, FORMAT_COLOR);
@@ -361,10 +364,13 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
 
   private void updateDriverCard() {
     OrderDriver driver = mTaxiOrder.getOrderInfo().getDriver();
-    mDriverHeaderIcon.loadImageByUrl(null, driver.getDriverIcon(), "");
-    mDriverName.setText(driver.getDriverName());
-    mDriverCompany.setText(driver.getDriverCompany());
-    mDriverStarView.setLevel((int) driver.getDriverStar());
+    if (driver != null) {
+      mDriverHeaderIcon.loadImageByUrl(null, driver.getDriverIcon(), "default");
+      mDriverName.setText(driver.getDriverName());
+      mDriverCompany.setText(driver.getDriverCompany());
+      mDriverCarNo.setText(driver.getDriverCarNo());
+      mDriverStarView.setLevel((int) driver.getDriverStar());
+    }
   }
 
   @Override
@@ -409,7 +415,8 @@ public class ServiceFragment extends BaseFragment implements IServiceView, IRout
   }
 
   @Override
-  public void driverReady(OrderStatus status) {
+  public void driverReady(OrderStatus status, long driverReadyTime) {
+    mDriverReadyTime = driverReadyTime;
     serviceCommon(status);
     toggleMapView();
     mTopbarView.setTitle(R.string.taxi_service_driver_arrived);

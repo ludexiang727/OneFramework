@@ -8,7 +8,7 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 public class WxPay {
-  private static final String APP_ID = "wx822295c9333f22d8"; // 暂时先用
+  private static final String APP_ID = "wx7904d88e59a04871";
   private Context mContext;
   private IWXAPI mWxApi;
 

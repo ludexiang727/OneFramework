@@ -20,7 +20,6 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import com.one.framework.api.annotation.ServiceProvider;
 import com.one.framework.app.common.Status.OrderStatus;
-import com.one.framework.app.login.UserProfile;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
 import com.one.framework.app.widget.wheelview.WheelView;
@@ -29,16 +28,21 @@ import com.one.framework.dialog.DataPickerDialog.ISelectResultListener;
 import com.one.framework.dialog.SupportDialogFragment;
 import com.one.framework.net.model.OrderDetail;
 import com.one.framework.provider.HomeDataProvider;
+import com.one.framework.utils.TimeUtils;
 import com.one.framework.utils.UIThreadHandler;
 import com.one.framework.utils.UIUtils;
 import com.one.map.location.LocationProvider;
+import com.one.map.log.Logger;
 import com.one.map.map.MarkerOption;
+import com.one.map.map.element.Marker;
 import com.one.map.model.Address;
 import com.one.map.model.BestViewModel;
+import com.one.map.model.LatLng;
 import com.trip.base.common.CommonParams;
 import com.trip.base.page.AbsBaseFragment;
 import com.trip.base.page.AbsBaseFragment.IChooseResultListener;
 import com.trip.base.provider.FormDataProvider;
+import com.trip.taxi.cancel.TaxiCancelFragment;
 import com.trip.taxi.end.TaxiEndFragment;
 import com.trip.taxi.net.model.TaxiOrder;
 import com.trip.taxi.presenter.TaxiFormPresenter;
@@ -66,6 +70,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   private String mUserCustomTag;
   private boolean isHaveUnFinishedOrder = false;
   private View unFinishedView;
+  private List<Marker> mNearbyMarks = new ArrayList<>();
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,6 +78,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     mPresenter = new TaxiFormPresenter(getContext(), this);
     mParamsMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
     mMap.clearElements();
+    mPinView.hide(false);
   }
 
   @Override
@@ -90,9 +96,23 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   }
 
   @Override
+  public void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    Logger.e("ldx", "TaxiFragment >>>> onNewIntent");
+//    mMap.hideMyLocation();
+//    mMap.showMyLocation();
+  }
+
+  @Override
   public void onResume() {
     super.onResume();
     mMap.showMyLocation();
+  }
+
+  @Override
+  protected boolean isRoot() {
+    isRootFragment = true;
+    return isRootFragment;
   }
 
   @Override
@@ -127,9 +147,11 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
    */
   @Override
   protected void handleReceiveLocAddress(Intent intent) {
+    Logger.e("ldx", "taxi NearBy >>>>>>");
     Address address = (Address) intent.getSerializableExtra(CommonParams.COMMON_CURRENT_LOCATION_ADDRESS);
     mPresenter.saveAddress(AddressTable.START, address);
     mFormView.setStartPoint(address.mAdrDisplayName);
+    mPresenter.taxiNearBy();
   }
 
   @Override
@@ -144,7 +166,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
   @Override
   protected void handleReceiveHistory(OrderDetail orderDetail) {
     OrderStatus orderStatus = OrderStatus.fromStateCode(orderDetail.getOrderStatus());
-    handleRecoveryData(orderDetail, orderStatus, true);
+    handleRecoveryData(orderDetail, orderStatus, true, false);
   }
 
   @Override
@@ -162,6 +184,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     dataPickerSelector(2, new ISelectResultListener() {
       @Override
       public void onTimeSelect(long time, String showTime) {
+        Logger.e("ldx", "time >> " + time + " " + TimeUtils.longToString(time, "yyyy-MM-dd HH:mm:ss"));
         mPresenter.saveBookingTime(time);
         mFormView.setTime(time, showTime);
       }
@@ -282,7 +305,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
     if (unFinishedView != null) {
       unFinishedView.performClick();
     }
-    gotoWaitFragment(order, false);
+    gotoWaitFragment(order, false, false);
   }
 
   @Override
@@ -304,6 +327,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
       mNavigator.lockDrawerLayout(false);
       mPresenter.showEasyForm();
       mFormView.setEndPoint("");
+      mFormView.setTime(0, "");
       mFormView.setFormType(IFormView.EASY_FORM);
       FormDataProvider.getInstance().clearData();
       return true;
@@ -335,6 +359,9 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
         Address startAdr = FormDataProvider.getInstance().obtainStartAddress();
         model.zoomCenter = startAdr != null ? startAdr.mAdrLatLng : location.mAdrLatLng;
         model.zoomLevel = 16.788f;
+        if (!isFirstLayoutDone) { // 首次进入的时候去掉动画移动到定位点
+          model.useAnim = false;
+        }
       } catch (Exception e) {
 
       }
@@ -343,13 +370,50 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
 
   @Override
   public void addMarks(List<MarkerOption> options) {
+    removeNearbyMarks();
+
     mMap.addMarkers(options);
-    mMap.drivingRoutePlan(FormDataProvider.getInstance().obtainStartAddress(),
-        FormDataProvider.getInstance().obtainEndAddress());
+
+    Address from = FormDataProvider.getInstance().obtainStartAddress();
+    Address to = FormDataProvider.getInstance().obtainEndAddress();
+    if (from != null && to != null) {
+      mMap.drivingRoutePlan(from, to);
+    }
+  }
+
+  private void removeNearbyMarks() {
+    Logger.e("ldx", "removeNearby >> " + mNearbyMarks);
+    if (mNearbyMarks != null && !mNearbyMarks.isEmpty()) {
+      mMap.removeMarks(mNearbyMarks);
+    }
+  }
+
+  /**
+   * 周边小车
+   * @param options
+   */
+  @Override
+  public void addNearbyMarks(List<MarkerOption> options) {
+    if (!mNearbyMarks.isEmpty()) {
+      mNearbyMarks.clear();
+    }
+    List<Marker> nearByMarks = mMap.addMarkers(options);
+    mNearbyMarks.addAll(nearByMarks);
+
+    mMap.startSmoothMove(nearByMarks, testGo());
+  }
+
+  private List<LatLng> testGo() {
+    List<LatLng> latLngs = new ArrayList<>();
+    for (int i = 0; i< mNearbyMarks.size(); i++) {
+      latLngs.add(new LatLng(39.96782, 116.403775));
+    }
+    return latLngs;
   }
 
   @Override
   public void showFullForm() {
+    removeNearbyMarks();
     int tip = FormDataProvider.getInstance().obtainTip();
     List<String> marksList = FormDataProvider.getInstance().obtainMarks();
     StringBuilder buffer = new StringBuilder();
@@ -390,7 +454,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
           @Override
           public void onClick(View v) {
             mHaveTripDlg.dismiss();
-            handleRecoveryData(orderDetail, orderStatus, false);
+            handleRecoveryData(orderDetail, orderStatus, false, true);
           }
         })
         .setPositiveButtonTextColor(Color.parseColor("#A3D2E4"))
@@ -413,22 +477,36 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
       @Override
       public void onClick(View v) {
         detachFromTopContainer(unFinishedView);
-        // jump
-        OrderDetail detail = HomeDataProvider.getInstance().obtainOrderDetail();
-        if (detail != null) {
-          handleRecoveryData(detail, OrderStatus.fromStateCode(detail.getOrderStatus()), false);
-        }
-        unFinishedView = null;
+
+        UIThreadHandler.postDelayed(new Runnable() {
+          @Override
+          public void run() {
+            // jump
+            OrderDetail detail = HomeDataProvider.getInstance().obtainOrderDetail();
+            if (detail != null) {
+              handleRecoveryData(detail, OrderStatus.fromStateCode(detail.getOrderStatus()), false, true);
+            }
+            isHaveUnFinishedOrder = false;
+            unFinishedView = null;
+          }
+        }, 600); // 延迟deatchFromTopContainer 会触发 recalculateView invoke toggleView
       }
     });
     attachToTopContainer(unFinishedView);
   }
 
-  private void handleRecoveryData(OrderDetail order, OrderStatus status, boolean isFromHistory) {
+  /**
+   * @param order
+   * @param status
+   * @param isFromHistory 是否来自历史行程
+   * @param isRecovery 是否崩溃恢复
+   */
+  private void handleRecoveryData(OrderDetail order, OrderStatus status, boolean isFromHistory, boolean isRecovery) {
+    removeNearbyMarks();
     switch (status) {
       case CREATE: {
         TaxiOrder taxiOrder = mPresenter.copyOrderDetailToTaxiOrder(order, isFromHistory);
-        gotoWaitFragment(taxiOrder, isFromHistory);
+        gotoWaitFragment(taxiOrder, isFromHistory, isRecovery);
         break;
       }
       case RECEIVED:
@@ -438,7 +516,7 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
         pinViewHide(true);
         TaxiOrder taxiOrder = mPresenter.copyOrderDetailToTaxiOrder(order, isFromHistory);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(CommonParams.Service.FROM_HISITORY, isFromHistory);
+        bundle.putBoolean(CommonParams.Service.FROM_HISTORY, isFromHistory);
         bundle.putSerializable(CommonParams.Service.ORDER, taxiOrder);
         forward(ServiceFragment.class, bundle);
         break;
@@ -452,19 +530,29 @@ public class TaxiFragment extends AbsBaseFragment implements ITaxiView, IOnHeigh
         pinViewHide(true);
         TaxiOrder taxiOrder = mPresenter.copyOrderDetailToTaxiOrder(order, isFromHistory);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(CommonParams.Service.FROM_HISITORY, isFromHistory);
+        bundle.putBoolean(CommonParams.Service.FROM_HISTORY, isFromHistory);
         bundle.putSerializable(CommonParams.Service.ORDER, taxiOrder);
         forward(TaxiEndFragment.class, bundle);
+        break;
+      }
+      case CANCELED: {
+        pinViewHide(true);
+        TaxiOrder taxiOrder = mPresenter.copyOrderDetailToTaxiOrder(order, isFromHistory);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(CommonParams.Service.FROM_HISTORY, isFromHistory);
+        bundle.putSerializable(CommonParams.Service.ORDER, taxiOrder);
+        forward(TaxiCancelFragment.class, bundle);
         break;
       }
     }
   }
 
-  private void gotoWaitFragment(TaxiOrder taxiOrder, boolean isFromHistory) {
+  private void gotoWaitFragment(TaxiOrder taxiOrder, boolean isFromHistory, boolean isRecovery) {
     mTopbarView.popBackListener();
     pinViewHide(true);
     Bundle bundle = new Bundle();
-    bundle.putBoolean(CommonParams.Service.FROM_HISITORY, isFromHistory);
+    bundle.putBoolean(CommonParams.Service.FROM_HISTORY, isFromHistory);
+    bundle.putBoolean(CommonParams.COMMON_CRASH_RECOVERY, isRecovery);
     bundle.putSerializable(CommonParams.Service.ORDER, taxiOrder);
     forward(TaxiWaitFragment.class, bundle);
   }

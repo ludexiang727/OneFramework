@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.text.TextUtils
+import android.widget.Toast
 import com.one.framework.app.base.OneApplication
 import com.one.framework.net.Api
 import com.one.framework.utils.PreferenceUtil
@@ -28,9 +29,9 @@ class DebugApplication : OneApplication() {
 
     override fun onCreate() {
         super.onCreate()
-        ToastUtils.toast(this, "欢迎使出租车乘客端！！\n摇一摇可切环境")
         initDebugMode()
         initNetworkManager()
+        Toast.makeText(this, "欢迎使出租车乘客端！！\n摇一摇可切环境", Toast.LENGTH_LONG).show()
     }
 
     fun initNetworkManager() {
@@ -39,7 +40,6 @@ class DebugApplication : OneApplication() {
 
         } else {
 //            taxi must be fix mo/
-
             val apiUrl: String = "https://" + env.trim().toLowerCase() + "-app.com"
             H5Page.initEnv(env)
             Api.apiUrl(apiUrl)

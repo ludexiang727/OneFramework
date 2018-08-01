@@ -57,8 +57,10 @@ data class OrderDriver(
         val driverCar: String ? = null,
         @field:SerializedName("driverCarColor")
         val driverCarColor: String ? = null,
-        @field:SerializedName("driverCompany")
-        val driverCompany: String? = null
+        @field:SerializedName("company")
+        val driverCompany: String? = null,
+        @field:SerializedName("licenseNo")
+        val driverCarNo: String? = null
 )
 
 data class FeeInfo(

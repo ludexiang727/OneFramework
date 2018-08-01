@@ -12,6 +12,7 @@
 # 抛出异常时保留代码行号
 -keepattributes SourceFile,LineNumberTable
 
+-dontwarn com.one.**
 -keep class com.one.framework.app.login.VerificationCodeView$OnCodeFinishListener { *; }
 
 -keep class com.one.framework.app.widget.base.IListItemView$IClickCallback { *; }
@@ -26,6 +27,10 @@
 
 -keepnames class com.one.map.model.MapStatusOperation$**
 
--keep class com.one.map.location.LocationProvider {
+-keep class com.one.map.location.LocationProvider$** {
   *;
 }
+
+-keep class * implements com.one.framework.app.model.IBizInfo { *; }
+
+

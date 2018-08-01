@@ -7,14 +7,21 @@ import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
+import android.widget.Toast;
 import com.one.framework.app.common.Status.OrderStatus;
 import com.one.framework.app.login.UserProfile;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
 import com.one.framework.provider.HomeDataProvider;
+import com.one.framework.utils.TimeUtils;
 import com.one.framework.utils.ToastUtils;
 import com.one.framework.utils.UIThreadHandler;
+import com.one.map.log.Logger;
+import com.one.map.map.BitmapDescriptorFactory;
+import com.one.map.map.MarkerOption;
+import com.one.map.model.Address;
 import com.trip.base.common.CommonParams;
 import com.trip.base.provider.FormDataProvider;
 import com.trip.base.wait.IWaitView;
@@ -29,6 +36,7 @@ import com.trip.taxi.net.model.TaxiOrderStatus;
 import com.trip.taxi.wait.ITaxiWaitView;
 import com.trip.taxi.wait.TaxiWaitView;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,6 +60,7 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
   private BroadReceiver mReceiver;
   private List<String> mTipItems = new ArrayList<>();
   private int mTipLength;
+  private long mOrderCreateTime;
 
   public TaxiWaitPresenter(Context context, TaxiOrder order, final ITaxiWaitView taxiWaitView) {
     mContext = context;
@@ -74,22 +83,7 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
         switch (msg.what) {
           case COUNT_DOWN: {
             iTaxiWaitView.waitConfigTime(mWaitTime);
-            while (mCurrentTime < mWaitTime) {
-              mCurrentTime++;
-              UIThreadHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                  iTaxiWaitView.countDown(mWaitTime, mCurrentTime);
-                }
-              });
-              synchronized (lock) {
-                try {
-                  lock.wait(1000);
-                } catch (InterruptedException e) {
-                  e.printStackTrace();
-                }
-              }
-            }
+            handleCountDownTime();
             break;
           }
         }
@@ -103,6 +97,32 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
     int position = userSelectTip == 0 ? 0 : mTipItems.indexOf(String.valueOf(userSelectTip));
     for (int i = position; position == 0 ? i > 0 : i >= 0; i--) {
       mTipItems.remove(i);
+    }
+  }
+
+  private void handleCountDownTime() {
+    long currentTime = System.currentTimeMillis(); // ms
+    int waitTime = 0;
+    if (mOrderCreateTime != 0) {
+      waitTime = (int) ((currentTime - mOrderCreateTime) / 1000); // s
+      mCurrentTime = waitTime;
+      iTaxiWaitView.updateProgressSweep(mCurrentTime);
+    }
+    while (mCurrentTime < mWaitTime) {
+      mCurrentTime++;
+      UIThreadHandler.post(new Runnable() {
+        @Override
+        public void run() {
+          iTaxiWaitView.countDown(mWaitTime, mCurrentTime);
+        }
+      });
+      synchronized (lock) {
+        try {
+          lock.wait(1000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 
@@ -126,7 +146,7 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
               }
 
               @Override
-              public void onFail(int errCode, TaxiOrderDetail taxiOrderDetail) {
+              public void onFail(int errCode, String errMsg) {
 
               }
 
@@ -202,7 +222,7 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
       }
 
       @Override
-      public void onFail(int errCode, TaxiOrderCancel taxiOrderCancel) {
+      public void onFail(int errCode, String errMsg) {
       }
 
       @Override
@@ -224,12 +244,20 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
       @Override
       public void onSuccess(BaseObject baseObject) {
         // 增加小费成功
-        ToastUtils.toast(mContext, mContext.getString(R.string.taxi_wait_add_tip_success));
+//        try {
+//          ToastUtils.toast(mContext, mContext.getString(R.string.taxi_wait_add_tip_success));
+//        } catch (Exception e) {
+//        }
+        Toast.makeText(mContext, mContext.getString(R.string.taxi_wait_add_tip_success), Toast.LENGTH_SHORT).show();
       }
 
       @Override
-      public void onFail(int errCode, BaseObject baseObject) {
-        ToastUtils.toast(mContext, mContext.getString(R.string.taxi_wait_error));
+      public void onFail(int errCode, String message) {
+//        try {
+//          ToastUtils.toast(mContext, mContext.getString(R.string.taxi_wait_error));
+//        } catch (Exception e) {
+//        }
+        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
       }
 
       @Override
@@ -244,12 +272,20 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
     TaxiRequest.taxiWaitPay4PickUp(mTaxiOrder.getOrderId(), new IResponseListener<BaseObject>() {
       @Override
       public void onSuccess(BaseObject baseObject) {
-        ToastUtils.toast(mContext, mContext.getString(R.string.taxi_wait_pick_up));
+//        try {
+//          ToastUtils.toast(mContext, mContext.getString(R.string.taxi_wait_pick_up));
+//        } catch (Exception e) {
+//        }
+        Toast.makeText(mContext, mContext.getString(R.string.taxi_wait_pick_up), Toast.LENGTH_SHORT).show();
       }
 
       @Override
-      public void onFail(int errCode, BaseObject baseObject) {
-        ToastUtils.toast(mContext, mContext.getString(R.string.taxi_wait_error));
+      public void onFail(int errCode, String errMsg) {
+//        try {
+//          ToastUtils.toast(mContext, mContext.getString(R.string.taxi_wait_error));
+//        } catch (Exception e) {
+//        }
+        Toast.makeText(mContext, errMsg, Toast.LENGTH_SHORT).show();
       }
 
       @Override
@@ -266,7 +302,24 @@ public class TaxiWaitPresenter extends AbsWaitPresenter {
       if (CommonParams.COMMON_LOOPER_ORDER_STATUS.equalsIgnoreCase(action)) {
         TaxiOrderStatus orderStatus = (TaxiOrderStatus) intent.getSerializableExtra(CommonParams.COMMON_LOOPER_ORDER);
         handleOrderStatus(OrderStatus.fromStateCode(orderStatus.getStatus()));
+        if (mOrderCreateTime == 0) {
+          mOrderCreateTime = orderStatus.getOrderCreateTime(); // 订单创建时间
+          startCountDown();
+        }
       }
+    }
+  }
+
+  @Override
+  public void addStartMarker() {
+    Address start = FormDataProvider.getInstance().obtainStartAddress();
+    if (start != null) {
+      MarkerOption startOption = new MarkerOption();
+      startOption.position = start.mAdrLatLng;
+      startOption.title = start.mAdrDisplayName;
+      startOption.descriptor = BitmapDescriptorFactory
+          .fromResources(mContext.getResources(), R.drawable.base_map_start_icon);
+      iTaxiWaitView.addMarker(startOption);
     }
   }
 

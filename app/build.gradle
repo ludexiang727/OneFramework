@@ -35,7 +35,7 @@ android {
 
         ndk {
             //设置支持的SO库架构
-            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+            abiFilters "armeabi"/*, "armeabi-v7a", "x86", "mips"*/
         }
 
         signingConfigs {
@@ -68,7 +68,6 @@ android {
     }
     packagingOptions {
         exclude 'assets/infowindow_bg.9.png'
-        exclude 'assets/map_assets/icons_6_14_1510107235.data'
     }
     sourceSets {
         main {

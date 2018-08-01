@@ -21,6 +21,8 @@ public class WaitFragment extends AbsBaseFragment {
 
   protected AbsWaitPresenter mWaitPresenter;
   protected Address mStartAdr = FormDataProvider.getInstance().obtainStartAddress();
+  protected boolean isFromHistory = false;
+  protected boolean isRecovery;
 
   @Override
   protected View onCreateViewImpl(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -34,13 +36,22 @@ public class WaitFragment extends AbsBaseFragment {
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     Logger.e("ldx", "center >>> " + mStartAdr);
-    mMap.startRadarAnim(mStartAdr.mAdrLatLng);
+    if (isRecovery || isFromHistory) {
+      if (mWaitPresenter != null) {
+        mWaitPresenter.addStartMarker();
+      }
+    }
+    if (mStartAdr != null) {
+      mMap.startRadarAnim(mStartAdr.mAdrLatLng);
+    }
   }
 
   @Override
   protected void boundsLatlng(BestViewModel model) {
-    model.zoomCenter = mStartAdr.mAdrLatLng;
-    model.zoomLevel = 18f;
+    if (mStartAdr != null) {
+      model.zoomCenter = mStartAdr.mAdrLatLng;
+      model.zoomLevel = 18f;
+    }
   }
 
   @Override

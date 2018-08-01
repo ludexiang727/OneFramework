@@ -1,8 +1,6 @@
 package com.one.pay.model
 
 import com.google.gson.annotations.SerializedName
-import com.one.pay.IPay
-import com.one.pay.IPay.PayType
 
 /**
  * Created by ludexiang on 2018/6/21.

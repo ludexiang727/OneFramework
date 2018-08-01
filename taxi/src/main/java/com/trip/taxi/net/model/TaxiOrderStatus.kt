@@ -14,5 +14,9 @@ data class TaxiOrderStatus(
         @field:SerializedName("finish")
         val isFinish : Int = 0,
         @field:SerializedName("payType")
-        val payType : Int
+        val payType : Int,
+        @field:SerializedName("createTime")
+        val orderCreateTime: Long,
+        @field:SerializedName("readyTime")
+        val driverReadyTime: Long? = null
 ) : BaseObject()

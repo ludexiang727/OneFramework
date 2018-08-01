@@ -31,6 +31,10 @@
   <string name="taxi_have_unfinish_order_go">前往</string>
   <string name="taxi_have_unfinish_order_no">不</string>
 
+  <string name="taxi_uninstall_pay_app">未安装%1$s或%2$s版本过低</string>
+  <string name="taxi_payment_wechat">微信</string>
+  <string name="taxi_payment_zfb">支付宝</string>
+
   <string name="taxi_have_trip_click_forward">您有一个未完成的订单，{点击前往}</string>
 
   <string name="taxi_service_wait_meet">等待接驾</string>
@@ -64,6 +68,12 @@
   <string name="taxi_estimate_price_about">约%s</string>
   <string name="taxi_estimate_price_count">折扣已减 %s</string>
   <string name="taxi_estimate_price_error">价格预估失败，点击重试</string>
+
+  <string name="taxi_input_money_empty">请输入车费</string>
+  <string name="taxi_input_money_small_zero">请输入正确的车费</string>
+
+  <string name="taxi_cancel_trip">行程已取消</string>
+  <string name="taxi_cancel_trip_title">行程取消</string>
 
   <string-array name="options_op_array">
     <item>现在</item>

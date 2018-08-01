@@ -132,6 +132,9 @@
 -dontwarn com.squareup.okhttp3.**
 -keep class com.squareup.okhttp3.** { *;}
 
+-dontwarn okhttp3.**
+-keep class okhttp3.** { *; }
+
 -dontwarn okio.**
 -keep class okio.** { *; }
 -keep interface okio.** { *; }
@@ -171,9 +174,9 @@
 -keep class com.amap.api.maps.**{*;}
 -keep class com.autonavi.**{*;}
 -keep class com.amap.api.trace.**{*;}
+-keep class com.amap.api.mapcore.** {*;}
 
 -keep class com.amap.api.location.**{*;}
 -keep class com.amap.api.fence.**{*;}
 -keep class com.autonavi.aps.amapapi.model.**{*;}
-
 -keep class com.amap.api.services.**{*;}

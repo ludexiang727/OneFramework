@@ -11,6 +11,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 import com.evaluate.model.DefaultRateDescriptions;
 import com.evaluate.model.EvaluateRateTags;
 import com.evaluate.model.IEvaluateTag;
@@ -24,6 +25,7 @@ import com.evaluate.widgets.CardTitleView.CardTitleCloseBtnListener;
 import com.one.framework.app.common.Status.OrderStatus;
 import com.one.framework.app.login.UserProfile;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
+import com.one.framework.dialog.SupportDialogFragment;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.response.IResponseListener;
 import com.one.framework.utils.ToastUtils;
@@ -61,6 +63,8 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
   protected EvaluateComponent mEvaluate;
   protected boolean isFromHistory;
 
+  protected SupportDialogFragment mPayDlg;
+
   private Marker mStartMarker;
   private Marker mEndMarker;
 
@@ -68,6 +72,11 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mEvaluate = new EvaluateComponent();
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
   }
 
   @Override
@@ -150,8 +159,12 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
       }
 
       @Override
-      public void onFail(int errCod, BasePayInfo basePayInfo) {
-        ToastUtils.toast(getActivity(), getString(R.string.pay_failed));
+      public void onFail(int errCod, String message) {
+//        try {
+//          ToastUtils.toast(getActivity(), getString(R.string.pay_failed));
+//        } catch (Exception e) {
+//        }
+        Toast.makeText(getActivity(), getString(R.string.pay_failed), Toast.LENGTH_SHORT).show();
         handlePayFail();
       }
 
@@ -186,7 +199,7 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
           }
 
           @Override
-          public void onFail(int errCode, BasePayList taxiPayList) {
+          public void onFail(int errCode, String message) {
 
           }
 
@@ -210,7 +223,7 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
           }
 
           @Override
-          public void onFail(int errCode, BaseObject baseObject) {
+          public void onFail(int errCode, String message) {
           }
 
           @Override
@@ -239,7 +252,7 @@ public abstract class EndFragment extends BaseFragment implements IEndView, IPay
           }
 
           @Override
-          public void onFail(int errCod, BasePay basePay) {
+          public void onFail(int errCod, String message) {
             handlePayFail();
           }
 

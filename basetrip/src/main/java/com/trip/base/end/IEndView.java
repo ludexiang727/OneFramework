@@ -17,6 +17,7 @@ public interface IEndView {
   void handleFinish(int payType);
   void handlePayFail();
   void handlePay(OrderStatus status);
+  void orderDetailFail();
   void evaluateTags(EvaluateTags tags);
   void evaluateSuccess();
   void endRoutePlan(List<LatLng> driverLines);

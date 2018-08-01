@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import com.one.framework.app.login.UserProfile
 import com.one.framework.utils.PreferenceUtil
 import com.one.map.model.Address
 import com.one.map.model.LatLng
@@ -35,6 +36,7 @@ class DebugActivity : Activity() {
         findViewById<Button>(R.id.debug_env_save).setOnClickListener {
             var env = findViewById<EditText>(R.id.debug_env_edit).text.toString()
             PreferenceUtil.instance(this@DebugActivity).putString("debug_env", env)
+            UserProfile.getInstance(this).logout()
             val intent = Intent(this, SplashActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

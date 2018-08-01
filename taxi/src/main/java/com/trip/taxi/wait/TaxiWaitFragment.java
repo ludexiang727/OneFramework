@@ -11,9 +11,10 @@ import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.wheelview.WheelView;
 import com.one.framework.dialog.BottomSheetDialog;
 import com.one.framework.dialog.SupportDialogFragment;
+import com.one.map.map.MarkerOption;
+import com.trip.base.common.CommonParams;
 import com.trip.base.common.CommonParams.Service;
 import com.trip.base.wait.WaitFragment;
-import com.trip.base.provider.FormDataProvider;
 import com.trip.base.wait.IWaitView;
 import com.trip.taxi.R;
 import com.trip.taxi.net.model.TaxiOrder;
@@ -41,15 +42,15 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Bundle bundle = getArguments();
-    boolean isFromHistory = false;
     if (bundle != null) {
       mTaxiOrder = (TaxiOrder) bundle.getSerializable(Service.ORDER);
-      isFromHistory = bundle.getBoolean(Service.FROM_HISITORY);
+      isFromHistory = bundle.getBoolean(Service.FROM_HISTORY);
+      isRecovery = bundle.getBoolean(CommonParams.COMMON_CRASH_RECOVERY, false);
     }
     mWaitPresenter = new TaxiWaitPresenter(getActivity(), mTaxiOrder, this);
     mWaitView = mWaitPresenter.getWaitView();
     mTopbarView.setTitle(R.string.taxi_wait_page_title);
-    mTopbarView.setLeft(isFromHistory ? R.drawable.one_top_bar_back_selector : 0);
+    mTopbarView.setLeft(/*isFromHistory ? R.drawable.one_top_bar_back_selector : */0);
     mMap.removeDriverLine();
   }
 
@@ -60,12 +61,23 @@ public class TaxiWaitFragment extends WaitFragment implements ITaxiWaitView {
     mWaitLoadingView = (LoadingView) mWaitTopView.findViewById(R.id.taxi_wait_loading_view);
     mWaitSeconds = (TextView) mWaitTopView.findViewById(R.id.taxi_wait_count_down);
     attachToTopContainer(mWaitTopView);
-    mWaitPresenter.startCountDown();
   }
 
   @Override
   public void waitConfigTime(int waitTime) {
     mWaitLoadingView.setConfigWaitTime(waitTime);
+  }
+
+  @Override
+  public void updateProgressSweep(int sweep) {
+    synchronized (mWaitLoadingView) {
+      mWaitLoadingView.updateProgressSweep(sweep);
+    }
+  }
+
+  @Override
+  public void addMarker(MarkerOption option) {
+    mMap.addMarker(option);
   }
 
   private void onTipClick() {

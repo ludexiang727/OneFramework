@@ -186,8 +186,7 @@ public class TaxiService extends Service {
         }
 
         @Override
-        public void onFail(int errCode, BaseObject baseObject) {
-
+        public void onFail(int errCode, String message) {
         }
 
         @Override
@@ -305,7 +304,7 @@ public class TaxiService extends Service {
       }
 
       @Override
-      public void onFail(int errCode, TaxiOrderStatus taxiOrderStatus) {
+      public void onFail(int errCode, String message) {
 
       }
 
@@ -333,7 +332,7 @@ public class TaxiService extends Service {
           }
 
           @Override
-          public void onFail(int errCode, TaxiOrderDriverLocation taxiOrderDriverLocation) {
+          public void onFail(int errCode, String message) {
 
           }
 

@@ -263,7 +263,7 @@ public class AddressViewLayout extends LinearLayout implements IAddressView, OnC
     if (v.getId() == R.id.address_choose_cancel) {
       mAdrItemClick.onDismiss();
     } else if (v.getId() == R.id.address_company_normal_layout) {
-      if (v.getId() == R.id.address_company_normal_layout && mCompanyAddressLayout.getTag() != null) {
+      if (v.getId() == R.id.address_company_normal_layout && mCompanyAddressLayout != null && mCompanyAddressLayout.getTag() != null) {
         onAddressChoose((Address) mCompanyAddressLayout.getTag());
         return;
       }
